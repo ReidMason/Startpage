@@ -25,11 +25,6 @@ import Weather from "./components/elements/Weather";
 import Unifi from "./components/elements/Unifi";
 import axios from "axios";
 
-// Load data
-// import providers from "../../data/providers.json";
-// import apps from "../../data/apps.json";
-// import config from "../../data/config.json";
-
 export default {
   name: "App",
   components: {
@@ -44,7 +39,6 @@ export default {
     return {
       endpoint: "/api",
       date: new Date(),
-      providers: null,
       apps: null,
       config: null
     };
