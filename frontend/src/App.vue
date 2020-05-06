@@ -42,7 +42,7 @@ export default {
   },
   data: function() {
     return {
-      endpoint: "http://localhost:5003/api",
+      endpoint: "/api",
       date: new Date(),
       providers: null,
       apps: null,
@@ -50,24 +50,19 @@ export default {
     };
   },
   methods: {
-    getProviders() {
-      axios.get(`${this.endpoint}/data/providers.json`).then(response => {
-        this.providers = response.data;
-      });
-    },
     getApps() {
       axios.get(`${this.endpoint}/data/apps.json`).then(response => {
         this.apps = response.data;
       });
     },
     getConfig() {
+      console.log(this.config);
       axios.get(`${this.endpoint}/data/config.json`).then(response => {
         this.config = response.data;
       });
     }
   },
   mounted: function() {
-    this.getProviders();
     this.getApps();
     this.getConfig();
   }
