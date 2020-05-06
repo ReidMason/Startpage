@@ -23,11 +23,12 @@ import SearchBox from "./components/elements/SearchBox";
 import Apps from "./components/elements/Apps";
 import Weather from "./components/elements/Weather";
 import Unifi from "./components/elements/Unifi";
+import axios from "axios";
 
 // Load data
-import providers from "../../data/providers.json";
-import apps from "../../data/apps.json";
-import config from "../../data/config.json";
+// import providers from "../../data/providers.json";
+// import apps from "../../data/apps.json";
+// import config from "../../data/config.json";
 
 export default {
   name: "App",
@@ -43,12 +44,33 @@ export default {
     return {
       endpoint: "http://localhost:5003/api",
       date: new Date(),
-      providers: providers,
-      apps: apps,
-      config: config
+      providers: null,
+      apps: null,
+      config: null
     };
   },
-  methods: {}
+  methods: {
+    getProviders() {
+      axios.get(`${this.endpoint}/data/providers.json`).then(response => {
+        this.providers = response.data;
+      });
+    },
+    getApps() {
+      axios.get(`${this.endpoint}/data/apps.json`).then(response => {
+        this.apps = response.data;
+      });
+    },
+    getConfig() {
+      axios.get(`${this.endpoint}/data/config.json`).then(response => {
+        this.config = response.data;
+      });
+    }
+  },
+  mounted: function() {
+    this.getProviders();
+    this.getApps();
+    this.getConfig();
+  }
 };
 </script>
 

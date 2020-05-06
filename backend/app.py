@@ -24,6 +24,11 @@ def index():
     return send_file('../frontend/dist/index.html')
 
 
+@app.route('/api/data/<path>')
+def data(path: str):
+    return send_file(f'{DATA_PATH}/{path}')
+
+
 @app.route('/css/<path>')
 def css(path: str):
     return send_file(f'../frontend/dist/css/{path}')
