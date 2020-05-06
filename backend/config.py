@@ -30,8 +30,9 @@ class Config:
         self.validate_config_structure()
 
     def validate_config_structure(self):
-        self.config = utils.validate_json(self.config_schema, utils.load_json(self.config_path))
-        self.save_config()
+        new_config = utils.validate_json(self.config_schema, utils.load_json(self.config_path))
+        if new_config != self.config:
+            self.save_config()
 
     def save_config(self):
         utils.save_json(self.config_path, self.config)
