@@ -31,7 +31,10 @@ class Config:
 
     def validate_config_structure(self):
         new_config = utils.validate_json(self.config_schema, utils.load_json(self.config_path))
+        print("validation")
         if new_config != self.config:
+            print("Saving config")
+            self.config = new_config
             self.save_config()
 
     def save_config(self):

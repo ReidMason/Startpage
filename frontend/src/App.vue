@@ -11,7 +11,7 @@
       </div>
     </div>
     <apps :apps="apps" />
-    <hr class="mx-auto w-1/2 mb-12" />
+    <hr class="mx-auto w-1/2 mb-12" v-if="config && config.unifi.enabled" />
     <unifi :config="config" :endpoint="endpoint" v-if="config && config.unifi.enabled" />
   </div>
 </template>

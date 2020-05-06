@@ -30,6 +30,9 @@ def save_json(file_path: str, data: dict):
 
 
 def validate_json(schema: dict, data: dict):
+    if data is None:
+        return schema
+
     for k, v in schema.items():
         data_value = data.get(k)
         if data_value is None:

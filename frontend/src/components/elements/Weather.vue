@@ -9,8 +9,8 @@
         <h1>{{ weather.weather[0].description }}</h1>
         <h1 class="text-4xl">{{ Math.round(weather.main.temp) }}°C</h1>
         <!-- <h1>Feels like: {{ Math.round(weather.main.feels_like) }}°C</h1>
-      <h1>Highs: {{ Math.round(weather.main.temp_max) }}°C</h1>
-      <h1>Lows: {{ Math.round(weather.main.temp_min) }}°C</h1>
+        <h1>Highs: {{ Math.round(weather.main.temp_max) }}°C</h1>
+        <h1>Lows: {{ Math.round(weather.main.temp_min) }}°C</h1>
         <h1>Humidity: {{ Math.round(weather.main.humidity) }}%</h1>-->
       </div>
     </div>

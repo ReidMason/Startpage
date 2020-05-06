@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from flask import Flask, jsonify, request, render_template, send_file
 from flask_cors import CORS
 
