@@ -75,10 +75,3 @@ class Unifi:
 
     def get_hostnames(self) -> list:
         return [x.get('hostname') for x in self.c.get_clients()]
-
-
-if __name__ == '__main__':
-    unifi = Unifi()
-
-    data = unifi.c
-    pprint(data)
