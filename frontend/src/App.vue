@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto mt-20 text-white">
-    <search-box :providers="providers" :config="config" v-if="config" />
+    <search-box :providers="providers" :config="config" v-if="config && providers" />
     <div class="flex justify-between mx-auto w-10/12 md:w-5/6 lg:w-full lg:m-0 pb-5 px-4">
       <div>
         <date-text :d="date" />
@@ -39,6 +39,7 @@ export default {
     return {
       endpoint: "/api",
       date: new Date(),
+      providers: null,
       apps: null,
       config: null
     };
@@ -50,15 +51,20 @@ export default {
       });
     },
     getConfig() {
-      console.log(this.config);
       axios.get(`${this.endpoint}/data/config.json`).then(response => {
         this.config = response.data;
+      });
+    },
+    getProviders() {
+      axios.get(`${this.endpoint}/data/providers.json`).then(response => {
+        this.providers = response.data;
       });
     }
   },
   mounted: function() {
     this.getApps();
     this.getConfig();
+    this.getProviders();
   }
 };
 </script>
