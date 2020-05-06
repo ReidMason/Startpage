@@ -1,18 +1,18 @@
 <template>
   <div class="container mx-auto mt-20 text-white">
-    <search-box :providers="providers" :config="config" />
+    <search-box :providers="providers" :config="config" v-if="config" />
     <div class="flex justify-between mx-auto w-10/12 md:w-5/6 lg:w-full lg:m-0 pb-5 px-4">
       <div>
         <date-text :d="date" />
         <greeting-text :d="date" />
       </div>
       <div>
-        <weather :config="config" :endpoint="endpoint" v-if="config.weather.enabled" />
+        <weather :config="config" :endpoint="endpoint" v-if="config && config.weather.enabled" />
       </div>
     </div>
     <apps :apps="apps" />
     <hr class="mx-auto w-1/2 mb-12" />
-    <unifi :config="config" :endpoint="endpoint" v-if="config.unifi.enabled" />
+    <unifi :config="config" :endpoint="endpoint" v-if="config && config.unifi.enabled" />
   </div>
 </template>
 
