@@ -2,7 +2,7 @@
   <transition name="fade">
     <div v-if="weather" class="weather">
       <div class="inline-block align-middle">
-        <img :src="`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`" />
+        <img :src="`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`" />
       </div>
 
       <div class="inline-block align-middle">
