@@ -7,6 +7,8 @@
 # TODO: where does this rule come from?
 docs/_book
 
+data/
+
 # TODO: where does this rule come from?
 test/
 

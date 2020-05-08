@@ -34,12 +34,26 @@ export default {
   methods: {
     getWeather: function() {
       axios
-        .get(`${this.endpoint}/weather?city=${this.config.weather.location}`)
+        .get(
+          `${this.endpoint}/weather?city=${this.config.weather.location}&cached=true`
+        )
         .then(response => {
           this.weather = response.data;
         })
         .catch(() => {
           console.log("Error getting weather data");
+        })
+        .finally(() => {
+          axios
+            .get(
+              `${this.endpoint}/weather?city=${this.config.weather.location}`
+            )
+            .then(response => {
+              this.weather = response.data;
+            })
+            .catch(() => {
+              console.log("Error getting weather data");
+            });
         });
     }
   },

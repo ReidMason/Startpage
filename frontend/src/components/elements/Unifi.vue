@@ -40,10 +40,10 @@ export default {
   methods: {
     getClientData: function() {
       var url;
+      var hostnames = this.config.unifi.hostnames.join("&hostname=");
       if (this.config.unifi.showAllClients) {
-        url = `${this.endpoint}/unifi/networkData/all`;
+        url = `${this.endpoint}/unifi/networkData/all?hostname=${hostnames}`;
       } else if (this.config.unifi.hostnames.length !== 0) {
-        var hostnames = this.config.unifi.hostnames.join("&hostname=");
         url = `${this.endpoint}/unifi/networkData?hostname=${hostnames}`;
       }
       if (url !== undefined) {

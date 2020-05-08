@@ -47,7 +47,7 @@ export default {
   methods: {
     getApps() {
       axios.get(`${this.endpoint}/data/apps.json`).then(response => {
-        this.apps = response.data;
+        this.apps = response.data.apps;
       });
     },
     getConfig() {
@@ -57,7 +57,7 @@ export default {
     },
     getProviders() {
       axios.get(`${this.endpoint}/data/providers.json`).then(response => {
-        this.providers = response.data;
+        this.providers = response.data.providers;
       });
     }
   },
