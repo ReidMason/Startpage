@@ -1,6 +1,4 @@
-from pprint import pprint
-
-from flask import Flask, jsonify, request, render_template, send_file
+from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 
 from caching import Cache
@@ -12,10 +10,11 @@ DATA_PATH = "../data"
 
 
 def get_config():
-    return Config(f'{DATA_PATH}/config.json')
+    return Config(DATA_PATH)
 
 
-get_config()
+config = get_config()
+config.validate_data_files()
 cache = Cache(f"{DATA_PATH}/cache.json")
 app = Flask(__name__)
 CORS(app)
@@ -23,6 +22,10 @@ CORS(app)
 
 @app.route('/')
 def index():
+    global config
+    config = get_config()
+    config.validate_data_files()
+
     return send_file('../frontend/dist/index.html')
 
 
@@ -43,17 +46,18 @@ def js(path: str):
 
 @app.route('/api/weather')
 def city_weather():
-    config = get_config()
-    weather = WeatherService(config.get('weather'), cache)
+    get_cached = request.args.get('cached', '').lower() == 'true'
     city = request.args.get('city')
-    data = weather.get_weather(city)
+
+    weather = WeatherService(config.get('weather'), cache)
+
+    data = weather.get_weather(city, get_cached)
     return jsonify(data), 200 if data != {} else 400
 
 
 @app.route('/api/unifi/networkData')
 def get_unifi_transfer_data():
-    config = get_config()
-    unifi = Unifi(config.get('unifi'))
+    unifi = Unifi(config.get('unifi'), cache)
     hostnames = request.args.getlist('hostname')
     data = unifi.get_client_stats(hostnames)
     return jsonify(data), 200 if data != [] else 400
@@ -61,9 +65,9 @@ def get_unifi_transfer_data():
 
 @app.route('/api/unifi/networkData/all')
 def get_all_unifi_transfer_data():
-    config = get_config()
-    unifi = Unifi(config.get('unifi'))
-    data = unifi.get_all_client_stats()
+    unifi = Unifi(config.get('unifi'), cache)
+    hostnames = request.args.getlist('hostname')
+    data = unifi.get_all_client_stats(hostnames)
     return jsonify(data), 200 if data != [] else 400
 
 

@@ -41,10 +41,10 @@ class Cache:
         self.update_cache(url, r)
         return r
 
-    def run_function(self, func, cache_duration: int, *args, force_run = False, **kwargs):
+    def run_function(self, func, cache_duration: int, *args, get_cached = False, **kwargs):
         cache_url = func.__name__
 
-        if not force_run and self.cache_data_valid(cache_url, 3600):
+        if (get_cached and self.is_cached(cache_url)) or self.cache_data_valid(cache_url, cache_duration):
             print(f"Got cached: {cache_url}. Time left: {self.get_cache_time_left(cache_url, cache_duration)}")
             return self.get_cached_data(cache_url)
 
@@ -66,8 +66,8 @@ class Cache:
     def cache_data_valid(self, url: str, cache_duration: int):
         return self.is_cached(url) and self.get_cache_time_left(url, cache_duration) > 0
 
-    def get(self, url: str, cache_duration: int):
-        if self.cache_data_valid(url, cache_duration):
+    def get(self, url: str, cache_duration: int, get_cached: bool = False):
+        if (get_cached and self.is_cached(url)) or self.cache_data_valid(url, cache_duration):
             print(f"Got cached: {url}. Time left: {self.get_cache_time_left(url, cache_duration)}")
             return self.get_cached_data(url)
 

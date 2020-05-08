@@ -21,24 +21,33 @@ def load_json(file_path: str):
         save_json(file_path, {})
 
     with open(file_path, 'r') as f:
-        return json.load(f)
+        try:
+            return json.load(f)
+        except json.decoder.JSONDecodeError:
+            return {}
 
 
 def save_json(file_path: str, data: dict):
+    if not os.path.exists(file_path):
+        os.makedirs(os.path.dirname(file_path), exist_ok = True)
+
     with open(file_path, 'w') as f:
         json.dump(data, f)
 
 
 def validate_json(schema: dict, data: dict):
+    change_made = False
     if data is None:
-        return schema
+        return schema, True
 
     for k, v in schema.items():
         data_value = data.get(k)
         if data_value is None:
+            change_made = True
             data[k] = v
 
         if type(v) is dict:
-            data[k] = validate_json(v, data.get(k))
+            data[k], child_change_made = validate_json(v, data.get(k))
+            change_made = child_change_made if not change_made else change_made
 
-    return data
+    return data, change_made

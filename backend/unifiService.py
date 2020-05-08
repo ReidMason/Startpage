@@ -3,15 +3,18 @@ from pprint import pprint
 from pyunifi.controller import Controller
 from requests.exceptions import InvalidURL
 
+from caching import Cache
 from utils import shorten_bytes
 
 
 class Unifi:
-    def __init__(self, unifi_config: dict):
+    def __init__(self, unifi_config: dict, cache: Cache):
         self.config = unifi_config
         ip = self.config.get('ip')
         username = self.config.get('username')
         password = self.config.get('password')
+        self.cache = cache
+        self.cache_duration = self.config.get('cacheDuration')
         try:
             self.c = None
             self.c = Controller(ip, username, password, ssl_verify = False)
@@ -25,12 +28,17 @@ class Unifi:
         clients = self.get_clients_from_hostnames(hostnames)
         return self.format_client_stats(clients)
 
-    def get_all_client_stats(self):
+    def get_clients(self):
+        return self.c.get_clients()
+
+    def get_all_client_stats(self, hostnames):
         if self.c is None:
             return []
-        
+
         clients = self.c.get_clients()
-        return self.format_client_stats(clients)
+        clients = self.format_client_stats(clients)
+
+        return self.sort_buy_hostnames(clients, hostnames)
 
     def format_client_stats(self, clients: list):
         return [{'name'    : self.get_client_name(x),
@@ -75,3 +83,14 @@ class Unifi:
 
     def get_hostnames(self) -> list:
         return [x.get('hostname') for x in self.c.get_clients()]
+
+    def sort_buy_hostnames(self, clients: list, hostnames: list):
+        new_clients = []
+        for hostname in hostnames:
+            for i, client in enumerate(clients):
+                if hostname == client.get('name'):
+                    new_clients.append(clients.pop(i))
+                    break
+
+        new_clients.extend(clients)
+        return new_clients
