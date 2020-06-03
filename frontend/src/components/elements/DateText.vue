@@ -1,8 +1,7 @@
 <template>
   <!-- This needs to be on one line -->
   <h1 class="text-xl font-semibold cursor-pointer" @click="gotoGoogleCalendar">
-    {{ day }}
-    <sup>{{ nth }}</sup>
+    {{ day }}<sup>{{ nth }}</sup>
     {{ monthYear }}
   </h1>
 </template>
