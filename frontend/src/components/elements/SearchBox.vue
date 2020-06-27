@@ -33,18 +33,19 @@ export default {
         return;
       }
 
+      // Not a command so just search the text
+      if (searchTerm[0] !== "/") {
+        window.location =
+          this.config.general.searchUrl + encodeURIComponent(searchTerm);
+        return;
+      }
+
       var prefix =
         searchTerm.substr(1, searchTerm.indexOf(" ") - 1) ||
         searchTerm.substr(1);
       var searchText = encodeURIComponent(
         this.searchTerm.substr(2 + prefix.length)
       );
-
-      // Not a command so just search the text
-      if (searchTerm[0] !== "/") {
-        window.location =
-          this.config.general.searchUrl + encodeURIComponent(searchTerm);
-      }
 
       // Now we are going to run the command
       this.providers.forEach(provider => {
