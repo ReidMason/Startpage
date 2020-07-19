@@ -3,7 +3,8 @@
     <div v-for="app in apps" :key="app.name" class="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 p-4 pt-0">
       <div
         class="app-background p-2 hover:shadow-lg rounded cursor-pointer"
-        @click="activate(app.url)"
+        @click="openUrl(app.url)"
+        @click.middle="openUrlNewTab(app.url)"
       >
         <div class="inline-block">
           <span class="iconify text-4xl" :data-icon="app.icon"></span>
@@ -24,8 +25,11 @@ export default {
     apps: Array
   },
   methods: {
-    activate: function(url) {
+    openUrl: function(url) {
       window.location = url;
+    },
+    openUrlNewTab: function(url) {
+      window.open(url, "_blank");
     }
   }
 };
