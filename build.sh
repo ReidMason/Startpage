@@ -1,2 +1,2 @@
 #!/bin/bash
-sudo docker build -t "skippythesnake/startpage" .
+docker build -t "skippythesnake/startpage" .
