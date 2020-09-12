@@ -22,22 +22,22 @@ import axios from "axios";
 
 export default {
   name: "Weather",
-  data: function() {
+  data: function () {
     return {
-      weather: null
+      weather: null,
     };
   },
   props: {
     config: Object,
-    endpoint: String
+    baseUrl: String,
   },
   methods: {
-    getWeather: function() {
+    getWeather: function () {
       axios
         .get(
-          `${this.endpoint}/weather?city=${this.config.weather.location}&cached=true`
+          `${this.baseUrl}/weather?city=${this.config.weather.location}&cached=true`
         )
-        .then(response => {
+        .then((response) => {
           this.weather = response.data;
         })
         .catch(() => {
@@ -45,20 +45,18 @@ export default {
         })
         .finally(() => {
           axios
-            .get(
-              `${this.endpoint}/weather?city=${this.config.weather.location}`
-            )
-            .then(response => {
+            .get(`${this.baseUrl}/weather?city=${this.config.weather.location}`)
+            .then((response) => {
               this.weather = response.data;
             })
             .catch(() => {
               console.log("Error getting weather data");
             });
         });
-    }
+    },
   },
-  mounted: function() {
+  mounted: function () {
     this.getWeather();
-  }
+  },
 };
 </script>

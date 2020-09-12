@@ -7,12 +7,12 @@
         <greeting-text :d="date" />
       </div>
       <div>
-        <weather :config="config" :endpoint="endpoint" v-if="config && config.weather.enabled" />
+        <weather :config="config" :baseUrl="baseUrl" v-if="config && config.weather.enabled" />
       </div>
     </div>
     <apps :apps="apps" />
     <hr class="mx-auto w-1/2 mb-12" v-if="config && config.unifi.enabled" />
-    <unifi :config="config" :endpoint="endpoint" v-if="config && config.unifi.enabled" />
+    <unifi :config="config" :baseUrl="baseUrl" v-if="config && config.unifi.enabled" />
   </div>
 </template>
 
@@ -33,39 +33,39 @@ export default {
     SearchBox,
     Apps,
     Weather,
-    Unifi
+    Unifi,
   },
-  data: function() {
+  data: function () {
     return {
       endpoint: "/api",
       date: new Date(),
       providers: null,
       apps: null,
-      config: null
+      config: null,
     };
   },
   methods: {
     getApps() {
-      axios.get(`${this.endpoint}/data/apps.json`).then(response => {
+      axios.get(`${this.baseUrl}/data/apps.json`).then((response) => {
         this.apps = response.data.apps;
       });
     },
     getConfig() {
-      axios.get(`${this.endpoint}/data/config.json`).then(response => {
+      axios.get(`${this.baseUrl}/data/config.json`).then((response) => {
         this.config = response.data;
       });
     },
     getProviders() {
-      axios.get(`${this.endpoint}/data/providers.json`).then(response => {
+      axios.get(`${this.baseUrl}/data/providers.json`).then((response) => {
         this.providers = response.data.providers;
       });
-    }
+    },
   },
-  mounted: function() {
+  mounted: function () {
     this.getApps();
     this.getConfig();
     this.getProviders();
-  }
+  },
 };
 </script>
 

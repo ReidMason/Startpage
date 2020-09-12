@@ -28,39 +28,39 @@ import axios from "axios";
 
 export default {
   name: "Unifi",
-  data: function() {
+  data: function () {
     return {
-      clientData: null
+      clientData: null,
     };
   },
   props: {
-    endpoint: String,
-    config: Object
+    baseUrl: String,
+    config: Object,
   },
   methods: {
-    getClientData: function() {
+    getClientData: function () {
       var url;
       var hostnames = this.config.unifi.hostnames.join("&hostname=");
       if (this.config.unifi.showAllClients) {
-        url = `${this.endpoint}/unifi/networkData/all?hostname=${hostnames}`;
+        url = `${this.baseUrl}/unifi/networkData/all?hostname=${hostnames}`;
       } else if (this.config.unifi.hostnames.length !== 0) {
-        url = `${this.endpoint}/unifi/networkData?hostname=${hostnames}`;
+        url = `${this.baseUrl}/unifi/networkData?hostname=${hostnames}`;
       }
       if (url !== undefined) {
         axios
           .get(url)
-          .then(response => {
+          .then((response) => {
             this.clientData = response.data;
           })
           .catch(() => {
             console.log("Error getting unifi data");
           });
       }
-    }
+    },
   },
-  mounted: function() {
+  mounted: function () {
     this.getClientData();
-  }
+  },
 };
 </script>
 
