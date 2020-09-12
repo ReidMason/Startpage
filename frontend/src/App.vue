@@ -37,7 +37,7 @@ export default {
   },
   data: function () {
     return {
-      endpoint: "/api",
+      baseUrl: "/api",
       date: new Date(),
       providers: null,
       apps: null,
