@@ -1,0 +1,9 @@
+kind: pipeline
+type: exec
+name: startpage
+
+steps:
+- name: deploy
+  commands:
+    - docker-compose build
+    - docker-compose up -d
