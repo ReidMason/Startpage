@@ -6,7 +6,7 @@ from config import Config
 from unifiService import Unifi
 from weatherService import WeatherService
 
-DATA_PATH = "../data"
+DATA_PATH = "data"
 
 
 def get_config():
@@ -15,7 +15,7 @@ def get_config():
 
 config = get_config()
 config.validate_data_files()
-cache = Cache(f"{DATA_PATH}/cache.json")
+cache = Cache(os.path.join(DATA_PATH, "cache.json")
 app = Flask(__name__)
 CORS(app)
 
@@ -31,7 +31,7 @@ def index():
 
 @app.route('/api/data/<path>')
 def data(path: str):
-    return send_file(f'{DATA_PATH}/{path}')
+    return send_file(os.path.join(DATA_PATH, path))
 
 
 @app.route('/api/weather')
