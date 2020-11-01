@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 
@@ -15,19 +17,9 @@ def get_config():
 
 config = get_config()
 config.validate_data_files()
-cache = Cache(os.path.join(DATA_PATH, "cache.json")
+cache = Cache(os.path.join(DATA_PATH, "cache.json"))
 app = Flask(__name__)
 CORS(app)
-
-
-@app.route('/')
-def index():
-    global config
-    config = get_config()
-    config.validate_data_files()
-
-    return send_file('../frontend/dist/index.html')
-
 
 @app.route('/api/data/<path>')
 def data(path: str):
