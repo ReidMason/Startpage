@@ -34,16 +34,6 @@ def data(path: str):
     return send_file(f'{DATA_PATH}/{path}')
 
 
-@app.route('/css/<path>')
-def css(path: str):
-    return send_file(f'../frontend/dist/css/{path}')
-
-
-@app.route('/js/<path>')
-def js(path: str):
-    return send_file(f'../frontend/dist/js/{path}')
-
-
 @app.route('/api/weather')
 def city_weather():
     get_cached = request.args.get('cached', '').lower() == 'true'
@@ -72,4 +62,4 @@ def get_all_unifi_transfer_data():
 
 
 if __name__ == '__main__':
-    app.run(host = '0.0.0.0', port = 5003, debug = True)
+    app.run(host = '0.0.0.0', port = 80, debug = True)

@@ -3,7 +3,10 @@ type: exec
 name: startpage
 
 steps:
-- name: deploy
+- name: build
   commands:
     - docker-compose build
+    
+- name: deploy
+  commands:
     - docker-compose up -d
