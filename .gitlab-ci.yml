@@ -1,9 +1,18 @@
-default:
-  image: python:latest
-
-build-job:
+build:
   tags:
     - app-host
+  only:
+    - master
   stage: build
   script:
-    - docker ps
+    - docker-compose build
+
+deploy:
+  tags:
+    - app-host
+  only:
+    - master
+  stage: deploy
+  script:
+    - docker-compose up -d
+
