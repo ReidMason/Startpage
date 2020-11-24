@@ -7,3 +7,4 @@ build-job:
   stage: build
   script:
     - echo "Hello, World!"
+    - mkdir /home/SkippyTheSnake/test
