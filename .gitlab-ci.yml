@@ -3,7 +3,7 @@ default:
 
 build-job:
     tags:
-    - app-host
+      - app-host
   stage: build
   script:
     - echo "Hello, World!"
