@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Containers>
+    <Date>2021-01-24</Date>
+    <Beta>False</Beta>
+    <Name>Startpage</Name>
+    <Overview>
+        A custom startpage based on SUI.
+    </Overview>
+    <Registry>https://registry.hub.docker.com/u/skippythesnake/startpage</Registry>
+    <GitHub>https://github.com/SkippyTheSnake/Startpage</GitHub>
+    <Repository>skippythesnake/startpage</Repository>
+    <Support>https://github.com/SkippyTheSnake/Startpage</Support>
+    <BindTime>true</BindTime>
+    <Privileged>false</Privileged>
+    <Networking>
+        <Mode>host</Mode>
+        <Publish>
+            <Port>
+                <HostPort>5003</HostPort>
+                <ContainerPort>5003</ContainerPort>
+                <Protocol>tcp</Protocol>
+            </Port>
+        </Publish>
+    </Networking>
+    <Data>
+        <Volume>
+            <HostDir>/mnt/user/appdata/startpage</HostDir>
+            <ContainerDir>/app/data</ContainerDir>
+            <Mode>rw</Mode>
+        </Volume>
+    </Data>
+    <WebUI>http://[IP]:[PORT:5003]</WebUI>
+</Containers>
