@@ -19,6 +19,7 @@
                 <HostPort>5003</HostPort>
                 <ContainerPort>5003</ContainerPort>
                 <Protocol>tcp</Protocol>
+                <Description>WebUI</Description>
             </Port>
         </Publish>
     </Networking>
