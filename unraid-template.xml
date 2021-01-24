@@ -22,6 +22,12 @@
             </Port>
         </Publish>
     </Networking>
+    <Environment>
+        <Variable>
+            <Name>WEATHER_APIKEY</Name>
+            <Value></Value>
+        </Variable>
+    </Environment>
     <Data>
         <Volume>
             <HostDir>/mnt/user/appdata/startpage</HostDir>
