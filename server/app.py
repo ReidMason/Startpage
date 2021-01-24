@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file, render_template
 from flask_cors import CORS
 
 from utils import serialize
@@ -9,6 +9,18 @@ from services.configService import load_config, save_config
 app = Flask(__name__)
 CORS(app)
 
+@app.route("/")
+def index():
+    return send_file('../client/build/index.html')
+
+@app.route('/static/js/<path>')
+def data(path: str):
+    return send_file(f'../client/build/static/js/{path}')
+
+
+@app.route('/static/css/<path>')
+def css(path: str):
+    return send_file(f'../client/build/static/css/{path}')
 
 @app.route("/api/config", methods = ["GET", "PUT"])
 def get_config():
@@ -34,5 +46,5 @@ def get_weather_info():
 
     return jsonify(data)
 
-
-app.run(debug = True)
+if __name__ == '__main__':
+    app.run(host = '0.0.0.0', port = 5003)
