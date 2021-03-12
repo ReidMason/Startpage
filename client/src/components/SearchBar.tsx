@@ -65,7 +65,7 @@ export default function SearchBar() {
         <div>
             <div className="w-full pb-2 px-1 border-b border-nord-9">
                 <form onSubmit={search}>
-                    <input autoFocus spellCheck="false" className="w-full bg-transparent outline-none h-10 text-3xl" placeholder={config?.general.searchPlaceholder} onChange={(event) => setSearchTerm(event.target.value.trim())}></input>
+                    <input autoFocus spellCheck="false" className="w-full bg-transparent outline-none h-10 text-3xl" placeholder={config?.general.searchPlaceholder} onChange={(event) => setSearchTerm(event.target.value.trim())} aria-label="searchbar"></input>
                 </form>
             </div>
         </div>

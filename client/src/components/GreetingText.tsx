@@ -40,11 +40,11 @@ export default function GreetingText({ calendarUrl }: GreetingProps) {
 
 
     return (
-        <div>
-            <div className="mb-3">
-                <a className={`text-xl font-semibold ${calendarUrl ? 'cursor-pointer' : ''}`} href={calendarUrl ? calendarUrl : undefined} tabIndex={1}>{dayOfWeek}<sup>{dateOrdinal}</sup> {monthAndYear}</a>
+        <div aria-label="greeting-section">
+            <div className="mb-3" aria-label="current-date">
+                <a className={`text-xl font-semibold ${calendarUrl ? 'cursor-pointer' : ''}`} href={calendarUrl ? calendarUrl : undefined} tabIndex={-1}>{dayOfWeek}<sup>{dateOrdinal}</sup> {monthAndYear}</a>
             </div>
-            <p className="text-5xl font-bold">{greeting}</p>
+            <p className="text-5xl font-bold" aria-label="greeting">{greeting}</p>
         </div>
     )
 }
