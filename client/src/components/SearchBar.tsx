@@ -7,9 +7,7 @@ export default function SearchBar() {
 
     const [searchTerm, setSearchTerm] = useState<string>("");
 
-    const search = (e: React.FormEvent) => {
-        e.preventDefault();
-
+    const search = () => {
         // Ignore blank search terms
         if (searchTerm === "") {
             setSearchTerm("");
@@ -61,12 +59,15 @@ export default function SearchBar() {
             window.location.href = config.general.searchUrl + encodeURIComponent(searchTerm);
     }
 
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter')
+            search();
+    }
+
     return (
         <div>
             <div className="w-full pb-2 px-1 border-b border-nord-9">
-                <form onSubmit={search}>
-                    <input autoFocus spellCheck="false" className="w-full bg-transparent outline-none h-10 text-3xl" placeholder={config?.general.searchPlaceholder} onChange={(event) => setSearchTerm(event.target.value.trim())} aria-label="searchbar"></input>
-                </form>
+                <input autoFocus spellCheck="false" className="w-full bg-transparent outline-none h-10 text-3xl" placeholder={config?.general.searchPlaceholder} onChange={(event) => setSearchTerm(event.target.value.trim())} onKeyDown={handleKeyDown} aria-label="searchbar"></input>
             </div>
         </div>
     )
