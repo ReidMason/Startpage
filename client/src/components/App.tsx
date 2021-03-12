@@ -13,8 +13,8 @@ export default function App({ app, preview }: IAppProp) {
 
 
     return (
-        <div className={`p-2 hover:shadow-lg hover:bg-nord-1 rounded cursor-pointer transition`}>
-            <a className="flex" {...preview ? {} : { href: app.url }}>
+        <a className={`p-2 hover:shadow-lg hover:bg-nord-1 focus:shadow-lg focus:bg-nord-1 focus:outline-none rounded cursor-pointer transition`} {...preview ? {} : { href: app.url }}>
+            <div className="flex" >
                 <div className="mr-2 text-4xl text-nord-8">
                     <Icon icon={app.icon} />
                 </div>
@@ -22,7 +22,7 @@ export default function App({ app, preview }: IAppProp) {
                     <p className="lowercase">{app.name}</p>
                     <p className="text-xs text-nord-8">{displayUrl}</p>
                 </div>
-            </a>
-        </div >
+            </div>
+        </a>
     )
 }

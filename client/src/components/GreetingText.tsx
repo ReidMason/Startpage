@@ -42,7 +42,7 @@ export default function GreetingText({ calendarUrl }: GreetingProps) {
     return (
         <div>
             <div className="mb-3">
-                <a className={`text-xl font-semibold ${calendarUrl ? 'cursor-pointer' : ''}`} href={calendarUrl ? calendarUrl : undefined}>{dayOfWeek}<sup>{dateOrdinal}</sup> {monthAndYear}</a>
+                <a className={`text-xl font-semibold ${calendarUrl ? 'cursor-pointer' : ''}`} href={calendarUrl ? calendarUrl : undefined} tabIndex={1}>{dayOfWeek}<sup>{dateOrdinal}</sup> {monthAndYear}</a>
             </div>
             <p className="text-5xl font-bold">{greeting}</p>
         </div>
