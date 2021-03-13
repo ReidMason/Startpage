@@ -1,7 +1,7 @@
 # Startage
 This is a start page inspired by SUI.
 I'll write better docs later... maybe.
-\\
+\
 Put the repo url into unraid to add the template.
 
 ### Weather display
