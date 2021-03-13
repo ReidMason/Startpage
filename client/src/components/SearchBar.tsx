@@ -41,7 +41,7 @@ export default function SearchBar() {
 
         // Now we are going to run the command
         for (const provider of config?.providers || []) {
-            if (provider.prefix === prefix) {
+            if (provider.prefix.toLowerCase() === prefix.toLowerCase()) {
                 // If there is a space after the command we're doing a search
                 if (searchTerm.indexOf(" ") > -1) {
                     window.location.href = provider.searchUrl + searchText;
