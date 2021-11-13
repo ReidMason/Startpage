@@ -8,6 +8,7 @@ interface ButtonProps {
     colour?: "red" | "green"
     textColour?: "dark" | "light";
     loading?: boolean;
+    className?: string;
 }
 
 const backgroundColourMapping = {
@@ -19,7 +20,7 @@ const backgroundColourMapping = {
 const hoverBackgroundColourMapping = {
     red: "bg-nord-12",
     green: "bg-nord-7",
-    default: "hover:bg-nord-3"
+    default: "bg-nord-3"
 }
 
 const textColourMapping = {
@@ -27,13 +28,13 @@ const textColourMapping = {
     light: "text-nord-4",
 }
 
-export default function Button({ loading, colour, textColour, children, onClick, type }: ButtonProps) {
+export default function Button({ loading, colour, textColour, children, onClick, type, className }: ButtonProps) {
     const backgroundColour = backgroundColourMapping[colour || "default"];
     const hoverBackgroundColour = hoverBackgroundColourMapping[colour || "default"]
     const textColourCss = textColour ? textColourMapping[textColour] : "text-white";
 
     return (
-        <button className={`w-full ${backgroundColour} "disabled:bg-opacity-60" ${loading ? "cursor-wait" : "active:bg-nord-10 hover:" + hoverBackgroundColour} ${textColourCss} rounded py-1 px-2 focus:outline-none `} type={type || undefined} disabled={loading} onClick={(e) => (onClick ? onClick(e) : undefined)}>
+        <button className={`w-full ${className} ${backgroundColour} "disabled:bg-opacity-60" ${loading ? "cursor-wait" : "active:bg-nord-10 hover:" + hoverBackgroundColour} ${textColourCss} rounded py-1 px-2 focus:outline-none `} type={type || undefined} disabled={loading} onClick={(e) => (onClick ? onClick(e) : undefined)}>
             <div className="flex justify-center">
                 {children}
                 {loading && <div className="ml-1 my-auto">
