@@ -13,6 +13,7 @@ export interface IConfiguration {
 export interface IWeatherConfig {
     enabled: boolean;
     location: string;
+    detailed: boolean;
 }
 
 export interface IGeneralConfig {

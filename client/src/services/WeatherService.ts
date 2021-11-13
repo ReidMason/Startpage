@@ -6,6 +6,7 @@ export interface IWeather {
     temperature: number;
     description: string;
     icon: string;
+    feelsLike: number;
 }
 
 // Endpoints

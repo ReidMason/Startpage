@@ -53,5 +53,6 @@ class WeatherConfig:
             data = {}
 
         self.enabled: bool = data.get('enabled') or False
+        self.detailed: bool = data.get('detailed') or False
         self.location: str = data.get('location') or ''
         

@@ -1,3 +1,4 @@
+import { Icon } from '@iconify/react-with-api';
 import React, { useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '../modules/startpage/globalContext';
 import * as weatherService from "../services/WeatherService";
@@ -24,10 +25,14 @@ export default function WeatherDisplay() {
                     <div className="my-auto">
                         <p className="capitalize mb-2">{weather.description}</p>
                         <p className="text-4xl">{Math.round(weather.temperature)}°C</p>
+                        {config.weather.detailed &&
+                            <div className="flex gap-2 items-center text-md">
+                                <p>Feels like {Math.round(weather.feelsLike)}°C</p>
+                            </div>
+                        }
                     </div>
                 </div>
             }
         </div>
-
     )
 }
