@@ -1,5 +1,5 @@
 # FROM nikolaik/python-nodejs:latest
-FROM node:slim as build-step
+FROM node:16.13.0-slim as build-step
 
 # Copy the current directory contents into the container at /app
 ADD ./client /app/client
