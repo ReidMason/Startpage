@@ -42,7 +42,9 @@ def get_weather_info():
     weather = weather_response.get('weather')[0]
     data = {'temperature': weather_response.get('main').get('temp'),
             'icon'       : weather.get('icon'),
-            'description': weather.get('description')}
+            'description': weather.get('description'),
+            'feelsLike': weather_response.get('main').get('feels_like')
+            }
 
     return jsonify(data)
 
