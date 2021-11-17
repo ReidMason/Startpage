@@ -7,6 +7,7 @@ import SettingsButton from "../../components/SettingsButton";
 import WeatherDisplay from '../../components/WeatherDisplay';
 import * as configService from "../../services/ConfigService";
 import SettingsSection from "../settings section/SettingsSection";
+import Timer from '../Timer';
 import { GlobalContext } from "./globalContext";
 
 export default function Startpage() {
@@ -39,6 +40,7 @@ export default function Startpage() {
                         </div>}
 
                         <AppsGrid />
+                        <Timer />
                     </EnterTransition>
                 </div>
 
