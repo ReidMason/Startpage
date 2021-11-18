@@ -23,7 +23,7 @@ export default function Startpage() {
 
     return (
         <GlobalContext.Provider value={{ config, setConfig }}>
-            <div className="container mx-auto text-white mt-28">
+            <div className="container mx-auto text-white mt-28 mb-8">
                 <div className="w-10/12 max-w-screen-xl px-4 mx-auto md:w-5/6 lg:w-full">
                     <EnterTransition>
                         <div className="mb-10">
@@ -40,7 +40,9 @@ export default function Startpage() {
                         </div>}
 
                         <AppsGrid />
-                        <Timer />
+                        <div className="mt-4">
+                            <Timer />
+                        </div>
                     </EnterTransition>
                 </div>
 
