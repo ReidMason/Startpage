@@ -16,7 +16,7 @@ export default function TimerDisplay({ timer, editMode, className, editModeFirst
 
     // className={editModeFirstRender ? "opacity-20 cursor-pointer !border-opacity-0" : ""}
     return (
-        <div className={`flex align-baseline transform transition-all duration-75 border-b ${editModeFirstRender ? "opacity-50" : ""} ${editMode && !editModeFirstRender ? "border-opacity-70" : "border-opacity-0"}`}>
+        <div className={`flex align-baseline transition-all border-b ${editModeFirstRender ? "opacity-50" : ""} ${editMode && !editModeFirstRender ? "border-opacity-70" : "border-opacity-0"}`}>
             {displayHours &&
                 <div className="flex">
                     <p className={`text-4xl ${timer[0].known ? "" : opacity}`}>{timer[0].value}</p>
