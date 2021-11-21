@@ -8,5 +8,5 @@ class Weather:
         self.icon: str = weather.get('icon')
         self.description: str = weather.get('description')
 
-        hourly = weather_response.get('hourly')[0]
-        self.rainChance: float = hourly.get('pop')
+        daily = weather_response.get('daily')[0]
+        self.rainChance: float = daily.get('pop')
