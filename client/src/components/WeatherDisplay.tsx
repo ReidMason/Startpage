@@ -24,10 +24,19 @@ export default function WeatherDisplay() {
                     </div>
                     <div className="my-auto">
                         <p className="capitalize mb-2">{weather.description}</p>
-                        <p className="text-4xl">{Math.round(weather.temperature)}°C</p>
+                        <div className="flex gap-4 items-end justify-between">
+                            <p className="text-4xl">{Math.round(weather.temperature)}°C</p>
+                            {config.weather.detailed &&
+                                <div className="flex gap-1 items-center mb-1 text-lg">
+                                    <Icon icon="bi:cloud-rain-heavy-fill" />
+                                    <span>{Math.round(weather.rainChance * 100)}%</span>
+                                </div>
+                            }
+                        </div>
+
                         {config.weather.detailed &&
-                            <div className="flex gap-2 items-center text-md">
-                                <p>Feels like {Math.round(weather.feelsLike)}°C</p>
+                            <div className="flex flex-col text-lg">
+                                <span>Feels Like {Math.round(weather.feelsLike)}°C</span>
                             </div>
                         }
                     </div>
