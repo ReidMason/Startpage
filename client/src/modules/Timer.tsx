@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from '../components/Button'
 import TimerDisplay from '../components/TimerDisplay';
 import { TimerDigit } from '../interfaces';
@@ -58,6 +58,14 @@ export default function Timer() {
 
     const anyTimerValueEntered = timer.find(x => x.known);
     const timeDisplay = timer.filter(x => x.known).map(x => x.value).join("");
+
+    useEffect(() => {
+        window.onbeforeunload = null;
+        if (timerRunning)
+            window.onbeforeunload = function () {
+                return true;
+            };
+    }, [timerRunning])
 
     const checkTimerAndTimeRemainingMatch = () => {
         // Check if the timer and time remaining match
