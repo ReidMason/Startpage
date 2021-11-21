@@ -60,6 +60,7 @@ export default function Timer() {
     const timeDisplay = timer.filter(x => x.known).map(x => x.value).join("");
 
     useEffect(() => {
+        // Display a warning to the user if they are navigating away when the timer is running
         window.onbeforeunload = null;
         if (timerRunning)
             window.onbeforeunload = function () {
@@ -91,20 +92,24 @@ export default function Timer() {
 
         setTimerRunning(true);
 
+        const currentTime = Math.floor(new Date().getTime() / 1000);
+        const endTime = currentTime + totalTime;
+
         // Clear existing interval to prevent multiple running
         if (interval)
             clearInterval(interval);
 
         // Alarm countdown
         interval = setInterval(() => {
-            totalTime--;
+            const timeNow = Math.floor(new Date().getTime() / 1000);
+            const secondsRemaining = endTime - timeNow;
 
-            const timeRemainingDisplay = secondsToTimerString(totalTime);
+            const timeRemainingDisplay = secondsToTimerString(secondsRemaining);
             const inputValueArray = timeRemainingDisplay.split('').map((x, i) => ({ known: timeRemaining[i].known, value: parseInt(x) }));
             const newTimeRemainingDisplay = padArray(inputValueArray, 6, { known: false, value: 0 })
             setTimeRemaining([...newTimeRemainingDisplay])
 
-            if (totalTime <= 0 && interval) {
+            if (secondsRemaining <= 0 && interval) {
                 setTimerFinished(true);
                 playAlarm();
                 stopTimer();
