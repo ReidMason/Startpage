@@ -7,7 +7,7 @@ export default function AppsGrid() {
 
     return (
         <section className="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 transition-opacity" aria-label="apps-grid">
-            {config && config.apps.map((app) => (
+            {config && (config.filteredApps || config.apps).map((app) => (
                 <App app={app} key={app.name + app.icon + app.url} />
             ))}
         </section>

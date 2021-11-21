@@ -8,6 +8,7 @@ export interface IConfiguration {
     apps: Array<IApp>;
     providers: Array<IProvider>;
     weather: IWeatherConfig;
+    filteredApps?: Array<IApp>;
 }
 
 export interface IWeatherConfig {
