@@ -29,7 +29,7 @@ def static_data(folder: str, file: str):
 
 @app.route('/static/<file>')
 def data(file: str):
-    return send_file(os.path.join('static/', file))
+    return send_file(os.path.join('static/static/', file))
 
 
 @app.route("/api/config", methods = ["GET", "PUT"])
