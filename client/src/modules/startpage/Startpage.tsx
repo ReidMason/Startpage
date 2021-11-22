@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import AppsGrid from "../../components/AppsGrid";
 import EnterTransition from '../../components/EnterTransition';
 import GreetingText from "../../components/GreetingText";
+import IconSearch from '../../components/IconSearch';
 import SearchBar from "../../components/SearchBar";
 import SettingsButton from "../../components/SettingsButton";
 import WeatherDisplay from '../../components/WeatherDisplay';
 import * as configService from "../../services/ConfigService";
 import SettingsSection from "../settings section/SettingsSection";
+import Timer from '../Timer';
 import { GlobalContext } from "./globalContext";
 
 export default function Startpage() {
@@ -22,7 +24,7 @@ export default function Startpage() {
 
     return (
         <GlobalContext.Provider value={{ config, setConfig }}>
-            <div className="container mx-auto text-white mt-28">
+            <div className="container mx-auto text-white mt-28 mb-8">
                 <div className="w-10/12 max-w-screen-xl px-4 mx-auto md:w-5/6 lg:w-full">
                     <EnterTransition>
                         <div className="mb-10">
@@ -39,6 +41,13 @@ export default function Startpage() {
                         </div>}
 
                         <AppsGrid />
+                        <div className="mt-24">
+                            <Timer />
+                        </div>
+
+                        {/* <div className="mt-4">
+                            <IconSearch />
+                        </div> */}
                     </EnterTransition>
                 </div>
 

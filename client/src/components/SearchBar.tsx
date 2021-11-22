@@ -3,7 +3,7 @@ import { GlobalContext } from "../modules/startpage/globalContext";
 
 
 export default function SearchBar() {
-    const { config } = useContext(GlobalContext)!;
+    const { config, setConfig } = useContext(GlobalContext)!;
 
     const [searchTerm, setSearchTerm] = useState<string>("");
 
@@ -22,6 +22,31 @@ export default function SearchBar() {
 
         // Fallback action is to perform a normal web search
         performWebSearch(searchTerm);
+    }
+
+    const searchApps = (searchTerm: string) => {
+        if (!config)
+            return;
+
+        // Apps search is either empty or invalid
+        if (searchTerm[0] !== "." || searchTerm.length < 2) {
+            if (config.apps.length !== config.filteredApps?.length)
+                setConfig({ ...config, filteredApps: [...config.apps] })
+            return;
+        }
+
+        // Filter by apps containing the search words
+        const searchWords = searchTerm.substring(1).trim().toLowerCase();
+        const result = config.apps.filter(x => x.name.toLowerCase().includes(searchWords));
+
+        setConfig({ ...config, filteredApps: result })
+    }
+
+    const updateSearchTerm = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const input = event.target.value.trim();
+        setSearchTerm(input);
+
+        searchApps(input);
     }
 
     const tryProviderSearch = (searchTerm: string) => {
@@ -67,7 +92,7 @@ export default function SearchBar() {
     return (
         <div>
             <div className="w-full pb-2 px-1 border-b border-nord-9">
-                <input autoFocus spellCheck="false" className="w-full bg-transparent outline-none h-10 text-3xl" placeholder={config?.general.searchPlaceholder} onChange={(event) => setSearchTerm(event.target.value.trim())} onKeyDown={handleKeyDown} aria-label="searchbar"></input>
+                <input autoFocus spellCheck="false" className="w-full bg-transparent outline-none h-10 text-3xl" placeholder={config?.general.searchPlaceholder} onChange={updateSearchTerm} onKeyDown={handleKeyDown} aria-label="searchbar"></input>
             </div>
         </div>
     )

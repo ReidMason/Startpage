@@ -8,6 +8,7 @@ interface ButtonProps {
     colour?: "red" | "green"
     textColour?: "dark" | "light";
     loading?: boolean;
+    disabled?: boolean;
     className?: string;
 }
 
@@ -28,13 +29,17 @@ const textColourMapping = {
     light: "text-nord-4",
 }
 
-export default function Button({ loading, colour, textColour, children, onClick, type, className }: ButtonProps) {
+export default function Button({ loading, colour, textColour, children, onClick, type, className, disabled }: ButtonProps) {
     const backgroundColour = backgroundColourMapping[colour || "default"];
     const hoverBackgroundColour = hoverBackgroundColourMapping[colour || "default"]
     const textColourCss = textColour ? textColourMapping[textColour] : "text-white";
 
+    const cursorStyling = loading ? "cursor-wait" : disabled ? "cursor-not-allowed" : "";
+    const hoverStyling = loading || disabled ? cursorStyling : "active:bg-nord-10 hover:" + hoverBackgroundColour;
+
+
     return (
-        <button className={`w-full ${className} ${backgroundColour} "disabled:bg-opacity-60" ${loading ? "cursor-wait" : "active:bg-nord-10 hover:" + hoverBackgroundColour} ${textColourCss} rounded py-1 px-2 focus:outline-none `} type={type || undefined} disabled={loading} onClick={(e) => (onClick ? onClick(e) : undefined)}>
+        <button className={`w-full ${backgroundColour} disabled:opacity-50 ${hoverStyling} ${textColourCss} rounded py-1 px-2 focus:outline-none ${className || ""}`} type={type || undefined} disabled={loading || disabled} onClick={(e) => (onClick ? onClick(e) : undefined)}>
             <div className="flex justify-center">
                 {children}
                 {loading && <div className="ml-1 my-auto">
