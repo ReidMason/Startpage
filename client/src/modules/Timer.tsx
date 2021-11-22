@@ -16,7 +16,7 @@ const zeroPadNum = (text: string | number) => {
 }
 
 const createAudioObject = () => {
-    const newAudio = new Audio("/android_argon.mp3");
+    const newAudio = new Audio("/static/android_argon.mp3");
     newAudio.loop = true;
     return newAudio;
 }
