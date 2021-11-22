@@ -3,6 +3,8 @@ from typing import Callable
 import json
 import os
 
+import utils
+
 CACHE_LOCATION = '../data/cache.json'
 CACHE_DURATION = 3600
 
@@ -22,6 +24,10 @@ def load_cache():
 def save_cache(data: dict):
     with open(CACHE_LOCATION, 'w') as f:
         json.dump(data, f)
+
+
+def clear_cache():
+    save_cache({})
 
 
 def create_cache_info(value: any):

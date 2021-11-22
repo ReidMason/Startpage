@@ -7,6 +7,7 @@ export interface IWeather {
     description: string;
     icon: string;
     feelsLike: number;
+    rainChance: number;
 }
 
 // Endpoints
