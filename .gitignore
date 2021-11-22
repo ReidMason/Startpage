@@ -1,5 +1,6 @@
 data
 server/static
+.eslintcache
 
 # --- Client files
 # dependencies

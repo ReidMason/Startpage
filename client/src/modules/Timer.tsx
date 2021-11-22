@@ -119,6 +119,7 @@ export default function Timer() {
 
     const resetTimer = () => {
         stopTimer();
+        acknowledgeAlarmFinished();
         // Set the time remaining to the original timer
         setTimeRemaining([...timer]);
     }
