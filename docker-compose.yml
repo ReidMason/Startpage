@@ -1,8 +1,13 @@
 version: "3.8"
 services:
   web:
-    build: 
-        context: .
-      
+    build:
+      context: .
+
     ports:
       - "5003:5003"
+
+    volumes:
+      - ./data:/app/data
+    # environment:
+    #   - WEATHER_APIKEY=
