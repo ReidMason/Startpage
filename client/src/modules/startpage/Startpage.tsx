@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import AppsGrid from "../../components/AppsGrid";
 import EnterTransition from '../../components/EnterTransition';
 import GreetingText from "../../components/GreetingText";
+import IconSearch from '../../components/IconSearch';
 import SearchBar from "../../components/SearchBar";
 import SettingsButton from "../../components/SettingsButton";
 import WeatherDisplay from '../../components/WeatherDisplay';
@@ -40,9 +41,13 @@ export default function Startpage() {
                         </div>}
 
                         <AppsGrid />
-                        <div className="mt-4">
+                        <div className="mt-24">
                             <Timer />
                         </div>
+
+                        {/* <div className="mt-4">
+                            <IconSearch />
+                        </div> */}
                     </EnterTransition>
                 </div>
 

@@ -1,7 +1,10 @@
+import os
+
 from flask import Flask, jsonify, request, send_file, render_template
 from flask_cors import CORS
 
 from models.weather import Weather
+from services import iconifyService
 from utils import serialize
 from services.weatherService import get_weather
 from caching import run_function, clear_cache
@@ -17,14 +20,9 @@ def index():
     return send_file('../client/build/index.html')
 
 
-@app.route('/static/js/<path>')
-def data(path: str):
-    return send_file(f'../client/build/static/js/{path}')
-
-
-@app.route('/static/css/<path>')
-def css(path: str):
-    return send_file(f'../client/build/static/css/{path}')
+@app.route('/static/<folder>/<file>')
+def data(folder: str, file: str):
+    return send_file(os.path.join('static/static/', folder, file))
 
 
 @app.route("/api/config", methods = ["GET", "PUT"])
@@ -42,6 +40,13 @@ def get_weather_info():
     weather_response = run_function(get_weather, weather_config.location)
 
     return jsonify(serialize(Weather(weather_response)))
+
+
+@app.route("/api/iconSearch")
+def icon_search():
+    icon_name = request.args.get('iconName')
+    data = iconifyService.search_for_icon(icon_name)
+    return jsonify(data)
 
 
 if __name__ == '__main__':
