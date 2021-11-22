@@ -18,7 +18,7 @@
     "autoprefixer": "^9.8.6",
     "axios": "^0.21.0",
     "dotenv": "^8.2.0",
-    "postcss": "^7.0.35",
+    "postcss": "^7.0.36",
     "react": "^17.0.1",
     "react-beautiful-dnd": "^13.1.0",
     "react-dom": "^17.0.1",
