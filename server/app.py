@@ -10,19 +10,26 @@ from services.weatherService import get_weather
 from caching import run_function, clear_cache
 from services.configService import load_config, save_config
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder = "static/", template_folder = "static")
 CORS(app)
 clear_cache()
 
 
-@app.route("/")
-def index():
-    return send_file('../client/build/index.html')
+# Serve the frontend
+@app.route('/', defaults = {'path': ''})
+@app.route('/<path:path>')
+def index(path):
+    return render_template("index.html")
 
 
 @app.route('/static/<folder>/<file>')
-def data(folder: str, file: str):
+def static_data(folder: str, file: str):
     return send_file(os.path.join('static/static/', folder, file))
+
+
+@app.route('/static/<file>')
+def data(file: str):
+    return send_file(os.path.join('static/', file))
 
 
 @app.route("/api/config", methods = ["GET", "PUT"])
