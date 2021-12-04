@@ -1,7 +1,5 @@
-import { Icon } from '@iconify/react-with-api';
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Button from '../components/Button';
-import LoadingSpinner from '../components/LoadingSpinner';
 import TextInput from '../components/TextInput'
 import { connect } from '../services/HueService';
 import { SettingsContext } from './settings section/settingsContext';
