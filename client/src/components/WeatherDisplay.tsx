@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react-with-api';
 import React, { useContext, useEffect, useState } from 'react';
-import { GlobalContext } from '../modules/startpage/globalContext';
+import { GlobalContext } from '../views/startpage/globalContext';
 import * as weatherService from "../services/WeatherService";
 import { IWeather } from '../services/WeatherService';
 

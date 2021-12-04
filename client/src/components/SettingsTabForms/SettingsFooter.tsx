@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { SettingsContext } from '../../modules/settings section/settingsContext';
-import { GlobalContext } from '../../modules/startpage/globalContext';
+import { GlobalContext } from '../../views/startpage/globalContext';
 import * as configService from "../../services/ConfigService";
 import Button from '../Button';
 

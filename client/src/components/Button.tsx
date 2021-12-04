@@ -39,11 +39,11 @@ export default function Button({ loading, colour, textColour, children, onClick,
 
 
     return (
-        <button className={`w-full ${backgroundColour} disabled:opacity-50 ${hoverStyling} ${textColourCss} rounded py-1 px-2 focus:outline-none ${className || ""}`} type={type || undefined} disabled={loading || disabled} onClick={(e) => (onClick ? onClick(e) : undefined)}>
+        <button className={`${backgroundColour} disabled:opacity-50 ${hoverStyling} ${textColourCss} rounded py-1 px-2 focus:outline-none ${className || ""}`} type={type || undefined} disabled={loading || disabled} onClick={(e) => (onClick ? onClick(e) : undefined)}>
             <div className="flex justify-center">
                 {children}
-                {loading && <div className="ml-1 my-auto">
-                    <LoadingSpinner />
+                {loading && <div className="ml-2 my-auto">
+                    <LoadingSpinner className="w-5 h-5" />
                 </div>}
             </div>
         </button>

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { GlobalContext } from "../modules/startpage/globalContext";
+import { GlobalContext } from "../views/startpage/globalContext";
 
 
 export default function SearchBar() {

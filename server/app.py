@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request, send_file, render_template
 from flask_cors import CORS
 
 from models.weather import Weather
+from routes.philipsHue import philips_hue_route
 from services import iconifyService
 from utils import serialize
 from services.weatherService import get_weather
@@ -13,6 +14,9 @@ from services.configService import load_config, save_config
 app = Flask(__name__, static_folder = "static/", template_folder = "static")
 CORS(app)
 clear_cache()
+
+# Register blueprints
+app.register_blueprint(philips_hue_route)
 
 
 # Serve the frontend
@@ -57,4 +61,4 @@ def icon_search():
 
 
 if __name__ == '__main__':
-    app.run(host = '0.0.0.0', port = 5003)
+    app.run(host = '0.0.0.0', port = 5003, debug = True)

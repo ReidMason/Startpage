@@ -8,7 +8,7 @@ import SettingsFooter from '../../components/SettingsTabForms/SettingsFooter';
 import WeatherSettings from '../../components/SettingsTabForms/WeatherSettings';
 import SettingsTabs from '../../components/SettingsTabs';
 import * as configService from "../../services/ConfigService";
-import { GlobalContext } from '../startpage/globalContext';
+import { GlobalContext } from '../../views/startpage/globalContext';
 import { SettingsContext } from './settingsContext';
 
 interface SettingsProps {
