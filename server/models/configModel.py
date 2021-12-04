@@ -12,6 +12,15 @@ class Config:
         self.apps: List[App] = [App(x) for x in data.get('apps', [])]
         self.providers: List[Provider] = [Provider(x) for x in data.get('providers', [])]
         self.weather: WeatherConfig = WeatherConfig(data.get('weather'))
+        self.philipsHue: PhilipsHueConfig = PhilipsHueConfig(data.get('philipsHue', {}))
+
+
+class PhilipsHueConfig:
+    def __init__(self, data: dict = None):
+        if data is None:
+            data = {}
+
+        self.ip: str = data.get('ip', "")
 
 
 class GeneralConfig:
@@ -55,4 +64,3 @@ class WeatherConfig:
         self.enabled: bool = data.get('enabled') or False
         self.detailed: bool = data.get('detailed') or False
         self.location: str = data.get('location') or ''
-        

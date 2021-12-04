@@ -40,7 +40,7 @@ export default function IconSearch() {
     return (
         <div className="flex flex-col items-center gap-4">
             <form onSubmit={handleFormSubmission} className="w-64">
-                <TextInput setter={setIconName} placeholder="Icon search..." />
+                <TextInput setValue={setIconName} placeholder="Icon search..." />
             </form>
             <div className="w-24">
                 <Button loading={loading} onClick={searchForIcons}>Search</Button>

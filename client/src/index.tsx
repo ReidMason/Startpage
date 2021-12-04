@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Startpage from './modules/startpage/Startpage';
 import reportWebVitals from './reportWebVitals';
+import App from './App';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Startpage />
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );

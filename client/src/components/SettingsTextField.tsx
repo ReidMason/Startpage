@@ -13,7 +13,7 @@ export default function SettingsTextField({ label, setter, defaultValue, disable
         <div className="grid grid-cols-8">
             <p className="col-span-1 my-auto">{label}</p>
             <div className="col-span-7">
-                <TextInput disabled={disabled} defaultValue={defaultValue} setter={setter} />
+                <TextInput disabled={disabled} defaultValue={defaultValue} setValue={setter} />
             </div>
         </div>
     )

@@ -9,6 +9,11 @@ export interface IConfiguration {
     providers: Array<IProvider>;
     weather: IWeatherConfig;
     filteredApps?: Array<IApp>;
+    philipsHue: IHueConfig;
+}
+
+export interface IHueConfig {
+    ip: string;
 }
 
 export interface IWeatherConfig {

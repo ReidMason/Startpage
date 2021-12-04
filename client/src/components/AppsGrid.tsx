@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { GlobalContext } from '../modules/startpage/globalContext';
+import { GlobalContext } from '../views/startpage/globalContext';
 import App from "./App";
 
 export default function AppsGrid() {

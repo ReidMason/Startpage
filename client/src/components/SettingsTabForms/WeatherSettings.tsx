@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { SettingsContext } from '../../modules/settings section/settingsContext';
-import { GlobalContext } from '../../modules/startpage/globalContext';
+import { GlobalContext } from '../../views/startpage/globalContext';
 import SettingsTextField from '../SettingsTextField';
 import Toggle from '../Toggle';
 
