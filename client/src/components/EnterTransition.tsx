@@ -8,7 +8,7 @@ export default function EnterTransition({ children }: EnterTransitionProps) {
     const [triggerAnimations, setTriggerAnimations] = useState<boolean>(false)
 
     useEffect(() => {
-        setTimeout(() => (setTriggerAnimations(true)), 100);
+        setTimeout(() => (setTriggerAnimations(true)), 1);
     }, []);
 
     return (
