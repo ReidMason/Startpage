@@ -4,23 +4,25 @@ import MainRoutes from './routes/MainRoutes'
 import { getConfig, IConfiguration } from "./services/ConfigService";
 import { GlobalContext } from './views/startpage/globalContext';
 
-export default function App() {
-    const [config, setConfig] = useState<IConfiguration | null>(null);
+function App() {
+  const [config, setConfig] = useState<IConfiguration | null>(null);
 
-    useEffect(() => {
-        // Load the config
-        getConfig().then((response) => {
-            setConfig(response.data);
-        });
-    }, []);
+  useEffect(() => {
+    // Load the config
+    getConfig().then((response) => {
+      setConfig(response.data);
+    });
+  }, []);
 
-    return (
-        <GlobalContext.Provider value={{ config, setConfig }}>
-            <BrowserRouter>
-                {config &&
-                    <MainRoutes />
-                }
-            </BrowserRouter>
-        </GlobalContext.Provider>
-    )
+  return (
+    <GlobalContext.Provider value={{ config, setConfig }}>
+      <BrowserRouter>
+        {config &&
+          <MainRoutes />
+        }
+      </BrowserRouter>
+    </GlobalContext.Provider>
+  );
 }
+
+export default App;

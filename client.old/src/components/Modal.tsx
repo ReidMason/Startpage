@@ -15,7 +15,7 @@ export default function Modal({ header, children, footer, sidebar }: ModalProps)
                 <div className="absolute inset-0 bg-black opacity-30"></div>
             </div>
 
-            <div className="flex z-10 h-screen w-full sm:my-auto sm:h-5/6 md:mx-auto max-w-240">
+            <div className="flex z-10 h-screen w-full sm:my-auto sm:h-5/6 md:mx-auto max-w-[60rem]">
                 {sidebar && <div className="bg-nord-2 rounded-tl-lg rounded-bl-lg">
                     {sidebar}
                 </div>}

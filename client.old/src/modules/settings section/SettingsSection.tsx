@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import Modal from "../../components/Modal";
 import AppSettings from '../../components/SettingsTabForms/AppSettings';
-import GeneralSettings from '../../components/SettingsTabForms/GeneralSettings';
+import GeneralSettings from './GeneralSettings';
 import Header from '../../components/SettingsTabForms/Header';
 import ProvidersSettings from '../../components/SettingsTabForms/ProvidersSettings';
 import SettingsFooter from '../../components/SettingsTabForms/SettingsFooter';
