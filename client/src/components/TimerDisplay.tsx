@@ -1,5 +1,5 @@
 import React from 'react'
-import { TimerDigit } from '../interfaces'
+import TimerDigit from '../interfaces/TimerDigit'
 
 interface TimerDisplayProps {
     timer: Array<TimerDigit>;

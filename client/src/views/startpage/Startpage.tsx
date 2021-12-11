@@ -1,17 +1,15 @@
-import React, { useContext, useState } from 'react';
-import AppsGrid from "../../components/AppsGrid";
+import React, { useContext } from 'react';
+import AppsGrid from "../../modules/AppsGrid";
 import EnterTransition from '../../components/EnterTransition';
-import GreetingText from "../../components/GreetingText";
-import SearchBar from "../../components/SearchBar";
+import GreetingText from "../../modules/GreetingText";
+import SearchBar from "../../modules/SearchBar";
 import SettingsButton from "../../components/SettingsButton";
-import WeatherDisplay from '../../components/WeatherDisplay';
-import SettingsSection from "../../modules/settings section/SettingsSection";
+import WeatherDisplay from '../../modules/WeatherDisplay';
 import Timer from '../../modules/Timer';
 import { GlobalContext } from './globalContext';
 
 export default function Startpage() {
     const { config } = useContext(GlobalContext)!;
-    const [settingsVisible, setsettingsVisible] = useState<boolean>(false);
 
     return (
         <div className="container mx-auto text-white mt-28 mb-8">
@@ -34,16 +32,10 @@ export default function Startpage() {
                     <div className="mt-24">
                         <Timer />
                     </div>
-
-                    {/* <div className="mt-4">
-                            <IconSearch />
-                        </div> */}
                 </EnterTransition>
             </div>
 
-            {settingsVisible && <SettingsSection closeModal={() => (setsettingsVisible(false))} />}
-
-            <SettingsButton openSettings={() => (setsettingsVisible(true))} />
+            <SettingsButton />
         </div>
     )
 }

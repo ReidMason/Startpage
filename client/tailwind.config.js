@@ -1,14 +1,7 @@
 module.exports = {
-  mode: 'jit',
-  purge: [
-    './src/**/*.html',
-    './src/**/*.js',
-    './src/**/*.jsx',
-    './src/**/*.ts',
-    './src/**/*.tsx',
-    './public/index.html'
-  ],
-  darkMode: false, // or 'media' or 'class'
+  // Uncomment the line below to enable the experimental Just-in-Time ("JIT") mode.
+  // https://tailwindcss.com/docs/just-in-time-mode
+  mode: "jit",
   theme: {
     extend: {
       colors: {
@@ -33,20 +26,24 @@ module.exports = {
           15: "#b48ead"
         }
       },
-      zIndex: {
-        '-10': '-10'
-      },
-      maxWidth: {
-        '240': '60rem'
-      }
     },
   },
-  variants: {
-    extend: {
-      backgroundColor: ['active', 'disabled'],
-      opacity: ['disabled'],
-      cursor: ['disabled']
-    },
-  },
+  variants: {},
   plugins: [],
-}
+  purge: {
+    // Filenames to scan for classes
+    content: [
+      "./src/**/*.html",
+      "./src/**/*.js",
+      "./src/**/*.jsx",
+      "./src/**/*.ts",
+      "./src/**/*.tsx",
+      "./public/index.html",
+    ],
+    // Options passed to PurgeCSS
+    options: {
+      // Whitelist specific selectors by name
+      // safelist: [],
+    },
+  },
+};

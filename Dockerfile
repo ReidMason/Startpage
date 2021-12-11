@@ -6,21 +6,24 @@ ADD ./client /app/client
 
 # Set the working directory to /app
 WORKDIR /app/client
-RUN npm install --silent
-RUN npm run build --silent
+RUN npm install --silent && npm run build --silent
 
-FROM python:slim-buster
+FROM python:3.10-alpine3.14
 
-RUN apt-get update && apt-get install -y gcc
+ADD ./server/requirements.txt /app/server/
 
-ADD ./server /app/server
+RUN pip3 install -r /app/server/requirements.txt && pip3 install gunicorn
+
+RUN chown -R nobody:users /app
+
+USER nobody
 
 COPY --from=build-step /app/client/build /app/server/static
 
+ADD ./server /app/server
+
 WORKDIR /app/server
 
-RUN pip3 install -r requirements.txt
-RUN pip3 install uwsgi
+RUN touch test.txt
 
-#CMD ["uwsgi", "--ini", "startpage.ini"]
-CMD ["uwsgi", "--socket", "0.0.0.0:5003", "--protocol=http", "-w", "wsgi:app"]
+CMD ["python3", "-m", "gunicorn", "--bind", "0.0.0.0:5003", "wsgi:app"]

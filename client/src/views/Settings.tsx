@@ -1,9 +1,11 @@
 import React, { useContext, useState } from 'react'
 import Button from '../components/Button';
-import PhilipsHueSetup from '../modules/PhilipsHueSetup'
-import { SettingsContext } from '../modules/settings section/settingsContext';
+import PhilipsHueSettings from '../modules/settings/PhilipsHueSettings'
+import GeneralSettings from '../modules/settings/GeneralSettings';
+import { SettingsContext } from '../modules/settings/settingsContext';
 import { IConfiguration, saveConfig } from '../services/ConfigService';
 import { GlobalContext } from './startpage/globalContext';
+import AppSettings from '../modules/settings/AppSettings';
 
 export default function Settings() {
     const { config, setConfig } = useContext(GlobalContext)!;
@@ -20,8 +22,12 @@ export default function Settings() {
 
     return (
         <SettingsContext.Provider value={{ modifiedConfig, setModifiedConfig }}>
-            <div>
-                <PhilipsHueSetup />
+            <div className="flex flex-col gap-8 m-2">
+                <PhilipsHueSettings />
+                <hr />
+                <GeneralSettings />
+                <hr />
+                <AppSettings />
             </div>
             <Button onClick={saveConfigChanges}>Save</Button>
         </SettingsContext.Provider>

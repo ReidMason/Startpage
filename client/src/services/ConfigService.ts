@@ -24,6 +24,8 @@ export interface IWeatherConfig {
 
 export interface IGeneralConfig {
     searchUrl: string;
+    customSearchUrl: string;
+    customSearchEnabled: boolean;
     calendarUrl: string;
     searchPlaceholder: string;
 }

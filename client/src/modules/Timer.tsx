@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Button from '../components/Button'
 import TimerDisplay from '../components/TimerDisplay';
-import { TimerDigit } from '../interfaces';
+import TimerDigit from '../interfaces/TimerDigit';
 
 function isNumeric(text: string) {
     return /^\d+$/.test(text);
@@ -179,11 +179,11 @@ export default function Timer() {
                 <div className="grid grid-cols-2 gap-4">
                     {!timerRunning ?
                         timerFinished ?
-                            <Button className="w-64" onClick={acknowledgeAlarmFinished} disabled={!anyTimerValueEntered}>Okay</Button>
+                            <Button className="w-16" onClick={acknowledgeAlarmFinished} disabled={!anyTimerValueEntered}>Okay</Button>
                             :
-                            <Button className="w-64" onClick={startTimer} disabled={!anyTimerValueEntered}>Start</Button>
+                            <Button className="w-16" onClick={startTimer} disabled={!anyTimerValueEntered}>Start</Button>
                         :
-                        <Button className="w-64" onClick={stopTimer}>Stop</Button>
+                        <Button className="w-16" onClick={stopTimer}>Stop</Button>
                     }
 
                     <Button onClick={resetTimer} disabled={!anyTimerValueEntered || timerAndTimeRemainingMatch}>Reset</Button>

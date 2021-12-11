@@ -1,12 +1,12 @@
 import React, { useContext, useState } from 'react'
-import Button from '../components/Button';
-import TextInput from '../components/TextInput'
-import { connect } from '../services/HueService';
-import { SettingsContext } from './settings section/settingsContext';
+import Button from '../../components/Button';
+import TextInput from '../../components/TextInput'
+import { connect } from '../../services/HueService';
+import { SettingsContext } from './settingsContext';
 
 var pairingInterval: NodeJS.Timeout | null = null;
 
-export default function PhilipsHueSetup() {
+export default function PhilipsHueSettings() {
     const { modifiedConfig } = useContext(SettingsContext)!;
     const [pairing, setPairing] = useState(false);
     const [testing, setTesting] = useState(false);
@@ -51,7 +51,7 @@ export default function PhilipsHueSetup() {
     }
 
     return (
-        <div className="flex flex-col gap-4 m-24">
+        <div className="flex flex-col gap-4">
             <h2 className="text-xl text-nord-4 semibold">Philips hue settings</h2>
 
             <div className="flex flex-col gap-2">

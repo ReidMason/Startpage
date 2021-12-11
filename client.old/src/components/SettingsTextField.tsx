@@ -11,7 +11,7 @@ interface SettingsTextFieldProps {
 export default function SettingsTextField({ label, setter, defaultValue, disabled }: SettingsTextFieldProps) {
     return (
         <div className="grid grid-cols-8">
-            <p className="col-span-1 my-auto">{label}</p>
+            <p className="flex col-span-1 items-center text-nord-4 pl-8">{label}</p>
             <div className="col-span-7">
                 <TextInput disabled={disabled} defaultValue={defaultValue} setValue={setter} />
             </div>

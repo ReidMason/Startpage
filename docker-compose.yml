@@ -9,5 +9,5 @@ services:
 
     volumes:
       - ./data:/app/data
-    # environment:
-    #   - WEATHER_APIKEY=
+    environment:
+      - WEATHER_APIKEY=68c6f474a0a3c38fe8333f513738bf6c

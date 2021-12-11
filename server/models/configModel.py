@@ -29,6 +29,8 @@ class GeneralConfig:
             data = {}
 
         self.searchUrl: str = data.get('searchUrl') or "https://www.google.com/search?q="
+        self.customSearchUrl: str = data.get('customSearchUrl', "")
+        self.customSearchEnabled: bool = data.get('customSearchEnabled', False)
         self.calendarUrl: str = data.get('calendarUrl') or "https://calendar.google.com/calendar/"
         self.searchPlaceholder: str = data.get('searchPlaceholder') or "Search..."
 
