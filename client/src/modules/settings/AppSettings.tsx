@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { SettingsContext } from '../../modules/settings/settingsContext';
 import { generateUuid } from '../../utils';
 import Button from '../../components/Button';
@@ -7,10 +7,13 @@ import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautif
 
 export default function AppSettings() {
     const { modifiedConfig, setModifiedConfig } = useContext(SettingsContext)!;
+    const [editEnabledAppId, setEditEnabledAppId] = useState<string>()
+    const endingElement = useRef<HTMLDivElement>(null);
 
     const createNewApp = () => {
         modifiedConfig!.apps.push({ id: generateUuid(), name: "", url: "", icon: "" });
         setModifiedConfig({ ...modifiedConfig! });
+        setTimeout(scrollToBottom, 100);
     }
 
     const onDragEnd = (result: DropResult) => {
@@ -37,44 +40,52 @@ export default function AppSettings() {
         setModifiedConfig({ ...modifiedConfig! })
     }
 
-    return (
-        <div className="flex flex-col gap-4 w-6/12">
-            <h2 className="text-xl text-nord-4 semibold">Apps settings</h2>
+    const scrollToBottom = () => {
+        endingElement.current?.scrollIntoView({ behavior: "smooth" });
+    }
 
-            <div className="w-24">
+    return (
+        <div className="flex flex-col gap-4 relative">
+            <div className="flex gap-4 bg-nord-1 p-4 w-full sticky top-0 z-50 border-t border-opacity-60 shadow-lg">
                 <Button onClick={createNewApp} colour="green">New app</Button>
+                <Button onClick={scrollToBottom}>Scroll to bottom</Button>
             </div>
 
-            {
-                modifiedConfig!.apps.length === 0 ?
-                    <p>No apps found. Create one to get started</p>
-                    :
-                    <DragDropContext onDragEnd={onDragEnd}>
-                        <Droppable droppableId="droppable">
-                            {
-                                (provided) => (
-                                    <div
-                                        className="flex flex-col"
-                                        {...provided.droppableProps}
-                                        ref={provided.innerRef}
-                                    >
-                                        {modifiedConfig!.apps.map((app, index) => (
-                                            <Draggable draggableId={app.id} index={index} key={app.id}>
-                                                {(provided) => (
-                                                    <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} className="mb-4">
-                                                        <AppForm app={app} />
-                                                    </div>
-                                                )}
-                                            </Draggable>
-                                        ))
-                                        }
-                                        {provided.placeholder}
-                                    </div>
-                                )
-                            }
-                        </Droppable>
-                    </DragDropContext>
-            }
+            <div className="p-4 pt-1">
+                {
+                    modifiedConfig!.apps.length === 0 ?
+                        <p>No apps found. Create one to get started</p>
+                        :
+                        <DragDropContext onDragEnd={onDragEnd}>
+                            <Droppable droppableId="droppable">
+                                {
+                                    (provided) => (
+                                        <div
+                                            className="flex flex-col"
+                                            {...provided.droppableProps}
+                                            ref={provided.innerRef}
+                                        >
+                                            {modifiedConfig!.apps.map((app, index) => (
+                                                <Draggable draggableId={app.id} index={index} key={app.id}>
+                                                    {(provided) => (
+                                                        <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} className="mb-4">
+                                                            <AppForm app={app} editEnabled={editEnabledAppId === app.id} enableEditing={setEditEnabledAppId} />
+                                                        </div>
+                                                    )}
+                                                </Draggable>
+                                            ))
+                                            }
+                                            {provided.placeholder}
+                                        </div>
+                                    )
+                                }
+                            </Droppable>
+                        </DragDropContext>
+                }
+
+                {/* Ending element to scroll to bottom */}
+                <div ref={endingElement}></div>
+            </div>
         </div >
     )
 }

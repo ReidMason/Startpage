@@ -80,7 +80,6 @@ export default function SearchBar() {
     }
 
     const performWebSearch = (searchTerm: string) => {
-        console.log(searchTerm);
         try {
             new URL(searchTerm);
             window.location.href = searchTerm;
