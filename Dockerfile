@@ -24,6 +24,4 @@ ADD ./server /app/server
 
 WORKDIR /app/server
 
-RUN touch test.txt
-
 CMD ["python3", "-m", "gunicorn", "--bind", "0.0.0.0:5003", "wsgi:app"]

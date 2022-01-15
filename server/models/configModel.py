@@ -21,6 +21,8 @@ class PhilipsHueConfig:
             data = {}
 
         self.ip: str = data.get('ip', "")
+        self.enabled: bool = data.get('enabled', False)
+        self.selectedGroupId: str = data.get('selectedRoomId', None)
 
 
 class GeneralConfig:

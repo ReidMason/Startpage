@@ -14,6 +14,8 @@ export interface IConfiguration {
 
 export interface IHueConfig {
     ip: string;
+    enabled: boolean;
+    selectedGroupId: string;
 }
 
 export interface IWeatherConfig {

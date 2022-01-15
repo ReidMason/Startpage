@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Button from '../components/Button'
 import TimerDisplay from '../components/TimerDisplay';
 import TimerDigit from '../interfaces/TimerDigit';
@@ -21,15 +21,6 @@ const createAudioObject = () => {
     return newAudio;
 }
 
-const playAlarm = () => {
-    audio = createAudioObject();
-    audio.play();
-}
-
-const stopAlarm = () => {
-    audio.pause();
-}
-
 const timerToSeconds = (timer: Array<TimerDigit>): number => {
     const hours = (timer[0].value * 10) + timer[1].value;
     const minutes = (timer[2].value * 10) + timer[3].value;
@@ -45,10 +36,10 @@ const secondsToTimerString = (seconds: number): string => {
     return `${zeroPadNum(hoursRemaining)}${zeroPadNum(minutesRemaining)}${zeroPadNum(secondsRemaining)}`;
 }
 
-let interval: NodeJS.Timeout | null = null;
-let audio = createAudioObject();
-
 export default function Timer() {
+    const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout>();
+    const [audio, setAudio] = useState<HTMLAudioElement>(createAudioObject());
+
     const [timer, setTimer] = useState<Array<TimerDigit>>(padArray([], 6, { known: false, value: 0 }));
     const [timeRemaining, setTimeRemaining] = useState<Array<TimerDigit>>(padArray([], 6, { known: false, value: 0 }));
     const [timerRunning, setTimerRunning] = useState<boolean>(false);
@@ -67,6 +58,18 @@ export default function Timer() {
                 return true;
             };
     }, [timerRunning])
+
+    const playAlarm = useCallback(
+        () => {
+            audio.play();
+        },
+        [audio],
+    )
+
+    const stopAlarm = () => {
+        audio.pause();
+        setAudio(createAudioObject());
+    }
 
     const checkTimerAndTimeRemainingMatch = () => {
         // Check if the timer and time remaining match
@@ -96,11 +99,11 @@ export default function Timer() {
         const endTime = currentTime + totalTime;
 
         // Clear existing interval to prevent multiple running
-        if (interval)
-            clearInterval(interval);
+        if (timerInterval)
+            clearInterval(timerInterval);
 
         // Alarm countdown
-        interval = setInterval(() => {
+        const newInterval = setInterval(() => {
             const timeNow = Math.floor(new Date().getTime() / 1000);
             const secondsRemaining = endTime - timeNow;
 
@@ -108,32 +111,52 @@ export default function Timer() {
             const inputValueArray = timeRemainingDisplay.split('').map((x, i) => ({ known: timeRemaining[i].known, value: parseInt(x) }));
             const newTimeRemainingDisplay = padArray(inputValueArray, 6, { known: false, value: 0 })
             setTimeRemaining([...newTimeRemainingDisplay])
-
-            if (secondsRemaining <= 0 && interval) {
-                setTimerFinished(true);
-                playAlarm();
-                stopTimer();
-            }
         }, 1000);
+        setTimerInterval(newInterval);
     }
+
+    const stopTimer = useCallback(
+        () => {
+            // Stop the timer from running
+            clearInterval(timerInterval!);
+
+            setTimerRunning(false);
+        },
+        [timerInterval],
+    );
+
+    useEffect(() => {
+        // If the timer isn't running we don't need to do this logic
+        if (!timerRunning)
+            return;
+
+        let totalTime = timerToSeconds(timeRemaining);
+        const currentTime = Math.floor(new Date().getTime() / 1000);
+        const endTime = currentTime + totalTime;
+
+        const timeNow = Math.floor(new Date().getTime() / 1000);
+        const secondsRemaining = endTime - timeNow;
+
+        if (secondsRemaining <= 0) {
+            setTimerFinished(true);
+            playAlarm();
+            stopTimer();
+        }
+    }, [timeRemaining, timerRunning, playAlarm, stopTimer])
 
     const resetTimer = () => {
         stopTimer();
         acknowledgeAlarmFinished();
+        resetTimeRemaining();
+    }
+
+    const resetTimeRemaining = () => {
         // Set the time remaining to the original timer
         setTimeRemaining([...timer]);
     }
 
-    const stopTimer = () => {
-        // Stop the timer from running
-        if (interval)
-            clearInterval(interval);
-
-        setTimerRunning(false);
-    }
-
     const handleTimerInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const inputValue = (e.target.value || "").trim();
+        const inputValue = (e.target.value || "");
 
         // Handle non numeric values if the value isn't empty
         if ((!isNumeric(inputValue) && inputValue !== "") || !editMode) {
@@ -142,7 +165,7 @@ export default function Timer() {
         }
 
         // Conver the text into an array of TimerDigits and zero pad the array
-        const inputValueArray = e.target.value.split('').map(x => ({ known: true, value: parseInt(x) }));
+        const inputValueArray = inputValue.split('').map(x => ({ known: true, value: parseInt(x) }));
         const newTimer = padArray(inputValueArray, 6, { known: false, value: 0 })
 
         setTimer([...newTimer]);
@@ -166,11 +189,12 @@ export default function Timer() {
     const acknowledgeAlarmFinished = () => {
         stopAlarm();
         setTimerFinished(false);
+        resetTimeRemaining();
     }
 
     return (
-        <div className="flex flex-col gap-4 items-center">
-            <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col gap-4 items-center w-52">
+            <div className="flex flex-col items-center gap-2">
                 <label className={`pl-4 ${timerFinished ? "animate-bounce" : ""} ${(!editMode || editModeFirstRender) && !timerRunning ? "cursor-pointer" : ""}`} onClick={enableEditMode} onMouseDown={(e) => e.preventDefault()} >
                     <TimerDisplay editMode={editMode} editModeFirstRender={editModeFirstRender} timer={editMode ? timer : timeRemaining} />
                     <input className="text-black opacity-0 absolute w-0 h-0" autoComplete="off" id="timeEditor" onBlur={() => setEditMode(false)} onSubmit={startTimer} value={timeDisplay} onChange={handleTimerInput} type="tel" maxLength={6} />
