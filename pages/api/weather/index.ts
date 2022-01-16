@@ -14,20 +14,27 @@ export default async function getweather(req: NextApiRequest, res: NextApiRespon
     // If weather data is not found in cache request new data and cache it
     if (weatherData === null) {
         weatherData = await getWeatherData();
-        cacheWeatherData(weatherData, config.weather.location);
+        if (weatherData)
+            cacheWeatherData(weatherData, config.weather.location);
     }
 
-    res.status(200).json(weatherData);
+    const status = weatherData === null ? 400 : 200;
+    res.status(status).json(weatherData);
 }
 
-async function getWeatherData(): Promise<WeatherData> {
+async function getWeatherData(): Promise<WeatherData | null> {
     const config = await getConfig();
     // Get basic weather data so we have the lat/lon
     const basicWeatherData = await getBasicWeatherData(config.weather.location);
+    if (basicWeatherData === null)
+        return null
 
     // Request weather data
     const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${basicWeatherData.coord.lat}&lon=${basicWeatherData.coord.lon}&exclude=minutely&units=metric&appid=${config.weather.apiKey}`
     const weatherResponse = await fetch(url);
+    if (weatherResponse.status !== 200)
+        return null
+
     const rawWeatherData: WeatherDataResponse = await weatherResponse.json();
 
     // Format weather data
@@ -40,11 +47,14 @@ async function getWeatherData(): Promise<WeatherData> {
     }
 }
 
-async function getBasicWeatherData(location: string): Promise<BasicWeatherData> {
+async function getBasicWeatherData(location: string): Promise<BasicWeatherData | null> {
     const config = await getConfig();
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=${config.weather.apiKey}`;
     const weatherResponse = await fetch(url);
-    const basicWeatherdata = await weatherResponse.json();
+    if (weatherResponse.status !== 200)
+        return null;
+
+    const basicWeatherdata: BasicWeatherData = await weatherResponse.json();
 
     return basicWeatherdata;
 }
@@ -65,5 +75,3 @@ async function getCachedWeatherData(location: string): Promise<WeatherData | nul
 
     return cachedWeatherData.weatherData;
 }
-
-
