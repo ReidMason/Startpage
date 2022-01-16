@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  startpage:
+    build:
+      context: .
+
+    ports:
+      - "3000:3000"
+
+    volumes:
+      - ./data:/app/data
+    environment:
+      - HOST=https://start.skippythesnake.com

@@ -1,0 +1,14 @@
+docker-compose.yml
+Startpage.xml
+.gitignore
+Dockerfile
+dockerignore-test.sh
+.github
+.git
+
+README.md
+
+**/node_modules
+data/
+.next/
+.github/
