@@ -55,7 +55,7 @@ export default function SearchBar({ providers, customSearchEnabled, customSearch
         }
 
         // Search for words starting with a slash until a space or end of string
-        const prefixMatches = searchTerm.match("\/([^\s]+)");
+        const prefixMatches = searchTerm.match(/\/([^\s]+)/gm);
         if (prefixMatches.length === 0)
             return false;
 
@@ -66,6 +66,7 @@ export default function SearchBar({ providers, customSearchEnabled, customSearch
         // Now we are going to run the command
         for (const provider of providers || []) {
             if (provider.prefix.toLowerCase() === prefix.toLowerCase()) {
+                console.log(searchText);
                 // If there is search text we need to use it
                 if (searchText.length > 0) {
                     window.location.href = provider.searchUrl + searchText;
