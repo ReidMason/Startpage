@@ -44,12 +44,12 @@ export default function IconSearch({ className, iconSelected, selectedIcon }: Ic
     }
 
     return (
-        <div className={`flex flex-col gap-4 ${className}`}>
+        <div className={`flex flex-col gap-4 ${className} ${icons !== null ? "" : "w-64"}`}>
             <div className="flex gap-4 items-center">
-                <form onSubmit={handleFormSubmission} className="w-64">
+                <form onSubmit={handleFormSubmission} className="w-48">
                     <Input setValue={setIconName} defaultValue={iconName} placeholder="Icon search..." />
                 </form>
-                <div className="flex gap-4 w-24 mt-auto">
+                <div className="flex gap-4 mt-auto">
                     <Button className="h-[42px]" loading={loading} onClick={searchForIcons}>Search</Button>
                     {icons !== null && <Button className="h-[42px]" loading={loading} onClick={() => (setIcons(null))}>Close</Button>}
                 </div>
@@ -57,7 +57,7 @@ export default function IconSearch({ className, iconSelected, selectedIcon }: Ic
 
             {/* Icon results display */}
             {icons !== null &&
-                <div className="p-4 bg-nord-2 rounded w-9/12 h-64 overflow-y-auto overflow-x-hidden">
+                <div className="p-4 bg-nord-2 rounded w-full h-64 overflow-y-auto overflow-x-hidden">
                     <div className="relative h-full w-full">
                         {loading &&
                             <div className="flex w-full h-full absolute justify-center items-center text-6xl">
