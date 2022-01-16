@@ -49,28 +49,28 @@ export default function SearchBar({ providers, customSearchEnabled, customSearch
     }
 
     const tryProviderSearch = (searchTerm: string) => {
-        // Don't check if there aren't any providers yet
-        if (providers === null) {
+        // Don't check if there aren't any providers yet or the search term doesn't start with a slash
+        if (providers === null || !searchTerm.startsWith("/")) {
             return false;
         }
 
-        // This might be "a" for amazon or "yt" for youtube
-        const prefix =
-            searchTerm.substring(1, searchTerm.indexOf(" ") - 1) ||
-            searchTerm.substring(1);
-        // This is the term being searched for
-        const searchText = encodeURIComponent(
-            searchTerm.substring(2 + prefix.length)
-        );
+        // Search for words starting with a slash until a space or end of string
+        const prefixMatches = searchTerm.match("\/([^\s]+)");
+        if (prefixMatches.length === 0)
+            return false;
+
+        // Extract prefix and search text
+        const prefix = prefixMatches[0].replace("/", "").trim();
+        const searchText = searchTerm.replace(prefixMatches[0], "").trim();
 
         // Now we are going to run the command
         for (const provider of providers || []) {
             if (provider.prefix.toLowerCase() === prefix.toLowerCase()) {
-                // If there is a space after the command we're doing a search
-                if (searchTerm.indexOf(" ") > -1) {
+                // If there is search text we need to use it
+                if (searchText.length > 0) {
                     window.location.href = provider.searchUrl + searchText;
                 } else {
-                    // If there isn't a space go to the base url
+                    // If there isn't go to the base url
                     window.location.href = provider.baseUrl;
                 }
                 return true;
