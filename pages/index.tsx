@@ -10,6 +10,7 @@ import Weather from "../interfaces/Weather";
 import { Extension } from "../interfaces/Extension";
 import SettingsButton from "../components/modules/SettingsButton";
 import ExtensionsDisplay from "../components/modules/ExtensionsDisplay";
+import { getHost } from "../utils";
 
 interface StartpageProps {
   config: Config;
@@ -61,13 +62,13 @@ export default function Startpage({ config, weatherData }: StartpageProps) {
 }
 
 export const getServerSideProps = async () => {
-  const res = await fetch(`${process.env.HOST}/api/config`);
+  const res = await fetch(`${getHost()}/api/config`);
   const config = await res.json();
 
   // Load weather data
   var weatherData = null;
   if (config.weather.enabled) {
-    const weatherRes = await fetch(`${process.env.HOST}/api/weather`)
+    const weatherRes = await fetch(`${getHost()}/api/weather`)
     if (weatherRes.status === 200)
       weatherData = await weatherRes.json();
   }
