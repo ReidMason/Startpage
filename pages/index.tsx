@@ -44,7 +44,7 @@ export default function Startpage({ config, weatherData }: StartpageProps) {
           <div className="mb-4 md:flex">
             <GreetingText calendarUrl={config.general.calendarUrl} />
             <div className="ml-auto">
-              {config.weather.enabled &&
+              {config.weather.enabled && weatherData &&
                 <WeatherDisplay weatherData={weatherData} detailed={config.weather.detailed} />
               }
             </div>
@@ -65,10 +65,11 @@ export const getServerSideProps = async () => {
   const config = await res.json();
 
   // Load weather data
-  var weatherData = {};
+  var weatherData = null;
   if (config.weather.enabled) {
     const weatherRes = await fetch(`${process.env.HOST}/api/weather`)
-    weatherData = await weatherRes.json();
+    if (weatherRes.status === 200)
+      weatherData = await weatherRes.json();
   }
 
   return {
