@@ -64,11 +64,11 @@ export default function AppSettings({ config, modifiedConfig, setModifiedConfig,
                                             {...provided.droppableProps}
                                             ref={provided.innerRef}
                                         >
-                                            {modifiedConfig!.apps.map((app, index) => (
+                                            {modifiedConfig.apps.map((app, index) => (
                                                 <Draggable draggableId={app.id} index={index} key={app.id}>
                                                     {(provided) => (
                                                         <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} className="mb-4">
-                                                            <AppForm app={app} editEnabled={editEnabledAppId === app.id} enableEditing={setEditEnabledAppId} modifiedConfig={modifiedConfig} setModifiedConfig={setModifiedConfig} />
+                                                            <AppForm app={app} editEnabled={editEnabledAppId === app.id} enableEditing={setEditEnabledAppId} config={config} modifiedConfig={modifiedConfig} setModifiedConfig={setModifiedConfig} />
                                                         </div>
                                                     )}
                                                 </Draggable>
