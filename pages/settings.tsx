@@ -7,6 +7,7 @@ import WeatherSettings from '../components/modules/settings/Weather/WeatherSetti
 import ConfirmationModal from '../components/ConfirmationModal';
 import { Config } from '../interfaces/Config';
 import { useRouter } from 'next/router'
+import { getHost } from '../utils';
 
 export interface SettingsSectionProps {
     config: Config;
@@ -179,7 +180,7 @@ export default function Settings({ config: requestConfig }: SettingsProps) {
 }
 
 export const getServerSideProps = async () => {
-    const res = await fetch(`${process.env.HOST}/api/config`);
+    const res = await fetch(`${getHost()}/api/config`);
     const config = await res.json();
 
     return {
