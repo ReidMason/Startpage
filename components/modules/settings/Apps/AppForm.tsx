@@ -50,7 +50,7 @@ export default function AppForm({ config, modifiedConfig, setModifiedConfig, app
                         <TextInput className="w-full md:w-64" placeholder="Name" defaultValue={app.name} setValue={(val: string) => { updateApp({ name: val }); }} floatingLabel />
                         <TextInput className="w-full md:w-96" placeholder="Url" defaultValue={app.url} setValue={(val: string) => { updateApp({ url: val }) }} floatingLabel />
                         <TextInput className="w-full lg:w-64" placeholder="Icon" defaultValue={app.icon} setValue={(val: string) => { updateApp({ icon: val }); }} floatingLabel />
-                        <IconSearch className="col-span-3 row-span-5" iconSelected={iconSelected} selectedIcon={app.icon} />
+                        <IconSearch className="w-full" iconSelected={iconSelected} selectedIcon={app.icon} />
                     </div>
                 </div>
 
