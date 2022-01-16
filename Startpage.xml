@@ -13,7 +13,7 @@
     <BindTime>true</BindTime>
     <Privileged>false</Privileged>
     <Networking>
-        <Mode>host</Mode>
+        <Mode>bridge</Mode>
         <Publish>
             <Port>
                 <HostPort>5003</HostPort>
