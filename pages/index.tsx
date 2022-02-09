@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import GreetingText from "../components/GreetingText";
-import AppsGrid from "../components/modules/AppsGrid"
+import AppsGrid from "../components/modules/AppsGrid";
 import SearchBar from "../components/modules/SearchBar";
 import WeatherDisplay from "../components/WeatherDisplay";
 import { Config } from "../interfaces/Config";
@@ -29,8 +29,8 @@ export default function Startpage({ config, weatherData }: StartpageProps) {
       enterFrom="opacity-0 translate-y-6"
       enterTo="opacity-100 translate-y-0"
     >
-      <div className="container mx-auto text-white pt-28 mb-8 duration-">
-        <div className="w-10/12 max-w-screen-xl px-4 mx-auto md:w-5/6 lg:w-full">
+      <div className="container mx-auto mb-8 pt-28 text-white">
+        <div className="mx-auto w-10/12 max-w-screen-xl px-4 md:w-5/6 lg:w-full">
           <div className="mb-10">
             <SearchBar
               providers={config.providers}
@@ -38,26 +38,33 @@ export default function Startpage({ config, weatherData }: StartpageProps) {
               customSearchUrl={config.general.customSearchUrl}
               searchUrl={config.general.searchUrl}
               placeholder={config.general.searchPlaceholder}
-              setAppFilter={setAppsNameFilter} />
+              setAppFilter={setAppsNameFilter}
+            />
           </div>
 
           <div className="mb-4 md:flex">
             <GreetingText calendarUrl={config.general.calendarUrl} />
             <div className="ml-auto">
-              {config.weather.enabled && weatherData &&
-                <WeatherDisplay weatherData={weatherData} detailed={config.weather.detailed} />
-              }
+              {config.weather.enabled && weatherData && (
+                <WeatherDisplay
+                  weatherData={weatherData}
+                  detailed={config.weather.detailed}
+                />
+              )}
             </div>
           </div>
 
           <AppsGrid apps={config.apps} appNameFilter={appsNameFilter} />
-          <ExtensionsDisplay extensions={extensions} setExtensions={setExtensions} />
+          <ExtensionsDisplay
+            extensions={extensions}
+            setExtensions={setExtensions}
+          />
         </div>
 
         <SettingsButton extensions={extensions} setExtensions={setExtensions} />
       </div>
     </Transition>
-  )
+  );
 }
 
 export const getServerSideProps = async () => {
@@ -67,15 +74,14 @@ export const getServerSideProps = async () => {
   // Load weather data
   var weatherData = null;
   if (config.weather.enabled) {
-    const weatherRes = await fetch(`${getHost()}/api/weather`)
-    if (weatherRes.status === 200)
-      weatherData = await weatherRes.json();
+    const weatherRes = await fetch(`${getHost()}/api/weather`);
+    if (weatherRes.status === 200) weatherData = await weatherRes.json();
   }
 
   return {
     props: {
       config,
-      weatherData
-    }
-  }
-}
+      weatherData,
+    },
+  };
+};
