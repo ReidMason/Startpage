@@ -51,7 +51,7 @@ export default function SettingsButton({
     <div
       onMouseEnter={() => setSettingsShown(true)}
       onMouseLeave={() => setSettingsShown(false)}
-      className="hover:bg-nord-2/60 static bottom-0 left-0 m-3 origin-bottom rounded-lg py-4 px-2 opacity-0 transition-all hover:!scale-y-100 hover:opacity-100 hover:shadow-md"
+      className="hover:bg-nord-2/60 fixed bottom-0 left-0 m-3 origin-bottom rounded-lg py-4 px-2 opacity-0 transition-all hover:!scale-y-100 hover:opacity-100 hover:shadow-md"
       style={{ transform: `scaleY(${1 / 3})` }}
     >
       <div className="scale-25 flex origin-bottom flex-col gap-4 transition-transform duration-300 group-hover:scale-100">
