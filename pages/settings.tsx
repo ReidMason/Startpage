@@ -186,7 +186,7 @@ export default function Settings({ config: requestConfig }: SettingsProps) {
       <div className="flex w-full flex-col">
         <div className="bg-nord-1 flex flex-col gap-2 p-3">
           <h2 className="text-nord-4 text-2xl">{selectedTab.name}</h2>
-          <div className="flex justify-between">
+          <div className="flex gap-4">
             <Button
               disabled={!settingsModified}
               className="w-24"
@@ -196,7 +196,7 @@ export default function Settings({ config: requestConfig }: SettingsProps) {
               Save
             </Button>
             <Button className="w-24" onClick={goBackToStartpage} colour="blue">
-              Back
+              Exit
             </Button>
           </div>
         </div>
