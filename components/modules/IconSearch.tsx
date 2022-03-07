@@ -17,12 +17,14 @@ interface IconSearchProps {
   className?: string;
   iconSelected: Function;
   selectedIcon?: string;
+  setIconSearched?: Function;
 }
 
 export default function IconSearch({
   className,
   iconSelected,
   selectedIcon,
+  setIconSearched,
 }: IconSearchProps) {
   const [iconName, setIconName] = useState<string>("");
   const [icons, setIcons] = useState<Array<string> | null>(null);
@@ -30,6 +32,9 @@ export default function IconSearch({
 
   const searchForIcons = () => {
     setLoading(true);
+
+    if (setIconSearched) setIconSearched(true);
+
     searchIcons(iconName)
       .then((icons) => {
         setIcons(icons);
@@ -37,6 +42,11 @@ export default function IconSearch({
       .finally(() => {
         setLoading(false);
       });
+  };
+
+  const closeIconsSearch = () => {
+    if (setIconSearched) setIconSearched(false);
+    setIcons(null);
   };
 
   const handleFormSubmission = (event: React.FormEvent<HTMLFormElement>) => {
@@ -72,7 +82,7 @@ export default function IconSearch({
             <Button
               className="h-[42px]"
               loading={loading}
-              onClick={() => setIcons(null)}
+              onClick={closeIconsSearch}
             >
               Close
             </Button>
