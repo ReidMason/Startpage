@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { App as AppInterface, Config } from "../../../../interfaces/Config";
 import App from "../../../App";
 import Button from "../../../Button";
@@ -24,6 +24,7 @@ export default function AppForm({
 }: AppFormProps) {
   const savedApp = config.apps.find((x) => x.id === app.id);
   const modified = JSON.stringify(app) != JSON.stringify(savedApp);
+  const [iconSearched, setIconSearched] = useState(false);
 
   const updateApp = (updatedApp: any) => {
     modifiedConfig.apps = modifiedConfig.apps.map((originalApp) =>
@@ -59,41 +60,43 @@ export default function AppForm({
             </div>
 
             <div
-              className={`${
-                editEnabled ? "" : "hidden"
-              } flex-wrap gap-2 md:flex`}
+              className={`flex ${iconSearched ? "flex-col" : "flex-wrap"} gap-2
+              ${editEnabled ? "" : "hidden"}`}
             >
-              <TextInput
-                className="w-full xl:w-64"
-                placeholder="Name"
-                defaultValue={app.name}
-                setValue={(val: string) => {
-                  updateApp({ name: val });
-                }}
-                floatingLabel
-              />
-              <TextInput
-                className="w-full xl:w-96"
-                placeholder="Url"
-                defaultValue={app.url}
-                setValue={(val: string) => {
-                  updateApp({ url: val });
-                }}
-                floatingLabel
-              />
-              <TextInput
-                className="w-full xl:w-64"
-                placeholder="Icon"
-                defaultValue={app.icon}
-                setValue={(val: string) => {
-                  updateApp({ icon: val });
-                }}
-                floatingLabel
-              />
+              <div className="w-full flex-wrap gap-2 md:flex">
+                <TextInput
+                  className="mt-2 w-full md:mt-0 xl:w-64"
+                  placeholder="Name"
+                  defaultValue={app.name}
+                  setValue={(val: string) => {
+                    updateApp({ name: val });
+                  }}
+                  floatingLabel
+                />
+                <TextInput
+                  className="mt-2 w-full md:mt-0 xl:w-96"
+                  placeholder="Url"
+                  defaultValue={app.url}
+                  setValue={(val: string) => {
+                    updateApp({ url: val });
+                  }}
+                  floatingLabel
+                />
+                <TextInput
+                  className="mt-2 w-full md:mt-0 xl:w-64"
+                  placeholder="Icon"
+                  defaultValue={app.icon}
+                  setValue={(val: string) => {
+                    updateApp({ icon: val });
+                  }}
+                  floatingLabel
+                />
+              </div>
               <IconSearch
                 className="w-full md:w-auto"
                 iconSelected={iconSelected}
                 selectedIcon={app.icon}
+                setIconSearched={setIconSearched}
               />
             </div>
           </div>
