@@ -61,7 +61,7 @@ export default function AppForm({
 
             <div
               className={`flex ${iconSearched ? "flex-col" : "flex-wrap"} gap-2
-              ${editEnabled ? "" : "hidden"}`}
+              ${editEnabled ? "" : "hidden md:block"}`}
             >
               <div className="w-full flex-wrap gap-2 md:flex">
                 <TextInput
