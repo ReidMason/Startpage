@@ -67,4 +67,5 @@ body {
   margin: 0;
   font-family: "Noto Sans", sans-serif;
   background-color: var(--colour-primary-900);
+  -webkit-tap-highlight-color: transparent;
 }

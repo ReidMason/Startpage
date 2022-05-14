@@ -17,7 +17,7 @@ interface TextInputProps {
   disabled?: boolean;
 }
 
-export default function TextInput({
+export default function Input({
   type,
   autoComplete,
   register,
