@@ -1,0 +1,116 @@
+@mixin button-mixin(
+  $text-colour,
+  $primary-colour,
+  $secondary-colour,
+  $primary-colour-dark,
+  $secondary-colour-dark
+) {
+  &.variant-default {
+    color: $text-colour;
+    background-color: $primary-colour;
+
+    &:hover {
+      background-color: $secondary-colour;
+    }
+
+    .dark & {
+      background-color: $primary-colour-dark;
+
+      &:hover {
+        background-color: $secondary-colour-dark;
+      }
+    }
+
+    &.gradient {
+      @apply border-0 bg-gradient-to-r;
+      --tw-gradient-stops: #{$primary-colour-dark}, #{$secondary-colour-dark};
+      padding: 10px;
+    }
+  }
+
+  &.variant-outline {
+    @apply text-primary-800 border-solid;
+
+    border-color: $primary-colour;
+
+    &:hover {
+      border-color: $secondary-colour;
+    }
+
+    .dark & {
+      border-color: $primary-colour-dark;
+      color: $text-colour;
+
+      &:hover {
+        border-color: $secondary-colour-dark;
+      }
+    }
+
+    &.gradient {
+      @apply border-transparent;
+      background: linear-gradient(to right, #031226, #031226),
+        linear-gradient(to bottom right, $primary-colour, $secondary-colour);
+      background-clip: padding-box, border-box;
+      background-origin: padding-box, border-box;
+    }
+  }
+
+  &.variant-ghost {
+    @apply p-0;
+    color: $text-colour;
+
+    &:hover {
+      color: $secondary-colour;
+    }
+  }
+}
+
+.button {
+  @include button-mixin(
+    $text-colour: var(--colour-primary-100),
+    $primary-colour: var(--colour-primary-400),
+    $secondary-colour: var(--colour-primary-300),
+    $primary-colour-dark: var(--colour-primary-500),
+    $secondary-colour-dark: var(--colour-primary-400)
+  );
+
+  &.state-success {
+    @include button-mixin(
+      $text-colour: var(--colour-primary-50),
+      $primary-colour: var(--colour-green-400),
+      $secondary-colour: var(--colour-green-300),
+      $primary-colour-dark: var(--colour-green-600),
+      $secondary-colour-dark: var(--colour-green-500)
+    );
+  }
+
+  &.state-warning {
+    @include button-mixin(
+      $text-colour: var(--colour-primary-50),
+      $primary-colour: var(--colour-yellow-400),
+      $secondary-colour: var(--colour-yellow-300),
+      $primary-colour-dark: var(--colour-yellow-600),
+      $secondary-colour-dark: var(--colour-yellow-500)
+    );
+  }
+
+  &.state-danger {
+    @include button-mixin(
+      $text-colour: var(--colour-primary-50),
+      $primary-colour: var(--colour-red-400),
+      $secondary-colour: var(--colour-red-300),
+      $primary-colour-dark: var(--colour-red-600),
+      $secondary-colour-dark: var(--colour-red-500)
+    );
+  }
+
+  &.state-grey {
+    @include button-mixin(
+      $text-colour: var(--colour-primary-50),
+      $primary-colour: var(--colour-grey-400),
+      $secondary-colour: var(--colour-grey-300),
+      $primary-colour-dark: var(--colour-grey-600),
+      $secondary-colour-dark: var(--colour-grey-500)
+    );
+  }
+}
