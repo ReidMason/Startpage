@@ -42,7 +42,11 @@ const Home: NextPage<StartpageProps> = ({
 
         <AppsGrid apps={config.apps} appNameFilter={""} />
       </div>
-      <SettingsModal open={settingsModalOpen} setOpen={setSettingsModalOpen} />
+      <SettingsModal
+        config={config}
+        open={settingsModalOpen}
+        setOpen={setSettingsModalOpen}
+      />
       <SettingsButton setSettingsModalOpen={setSettingsModalOpen} />
     </div>
   );

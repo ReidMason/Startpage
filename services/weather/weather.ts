@@ -12,6 +12,7 @@ export async function getWeatherData(): Promise<Weather | null> {
 }
 
 async function requestWeatherData(location: string): Promise<Weather | null> {
+  const config = await getConfig();
   console.info(`Requesting weather data for: "${location}"`);
   // Get basic weather data so we have the lat/lon
   const basicWeatherData = await getBasicWeatherData(location);
