@@ -7,7 +7,6 @@ import WeatherDisplay from "../components/modules/WeatherDisplay";
 import { Weather } from "../services/weather/types";
 import SettingsButton from "../components/SettingsButton";
 import { useState } from "react";
-import Modal from "../components/modal/Modal";
 import SettingsModal from "../components/modules/SettingsModal/SettingsModal";
 
 interface StartpageProps {
@@ -22,31 +21,29 @@ const Home: NextPage<StartpageProps> = ({
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
 
   return (
-    <div
-      className={`container mx-auto mb-8 pt-28 text-white ${
-        settingsModalOpen && "blur"
-      }`}
-    >
-      <div className="mx-auto w-10/12 max-w-screen-xl px-4 md:w-5/6 lg:w-full">
-        <div className="mb-4 md:flex">
-          <GreetingText calendarUrl={config.general.calendarUrl} />
-          <div className="ml-auto">
-            {config.weather.enabled && weatherData && (
-              <WeatherDisplay
-                weatherData={weatherData}
-                detailed={config.weather.detailed}
-              />
-            )}
+    <div className={settingsModalOpen ? "blur" : ""}>
+      <div className="container mx-auto mb-8 h-screen pt-28 text-white">
+        <div className="mx-auto w-10/12 max-w-screen-xl px-4 md:w-5/6 lg:w-full">
+          <div className="mb-4 md:flex">
+            <GreetingText calendarUrl={config.general.calendarUrl} />
+            <div className="ml-auto">
+              {config.weather.enabled && weatherData && (
+                <WeatherDisplay
+                  weatherData={weatherData}
+                  detailed={config.weather.detailed}
+                />
+              )}
+            </div>
           </div>
-        </div>
 
-        <AppsGrid apps={config.apps} appNameFilter={""} />
+          <AppsGrid apps={config.apps} appNameFilter={""} />
+        </div>
+        <SettingsModal
+          config={config}
+          open={settingsModalOpen}
+          setOpen={setSettingsModalOpen}
+        />
       </div>
-      <SettingsModal
-        config={config}
-        open={settingsModalOpen}
-        setOpen={setSettingsModalOpen}
-      />
       <SettingsButton setSettingsModalOpen={setSettingsModalOpen} />
     </div>
   );

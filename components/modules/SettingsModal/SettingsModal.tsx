@@ -19,7 +19,7 @@ export default function SettingsModal({
   return (
     <Modal open={open} setOpen={setOpen}>
       <div className="flex h-full w-full">
-        <div className="hidden">
+        <div className="hidden lg:block">
           <SideMenu />
         </div>
         <SettingsContent config={config} closeModal={() => setOpen(false)} />

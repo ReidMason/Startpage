@@ -17,7 +17,7 @@ interface SettingsSection {
   content: ({}: SettingsSectionProps) => JSX.Element;
 }
 
-const settingsSections: Array<SettingsSection> = [
+export const settingsSections: Array<SettingsSection> = [
   {
     name: "General",
     icon: AdjustmentsIcon,
@@ -62,17 +62,27 @@ export default function SettingsContent({
 
   return (
     <form
-      className="z-10 flex h-full w-full flex-col justify-between bg-primary-800 py-4 text-primary-50 shadow-xl"
+      className="z-10 flex h-full w-full flex-col justify-between bg-primary-800 py-4 shadow-xl dark:text-primary-50"
       onSubmit={saveSettings}
     >
-      <div className="flex flex-col gap-4 overflow-y-auto px-4 ">
+      <div className="flex flex-col gap-4 overflow-y-auto pl-8 pr-4 ">
         {settingsSections.map((section) => (
-          <div key={section.name}>
-            <Collapse
-              header={<SettingsSectionHeader {...section} />}
-              body={<section.content register={register} />}
-            />
-            <hr className="opacity-80" />
+          <div key={section.name} className="mb-6 flex flex-col gap-8">
+            <div>
+              <Collapse
+                header={<SettingsSectionHeader {...section} />}
+                body={
+                  <div className="grid grid-cols-1 gap-x-4 md:grid-cols-2 xl:grid-cols-3">
+                    <section.content register={register} />
+                  </div>
+                }
+              />
+            </div>
+
+            <div className="flex opacity-80">
+              <div className="from h-1 w-1/2 bg-gradient-to-l dark:from-primary-400" />
+              <div className="from h-1 w-1/2 bg-gradient-to-r dark:from-primary-400" />
+            </div>
           </div>
         ))}
       </div>

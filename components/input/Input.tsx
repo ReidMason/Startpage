@@ -38,14 +38,18 @@ export default function Input({
   const inputVariant = `variant-${variant ?? "default"}`;
 
   return (
-    <div className="flex flex-col text-primary-800">
-      {label && <label htmlFor={register?.name}>{label}</label>}
+    <div className="flex flex-col dark:text-primary-800">
+      {label && (
+        <label className="dark:text-primary-50" htmlFor={register?.name}>
+          {label}
+        </label>
+      )}
       <input
         onInput={onChange}
         value={value}
         autoComplete={autoComplete || "off"}
         {...register}
-        className={`input ${inputState} ${inputVariant} ${pilledStyles} px-2 py-1 transition-all duration-300 focus-visible:outline-none`}
+        className={`input ${inputState} ${inputVariant} ${pilledStyles} px-3 py-1 transition-all duration-300 focus-visible:outline-none`}
         type={textType}
         disabled={disabled}
         placeholder={placeholder}
