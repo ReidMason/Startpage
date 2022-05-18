@@ -1,4 +1,4 @@
-import WeatherData from "../../interfaces/WeatherData";
+import { Weather } from "../weather/types";
 
 export default interface Cache {
   cachedWeatherData: Array<WeatherDataCache>;
@@ -7,5 +7,5 @@ export default interface Cache {
 interface WeatherDataCache {
   timeObtained: number;
   location: string;
-  weatherData: WeatherData;
+  weatherData: Weather;
 }

@@ -15,7 +15,8 @@ export default function Collapse({ header, body }: CollapseProps) {
   }, []);
 
   return (
-    defaultOpen != undefined && (
+    <>
+      defaultOpen != undefined && (
       <Disclosure defaultOpen={defaultOpen}>
         {({ open }) => (
           <>
@@ -67,6 +68,7 @@ export default function Collapse({ header, body }: CollapseProps) {
           </>
         )}
       </Disclosure>
-    )
+      )
+    </>
   );
 }

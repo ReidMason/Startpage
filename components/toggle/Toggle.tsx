@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import React, { useEffect, useState } from "react";
 import { StateSetter } from "../../types/common";
+import { motion } from "framer-motion";
 
 interface ToggleProps {
   defaultValue: boolean;
@@ -26,6 +27,12 @@ export default function Toggle({
     setter(e.target.checked);
   };
 
+  const spring = {
+    type: "spring",
+    stiffness: 700,
+    damping: 30,
+  };
+
   return (
     <div>
       <div className="flex items-center gap-2">
@@ -38,18 +45,20 @@ export default function Toggle({
           onChange={handleChange}
         />
         <label
-          className={`flex ${
-            value ? "bg-primary-300" : "bg-primary-700"
-          } h-6 w-12 rounded-full ${
+          className={`flex ${value ? "" : ""} h-6 w-12 rounded-full ${
             disabled ? "cursor-not-allowed opacity-50" : ""
+          } ${
+            value
+              ? "justify-end bg-primary-500"
+              : "justify-start bg-primary-700"
           } cursor-pointer`}
           htmlFor={id}
         >
-          <div
-            className={`h-6 w-6 transform rounded-full bg-primary-200 ${
-              value ? "translate-x-6" : ""
-            } transition-transform duration-300`}
-          ></div>
+          <motion.div
+            className="h-6 w-6 rounded-full bg-primary-200"
+            layout
+            transition={spring}
+          />
         </label>
         <p>{value ? "Enabled" : "Disabled"}</p>
       </div>

@@ -1,13 +1,14 @@
 import type { GetStaticProps, NextPage } from "next";
 import { Config } from "../services/config/types";
-import AppsGrid from "../components/modules/AppsGrid";
+import AppsGrid from "../components/modules/AppsGrid/AppsGrid";
 import { getHost } from "../utils";
 import GreetingText from "../components/modules/GreetingText";
 import WeatherDisplay from "../components/modules/WeatherDisplay";
 import { Weather } from "../services/weather/types";
 import SettingsButton from "../components/SettingsButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SettingsModal from "../components/modules/SettingsModal/SettingsModal";
+import Button from "../components/button/Button";
 
 interface StartpageProps {
   config: Config;
@@ -19,9 +20,22 @@ const Home: NextPage<StartpageProps> = ({
   weatherData,
 }: StartpageProps) => {
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+
+  useEffect(() => {
+    // Darkmode check
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
 
   return (
-    <div className={settingsModalOpen ? "blur" : ""}>
+    <div className={`transition ${settingsModalOpen ? "blur" : ""}`}>
       <div className="container mx-auto mb-8 h-screen pt-28 text-white">
         <div className="mx-auto w-10/12 max-w-screen-xl px-4 md:w-5/6 lg:w-full">
           <div className="mb-4 md:flex">
@@ -36,7 +50,7 @@ const Home: NextPage<StartpageProps> = ({
             </div>
           </div>
 
-          <AppsGrid apps={config.apps} appNameFilter={""} />
+          <AppsGrid apps={config.apps} appNameFilter={""} editMode={editMode} />
         </div>
         <SettingsModal
           config={config}
@@ -44,7 +58,10 @@ const Home: NextPage<StartpageProps> = ({
           setOpen={setSettingsModalOpen}
         />
       </div>
-      <SettingsButton setSettingsModalOpen={setSettingsModalOpen} />
+      <div className="fixed bottom-0 left-40 m-4">
+        <SettingsButton setSettingsModalOpen={setSettingsModalOpen} />
+        <Button onClick={() => setEditMode((prev) => !prev)}>Edit mode</Button>
+      </div>
     </div>
   );
 };
