@@ -9,3 +9,7 @@ export declare type State =
 export declare type Variant = "default" | "outline" | "ghost";
 
 export declare type Type = "button" | "reset" | "submit";
+
+export declare type Styles = { [key in Variant]: StateStyles };
+
+export declare type StateStyles = { [key in State]: string };

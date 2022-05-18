@@ -1,6 +1,6 @@
 import fs from "fs/promises";
-import WeatherData from "../../interfaces/WeatherData";
 import { getUnixTime } from "../../utils";
+import { Weather } from "../weather/types";
 import Cache from "./types";
 
 export async function getCacheData(): Promise<Cache> {
@@ -18,7 +18,7 @@ async function ensureCacheFileExists() {
 }
 
 export async function cacheWeatherData(
-  newWeatherdata: WeatherData,
+  newWeatherdata: Weather,
   location: string
 ) {
   const cacheData = await getCacheData();

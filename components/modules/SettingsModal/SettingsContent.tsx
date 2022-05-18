@@ -65,14 +65,14 @@ export default function SettingsContent({
       className="z-10 flex h-full w-full flex-col justify-between bg-primary-800 py-4 shadow-xl dark:text-primary-50"
       onSubmit={saveSettings}
     >
-      <div className="flex flex-col gap-4 overflow-y-auto pl-8 pr-4 ">
+      <div className="flex flex-col gap-4 overflow-y-auto px-4">
         {settingsSections.map((section) => (
           <div key={section.name} className="mb-6 flex flex-col gap-8">
             <div>
               <Collapse
                 header={<SettingsSectionHeader {...section} />}
                 body={
-                  <div className="grid grid-cols-1 gap-x-4 md:grid-cols-2 xl:grid-cols-3">
+                  <div className="grid grid-cols-1 gap-x-4 md:grid-cols-2 lg:pl-4 xl:grid-cols-3">
                     <section.content register={register} />
                   </div>
                 }

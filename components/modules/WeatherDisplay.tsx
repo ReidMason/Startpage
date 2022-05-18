@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 import Image from "next/image";
-import Weather from "../../interfaces/Weather";
+import { Weather } from "../../services/weather/types";
 
 interface WeatherDisplayProps {
   weatherData: Weather;
