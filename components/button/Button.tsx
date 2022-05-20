@@ -61,7 +61,7 @@ export default function Button({
   return (
     <button
       onClick={onClick}
-      className={`${dynamicStyles} min-w-[8rem] border-2 border-transparent p-1 transition duration-300 ${className}`}
+      className={`${dynamicStyles} min-w-[8rem] border-2 border-transparent p-1 px-4 transition duration-300 ${className}`}
       type={buttonType}
     >
       {children}

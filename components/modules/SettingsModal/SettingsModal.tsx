@@ -36,7 +36,6 @@ export default function SettingsModal({
 
   return (
     <Modal open={open} setOpen={setOpen}>
-      {/* <div className="flex w-full"> */}
       <AnimatePresence initial={false}>
         {menuVisible && (
           <motion.div

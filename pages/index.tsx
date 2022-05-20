@@ -1,4 +1,4 @@
-import type { GetStaticProps, NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import { Config } from "../services/config/types";
 import AppsGrid from "../components/modules/AppsGrid/AppsGrid";
 import { getHost } from "../utils";
@@ -9,6 +9,7 @@ import SettingsButton from "../components/SettingsButton";
 import { useEffect, useState } from "react";
 import SettingsModal from "../components/modules/SettingsModal/SettingsModal";
 import Button from "../components/button/Button";
+import { getConfig } from "../services/config/config";
 
 interface StartpageProps {
   config: Config;
@@ -60,7 +61,9 @@ const Home: NextPage<StartpageProps> = ({
       </div>
       <div className="fixed bottom-0 left-40 m-4">
         <SettingsButton setSettingsModalOpen={setSettingsModalOpen} />
-        <Button onClick={() => setEditMode((prev) => !prev)}>Edit mode</Button>
+        <Button onClick={() => setEditMode((prev) => !prev)}>
+          Enable {editMode ? "view" : "edit"} mode
+        </Button>
       </div>
     </div>
   );
@@ -68,7 +71,7 @@ const Home: NextPage<StartpageProps> = ({
 
 export default Home;
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const res = await fetch(`${getHost()}/api/config`);
   const config = await res.json();
 

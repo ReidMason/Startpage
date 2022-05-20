@@ -14,8 +14,6 @@
     "@headlessui/react": "^1.6.1",
     "@heroicons/react": "^1.0.6",
     "@iconify/react": "^3.2.1",
-    "@types/react-beautiful-dnd": "^13.1.2",
-    "@types/react-dnd": "^3.0.2",
     "@types/uuid": "^8.3.4",
     "framer-motion": "^6.3.3",
     "next": "12.1.6",

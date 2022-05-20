@@ -1,7 +1,7 @@
 import React from "react";
 import { App as AppInterface } from "../../../services/config/types";
 import App from "../../App";
-import EditableAppsGrid from "./EditableAppsGrid";
+import EditableAppsGrid from "../EditableAppsGrid/EditableAppsGrid";
 
 interface AppsGridProps {
   apps: Array<AppInterface>;
@@ -25,7 +25,7 @@ export default function AppsGrid({
       ) : (
         <>
           {filteredApps.map((app) => (
-            <App app={app} />
+            <App app={app} key={app.id} />
           ))}
         </>
       )}

@@ -6,11 +6,16 @@ interface AppProps {
   app: AppInterface;
   preview?: boolean;
   editMode?: boolean;
+  isDragging?: boolean;
 }
 
-export default function App({ app, preview, editMode }: AppProps) {
+export default function App({ app, preview, editMode, isDragging }: AppProps) {
   // Remove http, https and trailing slashes
   const displayUrl = app.url.replace(/^https?:\/\//gi, "").split("/", 1)[0];
+
+  const openEditModal = () => {
+    console.log("Test");
+  };
 
   return (
     <a
