@@ -1,13 +1,15 @@
+import dynamic from "next/dynamic";
 import React from "react";
 import { App as AppInterface } from "../../../services/config/types";
 import App from "../../App";
-import EditableAppsGrid from "../EditableAppsGrid/EditableAppsGrid";
 
 interface AppsGridProps {
   apps: Array<AppInterface>;
   appNameFilter: string;
   editMode?: boolean;
 }
+
+const DynamicEditableAppsGrid = dynamic(() => import("../EditableAppsGrid/EditableAppsGrid"));
 
 export default function AppsGrid({
   apps,
@@ -21,7 +23,7 @@ export default function AppsGrid({
   return (
     <div className="gap grid grid-cols-1 gap-4 transition-opacity sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
       {editMode ? (
-        <EditableAppsGrid apps={apps} />
+        <DynamicEditableAppsGrid apps={apps} />
       ) : (
         <>
           {filteredApps.map((app) => (

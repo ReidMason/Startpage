@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import React, { useEffect, useState } from "react";
 import { StateSetter } from "../../types/common";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 interface ToggleProps {
   defaultValue: boolean;
@@ -54,7 +54,7 @@ export default function Toggle({
           } cursor-pointer`}
           htmlFor={id}
         >
-          <motion.div
+          <m.div
             className="h-6 w-6 rounded-full bg-primary-200"
             layout
             transition={spring}

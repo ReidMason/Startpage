@@ -1,5 +1,3 @@
-import React from 'react';
-
 const days: Array<string> = [
     "Sunday",
     "Monday",

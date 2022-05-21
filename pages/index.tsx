@@ -1,20 +1,28 @@
-import type { GetServerSideProps, NextPage } from "next";
+import type { GetStaticProps, NextPage } from "next";
 import { Config } from "../services/config/types";
 import AppsGrid from "../components/modules/AppsGrid/AppsGrid";
-import { getHost } from "../utils";
 import GreetingText from "../components/modules/GreetingText";
-import WeatherDisplay from "../components/modules/WeatherDisplay";
 import { Weather } from "../services/weather/types";
 import SettingsButton from "../components/SettingsButton";
-import { useEffect, useState } from "react";
-import SettingsModal from "../components/modules/SettingsModal/SettingsModal";
+import { useState } from "react";
 import Button from "../components/button/Button";
+import dynamic from "next/dynamic";
 import { getConfig } from "../services/config/config";
+import { LazyMotion } from "framer-motion";
+import { getWeatherData } from "../services/weather/weather";
+import WeatherDisplay from "../components/modules/WeatherDisplay";
 
 interface StartpageProps {
   config: Config;
   weatherData: Weather;
 }
+
+const DynamicSettingsModal = dynamic(
+  () => import("../components/modules/SettingsModal/SettingsModal")
+);
+
+const loadFeatures = () =>
+  import("../framer-features").then((res) => res.default);
 
 const Home: NextPage<StartpageProps> = ({
   config,
@@ -23,69 +31,57 @@ const Home: NextPage<StartpageProps> = ({
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
 
-  useEffect(() => {
-    // Darkmode check
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, []);
-
   return (
-    <div className={`transition ${settingsModalOpen ? "blur" : ""}`}>
-      <div className="container mx-auto mb-8 h-screen pt-28 text-white">
-        <div className="mx-auto w-10/12 max-w-screen-xl px-4 md:w-5/6 lg:w-full">
-          <div className="mb-4 md:flex">
-            <GreetingText calendarUrl={config.general.calendarUrl} />
-            <div className="ml-auto">
-              {config.weather.enabled && weatherData && (
-                <WeatherDisplay
-                  weatherData={weatherData}
-                  detailed={config.weather.detailed}
-                />
-              )}
+    <LazyMotion features={loadFeatures} strict>
+      <div className={`transition ${settingsModalOpen ? "blur" : ""}`}>
+        <div className="container mx-auto mb-8 h-screen pt-28 text-white">
+          <div className="mx-auto w-10/12 max-w-screen-xl px-4 md:w-5/6 lg:w-full">
+            <div className="mb-4 md:flex">
+              <GreetingText calendarUrl={config.general.calendarUrl} />
+              <div className="ml-auto">
+                {config.weather.enabled && weatherData && (
+                  <WeatherDisplay
+                    weatherData={weatherData}
+                    detailed={config.weather.detailed}
+                  />
+                )}
+              </div>
             </div>
-          </div>
 
-          <AppsGrid apps={config.apps} appNameFilter={""} editMode={editMode} />
+            <AppsGrid
+              apps={config.apps}
+              appNameFilter={""}
+              editMode={editMode}
+            />
+          </div>
+          <DynamicSettingsModal
+            config={config}
+            open={settingsModalOpen}
+            setOpen={setSettingsModalOpen}
+          />
         </div>
-        <SettingsModal
-          config={config}
-          open={settingsModalOpen}
-          setOpen={setSettingsModalOpen}
-        />
+        <div className="fixed bottom-0 left-40 m-4">
+          <SettingsButton setSettingsModalOpen={setSettingsModalOpen} />
+          <Button onClick={() => setEditMode((prev) => !prev)}>
+            Enable {editMode ? "view" : "edit"} mode
+          </Button>
+        </div>
       </div>
-      <div className="fixed bottom-0 left-40 m-4">
-        <SettingsButton setSettingsModalOpen={setSettingsModalOpen} />
-        <Button onClick={() => setEditMode((prev) => !prev)}>
-          Enable {editMode ? "view" : "edit"} mode
-        </Button>
-      </div>
-    </div>
+    </LazyMotion>
   );
 };
 
 export default Home;
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const res = await fetch(`${getHost()}/api/config`);
-  const config = await res.json();
-
-  // Load weather data
-  var weatherData = null;
-  if (config.weather.enabled) {
-    const weatherRes = await fetch(`${getHost()}/api/weather`);
-    if (weatherRes.status === 200) weatherData = await weatherRes.json();
-  }
+export const getStaticProps: GetStaticProps = async () => {
+  const config = await getConfig();
+  const weatherData = await getWeatherData();
 
   return {
     props: {
       config,
       weatherData,
     },
+    revalidate: 3600,
   };
 };

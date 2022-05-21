@@ -1,5 +1,5 @@
-import { AnimatePresence, motion } from "framer-motion";
-import React, { LegacyRef, MutableRefObject, useRef } from "react";
+import { AnimatePresence, m } from "framer-motion";
+import React from "react";
 import { Config } from "../../../services/config/types";
 import { StateSetter } from "../../../types/common";
 import Modal from "../../modal/Modal";
@@ -38,7 +38,7 @@ export default function SettingsModal({
     <Modal open={open} setOpen={setOpen}>
       <AnimatePresence initial={false}>
         {menuVisible && (
-          <motion.div
+          <m.div
             key="menu-sidebar"
             initial="collapsed"
             animate="open"
@@ -53,12 +53,12 @@ export default function SettingsModal({
             }}
           >
             <SideMenu />
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
 
       {!menuVisible && (
-        <motion.div
+        <m.div
           className="fixed bottom-0 z-20"
           key="menu-open-button"
           initial="collapsed"
@@ -79,7 +79,7 @@ export default function SettingsModal({
           >
             <MenuIcon className="h-8 w-8" />
           </button>
-        </motion.div>
+        </m.div>
       )}
 
       <SettingsContent config={config} closeModal={() => setOpen(false)} />
