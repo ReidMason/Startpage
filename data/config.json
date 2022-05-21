@@ -1,0 +1,18 @@
+{
+    "apps": [],
+    "general": {
+        "calendarUrl": "https://calendar.google.com/calendar/",
+        "searchPlaceholder": "Search Google...",
+        "searchUrl": "https://www.google.co.uk/search?q=",
+        "customSearchEnabled": false,
+        "customSearchUrl": ""
+    },
+    "providers": [],
+    "version": 2,
+    "weather": {
+        "detailed": true,
+        "enabled": false,
+        "location": "",
+        "apiKey": ""
+    }
+}
