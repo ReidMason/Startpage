@@ -1,6 +1,6 @@
 import React from "react";
 import Input from "../../../input/Input";
-import { SettingsSectionProps } from "../../types";
+import { SettingsSectionProps } from "../types";
 
 export default function GeneralSettings({ register }: SettingsSectionProps) {
   return (
