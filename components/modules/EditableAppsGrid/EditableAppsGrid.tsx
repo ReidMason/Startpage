@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { App as AppInterface } from "../../../services/config/types";
 import {
   DndContext,
-  closestCenter,
   KeyboardSensor,
   PointerSensor,
   useSensor,
