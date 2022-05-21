@@ -1,6 +1,6 @@
 import { Disclosure } from "@headlessui/react";
 import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 
 interface CollapseProps {
   header: React.ReactNode;
@@ -24,20 +24,20 @@ export default function Collapse({ header, body }: CollapseProps) {
                 <div className="flex items-center justify-between pr-4">
                   {header}
                   <div className="flex gap-1">
-                    <motion.div animate={{ x: open ? "1.5rem" : 0 }}>
+                    <m.div animate={{ x: open ? "1.5rem" : 0 }}>
                       <div className="h-2 w-2 rounded-full bg-primary-100"></div>
-                    </motion.div>
-                    <motion.div animate={{ x: open ? "0.75rem" : 0 }}>
+                    </m.div>
+                    <m.div animate={{ x: open ? "0.75rem" : 0 }}>
                       <div className="h-2 w-2 rounded-full bg-primary-100"></div>
-                    </motion.div>
-                    <motion.div
+                    </m.div>
+                    <m.div
                       animate={{
                         scale: open ? 1.5 : 1,
                         borderRadius: "100%",
                       }}
                     >
                       <div className="h-2 w-2 rounded-full bg-primary-100"></div>
-                    </motion.div>
+                    </m.div>
                   </div>
                 </div>
               </Disclosure.Button>
@@ -45,7 +45,7 @@ export default function Collapse({ header, body }: CollapseProps) {
               <Disclosure.Panel static>
                 <AnimatePresence initial={false}>
                   {open && (
-                    <motion.div
+                    <m.div
                       className="overflow-hidden"
                       key="content"
                       initial="collapsed"
@@ -61,7 +61,7 @@ export default function Collapse({ header, body }: CollapseProps) {
                       }}
                     >
                       {body}
-                    </motion.div>
+                    </m.div>
                   )}
                 </AnimatePresence>
               </Disclosure.Panel>

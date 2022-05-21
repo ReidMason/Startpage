@@ -49,7 +49,6 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
         return modifiedApps.filter((x) => x.id != active.id);
       });
     }
-    console.log(over);
 
     if (active.id !== over.id) {
       setModifiedApps((modifiedApps) => {

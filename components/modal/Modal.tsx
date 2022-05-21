@@ -1,6 +1,6 @@
 import { Dialog } from "@headlessui/react";
 import React, { ReactNode } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 
 type StateSetter<T> = React.Dispatch<React.SetStateAction<T>>;
 
@@ -19,7 +19,7 @@ export default function Modal({ open, setOpen, children }: ModalProps) {
     <AnimatePresence>
       {open && (
         <Dialog className="relative z-10" onClose={closeModal} open={open}>
-          <motion.div
+          <m.div
             key="backdrop"
             initial="collapsed"
             animate="open"
@@ -31,9 +31,9 @@ export default function Modal({ open, setOpen, children }: ModalProps) {
             transition={{ duration: 0.15, ease: [0.04, 0.62, 0.23, 0.98] }}
           >
             <div className="fixed inset-0 bg-black bg-opacity-25" />
-          </motion.div>
+          </m.div>
 
-          <motion.div
+          <m.div
             className="fixed inset-0 overflow-y-auto"
             key="panel"
             initial="collapsed"
@@ -52,7 +52,7 @@ export default function Modal({ open, setOpen, children }: ModalProps) {
                 </div>
               </Dialog.Panel>
             </div>
-          </motion.div>
+          </m.div>
         </Dialog>
       )}
     </AnimatePresence>
