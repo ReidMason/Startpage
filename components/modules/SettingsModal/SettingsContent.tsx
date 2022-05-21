@@ -5,7 +5,7 @@ import { CloudIcon, SearchIcon } from "@heroicons/react/outline";
 import GeneralSettings from "./settings sections/GeneralSettings";
 import { useForm } from "react-hook-form";
 import { Config } from "../../../services/config/types";
-import { SettingsSectionProps } from "../types";
+import { SettingsSectionProps } from "./types";
 import SettingsSectionHeader from "./SettingsSectionHeader";
 import WeatherSettings from "./settings sections/WeatherSettings";
 import Collapse from "../../collapse/Collapse";
