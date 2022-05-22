@@ -1,4 +1,3 @@
-import React from "react";
 import Button from "../../button/Button";
 import Input from "../../input/Input";
 import { settingsSections } from "./SettingsContent";

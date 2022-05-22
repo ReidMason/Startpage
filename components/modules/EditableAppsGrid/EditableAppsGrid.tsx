@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { App as AppInterface } from "../../../services/config/types";
+import { useContext, useState } from "react";
+import { App as AppInterface, Config } from "../../../services/config/types";
 import {
   DndContext,
   KeyboardSensor,
@@ -21,12 +21,30 @@ import { PlusCircleIcon } from "@heroicons/react/solid";
 import { generateUuid } from "../../../utils";
 import AppEditModal from "./AppEditModal";
 import Droppable from "../DragAndDrop/Droppable";
+import { GlobalContext } from "../../../pages";
+import { StateSetter } from "../../../types/common";
 
 interface EditableAppsGridProps {
   apps: Array<AppInterface>;
 }
 
+const saveApps = async (
+  newApps: Array<AppInterface>,
+  config: Config,
+  setConfig: StateSetter<Config>
+) => {
+  // TODO: Reqwrite this properly, maybe use handler functions
+  const newConfig: Config = { ...config!, apps: newApps };
+
+  fetch("/api/config", {
+    method: "POST",
+    body: JSON.stringify(newConfig),
+  }).then(() => setConfig!(newConfig));
+};
+
 export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
+  const { config, setConfig } = useContext(GlobalContext);
+
   const [modifiedApps, setModifiedApps] = useState(apps);
   const [activeApp, setActiveApp] = useState<AppInterface | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -43,7 +61,11 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
     setActiveApp(null);
     const { active, over } = event;
 
+    // App was dragged over the bin so delete it
     if (over.id == "bin") {
+      const newApps = modifiedApps.filter((x) => x.id != active.id);
+      saveApps(newApps, config!, setConfig!);
+
       setModifiedApps((modifiedApps) => {
         return modifiedApps.filter((x) => x.id != active.id);
       });
@@ -60,6 +82,18 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
   }
 
   const createNewApp = () => {
+    const newApps = [
+      ...modifiedApps,
+      {
+        icon: "mdi:square-edit-outline",
+        name: "New app",
+        url: "app.example.com",
+        id: generateUuid(),
+      },
+    ];
+
+    saveApps(newApps, config!, setConfig!);
+
     setModifiedApps([
       ...modifiedApps,
       {

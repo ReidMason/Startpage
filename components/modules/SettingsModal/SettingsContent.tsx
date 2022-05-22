@@ -1,4 +1,4 @@
-import React, { FormEvent, SVGProps } from "react";
+import { FormEvent, SVGProps } from "react";
 import Button from "../../button/Button";
 import { AdjustmentsIcon } from "@heroicons/react/solid";
 import { CloudIcon, SearchIcon } from "@heroicons/react/outline";

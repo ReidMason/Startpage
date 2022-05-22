@@ -1,5 +1,5 @@
-import React, { ReactNode, MouseEventHandler } from "react";
-import type { Variant, Styles, State, StateStyles, Type } from "./types";
+import { ReactNode, MouseEventHandler } from "react";
+import type { Variant, Styles, State, Type } from "./types";
 
 const styles: Styles = {
   default: {

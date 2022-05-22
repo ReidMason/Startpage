@@ -1,5 +1,4 @@
 import { Icon } from "@iconify/react";
-import React from "react";
 import { App as AppInterface } from "../services/config/types";
 
 interface AppProps {

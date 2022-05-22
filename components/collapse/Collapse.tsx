@@ -1,10 +1,10 @@
 import { Disclosure } from "@headlessui/react";
-import React, { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
 
 interface CollapseProps {
-  header: React.ReactNode;
-  body: React.ReactNode;
+  header: ReactNode;
+  body: ReactNode;
 }
 
 export default function Collapse({ header, body }: CollapseProps) {

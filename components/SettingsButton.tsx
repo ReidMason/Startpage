@@ -1,4 +1,3 @@
-import React from "react";
 import { StateSetter } from "../types/common";
 import Button from "./button/Button";
 
