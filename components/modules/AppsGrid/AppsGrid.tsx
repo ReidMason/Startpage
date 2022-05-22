@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
-import React from "react";
 import { App as AppInterface } from "../../../services/config/types";
 import App from "../../App";
+import Skeleton from "../../skeleton/Skeleton";
 
 interface AppsGridProps {
   apps: Array<AppInterface>;
@@ -9,7 +9,10 @@ interface AppsGridProps {
   editMode?: boolean;
 }
 
-const DynamicEditableAppsGrid = dynamic(() => import("../EditableAppsGrid/EditableAppsGrid"));
+const DynamicEditableAppsGrid = dynamic(
+  () => import("../EditableAppsGrid/EditableAppsGrid"),
+  { loading: () => <Skeleton /> }
+);
 
 export default function AppsGrid({
   apps,

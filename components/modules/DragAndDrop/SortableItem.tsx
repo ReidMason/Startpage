@@ -1,9 +1,9 @@
-import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { ReactNode } from "react";
 
 interface SortableItemProps {
-  children: React.ReactNode;
+  children: ReactNode;
   id: string;
 }
 

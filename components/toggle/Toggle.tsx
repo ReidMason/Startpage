@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import React, { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { StateSetter } from "../../types/common";
 import { m } from "framer-motion";
 
@@ -22,7 +22,7 @@ export default function Toggle({
     setId(uuidv4());
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.checked);
     setter(e.target.checked);
   };

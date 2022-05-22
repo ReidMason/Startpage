@@ -1,11 +1,11 @@
 import { AnimatePresence, m } from "framer-motion";
-import React from "react";
 import { Config } from "../../../services/config/types";
 import { StateSetter } from "../../../types/common";
 import Modal from "../../modal/Modal";
 import SettingsContent from "./SettingsContent";
 import SideMenu from "./SideMenu";
 import { MenuIcon } from "@heroicons/react/outline";
+import { useEffect, useState } from "react";
 
 interface SettingsModalProps {
   open: boolean;
@@ -18,11 +18,11 @@ export default function SettingsModal({
   setOpen,
   config,
 }: SettingsModalProps) {
-  const [width, setWidth] = React.useState(999);
-  const [menuVisible, setMenuVisible] = React.useState(false);
+  const [width, setWidth] = useState(999);
+  const [menuVisible, setMenuVisible] = useState(false);
   const isMobile = width > 992;
 
-  React.useEffect(() => {
+  useEffect(() => {
     window.addEventListener("resize", () => setWidth(window.innerWidth));
   }, []);
 

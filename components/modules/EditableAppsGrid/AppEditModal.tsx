@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect } from "react";
+import { FormEvent, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { App as AppInterface } from "../../../services/config/types";
 import { StateSetter } from "../../../types/common";

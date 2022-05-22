@@ -1,4 +1,3 @@
-import React from "react";
 import Input from "../../../input/Input";
 import Toggle from "../../../toggle/Toggle";
 import { SettingsSectionProps } from "../types";

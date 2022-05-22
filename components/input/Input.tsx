@@ -1,4 +1,4 @@
-import React, { HTMLInputTypeAttribute } from "react";
+import { ChangeEventHandler, HTMLInputTypeAttribute } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
 import { Autocomplete, State, Variant } from "./types";
 
@@ -13,7 +13,7 @@ interface TextInputProps {
   value?: string;
   pilled?: boolean;
   variant?: Variant;
-  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
   disabled?: boolean;
 }
 

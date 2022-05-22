@@ -1,8 +1,8 @@
 import { Dialog } from "@headlessui/react";
-import React, { ReactNode } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 import { m, AnimatePresence } from "framer-motion";
 
-type StateSetter<T> = React.Dispatch<React.SetStateAction<T>>;
+type StateSetter<T> = Dispatch<SetStateAction<T>>;
 
 export interface ModalProps {
   open: boolean;
