@@ -28,6 +28,7 @@ export default function SettingsModal({
 
   useEffect(() => {
     window.addEventListener("resize", handleWidthChange);
+    handleWidthChange();
   }, []);
 
   const handleWidthChange = () => {
