@@ -41,11 +41,13 @@ export const settingsSections: Array<SettingsSection> = [
 interface SettingsContentProps {
   closeModal: () => void;
   config: Config;
+  onClick?: () => void;
 }
 
 export default function SettingsContent({
   closeModal,
   config,
+  onClick,
 }: SettingsContentProps) {
   const {
     register,
@@ -62,10 +64,13 @@ export default function SettingsContent({
 
   return (
     <form
-      className="z-10 flex h-full w-full flex-col justify-between bg-primary-800 py-4 shadow-xl dark:text-primary-50"
+      className="z-10 flex w-full flex-col justify-between bg-primary-800 py-4 shadow-xl dark:text-primary-50"
       onSubmit={saveSettings}
     >
-      <div className="flex flex-col gap-4 overflow-y-auto px-4">
+      <div
+        className="flex h-full flex-col gap-4 overflow-y-auto px-4"
+        onClick={onClick}
+      >
         {settingsSections.map((section) => (
           <div key={section.name} className="mb-6 flex flex-col gap-8">
             <div>
