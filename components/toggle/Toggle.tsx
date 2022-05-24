@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { ChangeEvent, useEffect, useState } from "react";
 import { StateSetter } from "../../types/common";
-import { m } from "framer-motion";
+import { domMax, LazyMotion, m } from "framer-motion";
 
 interface ToggleProps {
   defaultValue: boolean;
@@ -34,8 +34,8 @@ export default function Toggle({
   };
 
   return (
-    <div>
-      <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2">
+      <LazyMotion features={domMax}>
         <input
           disabled={disabled}
           className="absolute cursor-pointer opacity-0 disabled:cursor-not-allowed"
@@ -61,7 +61,7 @@ export default function Toggle({
           />
         </label>
         <p>{value ? "Enabled" : "Disabled"}</p>
-      </div>
+      </LazyMotion>
     </div>
   );
 }
