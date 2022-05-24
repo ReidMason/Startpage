@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import { App as AppInterface } from "../../../services/config/types";
 import App from "../../App";
 import Skeleton from "../../skeleton/Skeleton";
+import { m, AnimatePresence } from "framer-motion";
 
 interface AppsGridProps {
   apps: Array<AppInterface>;
@@ -24,16 +25,51 @@ export default function AppsGrid({
   );
 
   return (
-    <div className="gap grid grid-cols-1 gap-4 transition-opacity sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-      {editMode ? (
-        <DynamicEditableAppsGrid apps={apps} />
-      ) : (
-        <>
-          {filteredApps.map((app) => (
-            <App app={app} key={app.id} />
-          ))}
-        </>
-      )}
+    <div className="relative">
+      <AnimatePresence initial={false}>
+        {editMode && (
+          <m.div
+            className="absolute w-full"
+            key="editable-apps-grid"
+            initial="hidden"
+            animate="shown"
+            exit="hidden"
+            variants={{
+              shown: { opacity: 1 },
+              hidden: { opacity: 0.5 },
+            }}
+            transition={{
+              duration: 0.2,
+            }}
+          >
+            <div className="gap grid gap-4 first-line:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              <DynamicEditableAppsGrid apps={apps} />
+            </div>
+          </m.div>
+        )}
+        {!editMode && (
+          <m.div
+            className="absolute w-full"
+            key="apps-grid"
+            initial="hidden"
+            animate="shown"
+            exit="hidden"
+            variants={{
+              shown: { opacity: 1 },
+              hidden: { opacity: 0.5 },
+            }}
+            transition={{
+              duration: 0.2,
+            }}
+          >
+            <div className="gap grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              {filteredApps.map((app) => (
+                <App app={app} key={app.id} />
+              ))}
+            </div>
+          </m.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

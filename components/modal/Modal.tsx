@@ -11,14 +11,10 @@ export interface ModalProps {
 }
 
 export default function Modal({ open, setOpen, children }: ModalProps) {
-  function closeModal() {
-    setOpen(false);
-  }
-
   return (
     <AnimatePresence>
       {open && (
-        <Dialog className="relative z-10" onClose={closeModal} open={open}>
+        <Dialog className="relative z-10" onClose={setOpen} open={open}>
           <m.div
             key="backdrop"
             initial="collapsed"
@@ -30,7 +26,7 @@ export default function Modal({ open, setOpen, children }: ModalProps) {
             }}
             transition={{ duration: 0.15, ease: [0.04, 0.62, 0.23, 0.98] }}
           >
-            <div className="fixed inset-0 bg-black bg-opacity-25" />
+            <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-25" />
           </m.div>
 
           <m.div

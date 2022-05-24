@@ -21,8 +21,8 @@ import { PlusCircleIcon } from "@heroicons/react/solid";
 import { generateUuid } from "../../../utils";
 import AppEditModal from "./AppEditModal";
 import Droppable from "../DragAndDrop/Droppable";
-import { GlobalContext } from "../../../pages";
 import { StateSetter } from "../../../types/common";
+import GlobalContext from "../../../contexts/GlobalContext/GlobalContext";
 
 interface EditableAppsGridProps {
   apps: Array<AppInterface>;

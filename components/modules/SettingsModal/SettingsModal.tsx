@@ -20,18 +20,40 @@ export default function SettingsModal({
 }: SettingsModalProps) {
   const [width, setWidth] = useState(999);
   const [menuVisible, setMenuVisible] = useState(false);
-  const isMobile = width > 992;
+  const mobileWidth = 922;
+
+  const isMobile = (width: number) => {
+    return width < mobileWidth;
+  };
 
   useEffect(() => {
-    window.addEventListener("resize", () => setWidth(window.innerWidth));
+    window.addEventListener("resize", handleWidthChange);
   }, []);
+
+  const handleWidthChange = () => {
+    const windowWidth = window.innerWidth;
+    setWidth(windowWidth);
+
+    if (isMobile(windowWidth)) {
+      closeMenuBar();
+    } else if (!isMobile(windowWidth)) {
+      openMenuBar();
+    }
+  };
 
   const closeMenuBar = () => {
     setMenuVisible(false);
   };
 
-  const openMenu = () => {
+  const openMenuBar = () => {
     setMenuVisible(true);
+  };
+
+  const handleSettingsContentClicked = () => {
+    console.log(menuVisible);
+    if (!isMobile(width) || !menuVisible) return;
+
+    closeMenuBar();
   };
 
   return (
@@ -57,7 +79,7 @@ export default function SettingsModal({
         )}
       </AnimatePresence>
 
-      {!menuVisible && (
+      {isMobile(width) && (
         <m.div
           className="fixed bottom-0 z-20"
           key="menu-open-button"
@@ -75,14 +97,18 @@ export default function SettingsModal({
         >
           <button
             className="rounded-full bg-primary-900/50 p-2 shadow-xl"
-            onClick={openMenu}
+            onClick={openMenuBar}
           >
             <MenuIcon className="h-8 w-8" />
           </button>
         </m.div>
       )}
 
-      <SettingsContent config={config} closeModal={() => setOpen(false)} />
+      <SettingsContent
+        onClick={handleSettingsContentClicked}
+        config={config}
+        closeModal={() => setOpen(false)}
+      />
     </Modal>
   );
 }
