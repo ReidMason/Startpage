@@ -1,7 +1,6 @@
 import dynamic from "next/dynamic";
-import { App as AppInterface } from "../../../services/config/types";
-import App from "../../App";
-import Skeleton from "../../skeleton/Skeleton";
+import { App as AppInterface } from "../../../services/server/config/types";
+import App from "../../App/App";
 import { m, AnimatePresence } from "framer-motion";
 
 interface AppsGridProps {
@@ -11,8 +10,7 @@ interface AppsGridProps {
 }
 
 const DynamicEditableAppsGrid = dynamic(
-  () => import("../EditableAppsGrid/EditableAppsGrid"),
-  { loading: () => <Skeleton /> }
+  () => import("../EditableAppsGrid/EditableAppsGrid")
 );
 
 export default function AppsGrid({
@@ -56,10 +54,10 @@ export default function AppsGrid({
             exit="hidden"
             variants={{
               shown: { opacity: 1 },
-              hidden: { opacity: 0.5 },
+              hidden: { opacity: 1 },
             }}
             transition={{
-              duration: 0.2,
+              delay: 0.05,
             }}
           >
             <div className="gap grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

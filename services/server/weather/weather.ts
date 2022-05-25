@@ -1,4 +1,4 @@
-import { getUnixTime } from "../../utils";
+import { getUnixTime } from "../../../utils";
 import { cacheWeatherData, getCacheData } from "../cache/cache";
 import { getConfig } from "../config/config";
 import { BasicWeatherData, Weather, WeatherDataResponse } from "./types";

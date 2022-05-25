@@ -1,8 +1,12 @@
+import { Controller } from "react-hook-form";
 import Input from "../../../input/Input";
 import Toggle from "../../../toggle/Toggle";
 import { SettingsSectionProps } from "../types";
 
-export default function WeatherSettings({ register }: SettingsSectionProps) {
+export default function WeatherSettings({
+  register,
+  control,
+}: SettingsSectionProps) {
   return (
     <>
       <Input
@@ -15,10 +19,13 @@ export default function WeatherSettings({ register }: SettingsSectionProps) {
         placeholder="Location"
         register={register("weather.location")}
       />
-      <div className="flex flex-col gap-2">
-        <p>Detailed weather display</p>
-        <Toggle defaultValue={false} setter={() => {}} />
-      </div>
+      <Controller
+        control={control}
+        name="weather.detailed"
+        render={({ field: { ref, ...field } }) => (
+          <Toggle label="Detailed weather display" {...field} />
+        )}
+      />
     </>
   );
 }

@@ -1,5 +1,8 @@
 import { useContext, useState } from "react";
-import { App as AppInterface, Config } from "../../../services/config/types";
+import {
+  App as AppInterface,
+  Config,
+} from "../../../services/server/config/types";
 import {
   DndContext,
   KeyboardSensor,
@@ -8,6 +11,8 @@ import {
   useSensors,
   DragOverlay,
   DragStartEvent,
+  DragOverEvent,
+  DragEndEvent,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -16,30 +21,25 @@ import {
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
 import SortableItem from "../DragAndDrop/SortableItem";
-import App from "../../App";
+import App from "../../App/App";
 import { PlusCircleIcon } from "@heroicons/react/solid";
 import { generateUuid } from "../../../utils";
 import AppEditModal from "./AppEditModal";
 import Droppable from "../DragAndDrop/Droppable";
 import { StateSetter } from "../../../types/common";
 import GlobalContext from "../../../contexts/GlobalContext/GlobalContext";
+import { updateConfig } from "../../../services/client/config/config";
 
 interface EditableAppsGridProps {
   apps: Array<AppInterface>;
 }
 
 const saveApps = async (
-  newApps: Array<AppInterface>,
+  newConfig: Partial<Config>,
   config: Config,
   setConfig: StateSetter<Config>
 ) => {
-  // TODO: Reqwrite this properly, maybe use handler functions
-  const newConfig: Config = { ...config!, apps: newApps };
-
-  fetch("/api/config", {
-    method: "POST",
-    body: JSON.stringify(newConfig),
-  }).then(() => setConfig!(newConfig));
+  setConfig(await updateConfig(config, newConfig));
 };
 
 export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
@@ -49,6 +49,7 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
   const [activeApp, setActiveApp] = useState<AppInterface | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editableApp, setEditableApp] = useState<AppInterface>();
+  const [hoveredBin, setHoveredBin] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -57,18 +58,17 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
     })
   );
 
-  function handleDragEnd(event: any) {
+  function handleDragEnd(event: DragEndEvent) {
     setActiveApp(null);
     const { active, over } = event;
 
+    // Item wasn't dragged over anything
+    if (over === null) return;
+
     // App was dragged over the bin so delete it
     if (over.id == "bin") {
-      const newApps = modifiedApps.filter((x) => x.id != active.id);
-      saveApps(newApps, config!, setConfig!);
-
-      setModifiedApps((modifiedApps) => {
-        return modifiedApps.filter((x) => x.id != active.id);
-      });
+      deleteApp(active.id);
+      return;
     }
 
     if (active.id !== over.id) {
@@ -81,28 +81,26 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
     }
   }
 
+  const deleteApp = (appId: string) => {
+    const newApps = modifiedApps.filter((x) => x.id != appId);
+    saveApps({ apps: newApps }, config!, setConfig!);
+
+    setModifiedApps((modifiedApps) => {
+      return modifiedApps.filter((x) => x.id != appId);
+    });
+  };
+
   const createNewApp = () => {
-    const newApps = [
-      ...modifiedApps,
-      {
-        icon: "mdi:square-edit-outline",
-        name: "New app",
-        url: "app.example.com",
-        id: generateUuid(),
-      },
-    ];
+    const newApp = {
+      icon: "mdi:square-edit-outline",
+      name: "New app",
+      url: "app.example.com",
+      id: generateUuid(),
+    };
 
-    saveApps(newApps, config!, setConfig!);
-
-    setModifiedApps([
-      ...modifiedApps,
-      {
-        icon: "mdi:square-edit-outline",
-        name: "New app",
-        url: "app.example.com",
-        id: generateUuid(),
-      },
-    ]);
+    const newApps = [...modifiedApps, newApp];
+    saveApps({ apps: newApps }, config!, setConfig!);
+    setModifiedApps([...modifiedApps, newApp]);
   };
 
   function handleDragStart(event: DragStartEvent) {
@@ -118,13 +116,21 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
     setEditModalOpen(false);
   };
 
+  const handleDragOver = (e: DragOverEvent) => {
+    if (!hoveredBin && e.over?.id === "bin") {
+      setHoveredBin(true);
+    } else if (hoveredBin) {
+      setHoveredBin(false);
+    }
+  };
+
   return (
     <>
       <DndContext
         sensors={sensors}
-        // collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
         onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
       >
         <SortableContext
           items={modifiedApps.map((x) => x.id)}
@@ -153,7 +159,11 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
           </button>
           <DragOverlay>
             {activeApp && (
-              <div className="cursor-grabbing rounded border-2 border-primary-200">
+              <div
+                className={`cursor-grabbing rounded border-2 border-primary-200 transition-opacity ${
+                  hoveredBin ? "opacity-20" : ""
+                }`}
+              >
                 <App app={activeApp} preview editMode />
               </div>
             )}
