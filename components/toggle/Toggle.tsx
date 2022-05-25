@@ -1,67 +1,61 @@
 import { v4 as uuidv4 } from "uuid";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { StateSetter } from "../../types/common";
 import { domMax, LazyMotion, m } from "framer-motion";
+import { State, Variant } from "../input/types";
+import { Switch } from "@headlessui/react";
 
 interface ToggleProps {
-  defaultValue: boolean;
-  setter: StateSetter<boolean>;
+  state?: State;
+  helperText?: string;
+  label?: string;
+  value: boolean;
+  variant?: Variant;
+  onChange: (checked: boolean) => void;
   disabled?: boolean;
 }
 
 export default function Toggle({
-  defaultValue,
-  setter,
+  state,
+  helperText,
+  label,
+  value,
+  variant,
+  onChange,
   disabled,
 }: ToggleProps) {
-  const [value, setValue] = useState(defaultValue);
-  const [id, setId] = useState<string>();
-
-  useEffect(() => {
-    // Genrate unique id
-    setId(uuidv4());
-  }, []);
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.checked);
-    setter(e.target.checked);
-  };
-
   const spring = {
     type: "spring",
     stiffness: 700,
     damping: 30,
   };
 
+  const disabledStyling = disabled ? "cursor-not-allowed opacity-50" : "";
+  const indicatorStyling = value
+    ? "justify-end dark:bg-primary-500"
+    : "justify-start dark:bg-primary-700";
+
   return (
-    <div className="flex items-center gap-2">
-      <LazyMotion features={domMax}>
-        <input
-          disabled={disabled}
-          className="absolute cursor-pointer opacity-0 disabled:cursor-not-allowed"
-          id={id}
-          type="checkbox"
+    <LazyMotion features={domMax}>
+      <Switch.Group as="div" className="flex flex-col">
+        <Switch.Label>{label}</Switch.Label>
+        <Switch
           checked={value}
-          onChange={handleChange}
-        />
-        <label
-          className={`flex ${value ? "" : ""} h-6 w-12 rounded-full ${
-            disabled ? "cursor-not-allowed opacity-50" : ""
-          } ${
-            value
-              ? "justify-end bg-primary-500"
-              : "justify-start bg-primary-700"
-          } cursor-pointer`}
-          htmlFor={id}
+          onChange={onChange}
+          className="relative mt-1 inline-flex h-6 w-11 items-center rounded-full"
         >
-          <m.div
-            className="h-6 w-6 rounded-full bg-primary-200"
-            layout
-            transition={spring}
-          />
-        </label>
-        <p>{value ? "Enabled" : "Disabled"}</p>
-      </LazyMotion>
-    </div>
+          <span className="sr-only">{label}</span>
+          <div
+            className={`flex h-full w-full rounded-full ${disabledStyling} ${indicatorStyling}`}
+          >
+            <m.div
+              className="h-6 w-6 rounded-full bg-primary-200"
+              layout
+              transition={spring}
+            />
+          </div>
+        </Switch>
+      </Switch.Group>
+    </LazyMotion>
   );
 }

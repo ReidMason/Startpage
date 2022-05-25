@@ -1,5 +1,5 @@
 import fs from "fs/promises";
-import { getUnixTime } from "../../utils";
+import { getUnixTime } from "../../../utils";
 import { Weather } from "../weather/types";
 import Cache from "./types";
 

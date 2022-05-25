@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { saveConfig } from "../../../services/config/config";
+import { saveConfig } from "../../../services/server/config/config";
 
 export default async function getConfig(
   req: NextApiRequest,

@@ -1,15 +1,15 @@
 import type { GetStaticProps, NextPage } from "next";
-import { Config } from "../services/config/types";
+import { Config } from "../services/server/config/types";
 import AppsGrid from "../components/modules/AppsGrid/AppsGrid";
 import GreetingText from "../components/modules/GreetingText";
-import { Weather } from "../services/weather/types";
+import { Weather } from "../services/server/weather/types";
 import SettingsButton from "../components/SettingsButton";
 import { useState } from "react";
 import Button from "../components/button/Button";
 import dynamic from "next/dynamic";
-import { getConfig } from "../services/config/config";
+import { getConfig } from "../services/server/config/config";
 import { LazyMotion } from "framer-motion";
-import { getWeatherData } from "../services/weather/weather";
+import { getWeatherData } from "../services/server/weather/weather";
 import WeatherDisplay from "../components/modules/WeatherDisplay";
 import GlobalContext from "../contexts/GlobalContext/GlobalContext";
 

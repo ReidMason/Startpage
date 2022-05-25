@@ -1,5 +1,5 @@
 import { AnimatePresence, m } from "framer-motion";
-import { Config } from "../../../services/config/types";
+import { Config } from "../../../services/server/config/types";
 import { StateSetter } from "../../../types/common";
 import Modal from "../../modal/Modal";
 import SettingsContent from "./SettingsContent";
@@ -51,7 +51,6 @@ export default function SettingsModal({
   };
 
   const handleSettingsContentClicked = () => {
-    console.log(menuVisible);
     if (!isMobile(width) || !menuVisible) return;
 
     closeMenuBar();
