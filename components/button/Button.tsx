@@ -40,6 +40,7 @@ interface ButtonInputProps {
   state?: State;
   variant?: Variant;
   pilled?: boolean;
+  disabled?: boolean;
 }
 
 export default function Button({
@@ -50,6 +51,7 @@ export default function Button({
   state,
   variant,
   pilled,
+  disabled,
 }: ButtonInputProps) {
   const buttonType: Type = type ?? "button";
 
@@ -63,6 +65,7 @@ export default function Button({
       onClick={onClick}
       className={`${dynamicStyles} min-w-[8rem] border-2 border-transparent p-1 px-4 transition duration-300 ${className}`}
       type={buttonType}
+      disabled={disabled}
     >
       {children}
     </button>

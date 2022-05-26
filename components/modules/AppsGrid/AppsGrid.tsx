@@ -23,11 +23,11 @@ export default function AppsGrid({
   );
 
   return (
-    <div className="relative">
+    <div className="">
       <AnimatePresence initial={false}>
         {editMode && (
           <m.div
-            className="absolute w-full"
+            className="w-full"
             key="editable-apps-grid"
             initial="hidden"
             animate="shown"
@@ -47,7 +47,7 @@ export default function AppsGrid({
         )}
         {!editMode && (
           <m.div
-            className="absolute w-full"
+            className="w-full"
             key="apps-grid"
             initial="hidden"
             animate="shown"

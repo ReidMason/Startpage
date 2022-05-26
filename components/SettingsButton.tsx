@@ -13,10 +13,8 @@ export default function SettingsButton({
   };
 
   return (
-    <div className="fixed bottom-0 left-0 m-4">
-      <Button variant="outline" onClick={openSettings}>
-        Settings
-      </Button>
-    </div>
+    <Button variant="outline" onClick={openSettings}>
+      Settings
+    </Button>
   );
 }
