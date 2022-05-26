@@ -20,7 +20,7 @@ export default function Collapse({ header, body }: CollapseProps) {
         <Disclosure defaultOpen={defaultOpen}>
           {({ open }) => (
             <>
-              <Disclosure.Button className="w-full">
+              <Disclosure.Button className="w-full cursor-pointer" as="div">
                 <div className="flex items-center justify-between pr-4">
                   {header}
                   <div className="flex gap-1">

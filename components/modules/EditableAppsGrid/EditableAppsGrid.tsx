@@ -21,7 +21,7 @@ import {
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
 import SortableItem from "../DragAndDrop/SortableItem";
-import App from "../../App/App";
+import App from "../../app/App";
 import { PlusCircleIcon } from "@heroicons/react/solid";
 import { generateUuid } from "../../../utils";
 import AppEditModal from "./AppEditModal";
