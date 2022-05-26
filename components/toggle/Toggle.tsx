@@ -1,6 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
-import { useEffect, useState } from "react";
-import { StateSetter } from "../../types/common";
 import { domMax, LazyMotion, m } from "framer-motion";
 import { State, Variant } from "../input/types";
 import { Switch } from "@headlessui/react";

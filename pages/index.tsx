@@ -12,6 +12,9 @@ import { LazyMotion } from "framer-motion";
 import { getWeatherData } from "../services/server/weather/weather";
 import WeatherDisplay from "../components/modules/WeatherDisplay";
 import GlobalContext from "../contexts/GlobalContext/GlobalContext";
+import { Extension } from "../components/extensions/types";
+import { generateUuid } from "../utils";
+import Timer from "../components/extensions/timer/Timer";
 
 interface StartpageProps {
   configData: Config;
@@ -21,11 +24,12 @@ interface StartpageProps {
 const DynamicSettingsModal = dynamic(
   () => import("../components/modules/SettingsModal/SettingsModal")
 );
+const DynamicExtensionsDisplay = dynamic(
+  () => import("../components/extensions/ExtensionsDisplay")
+);
 
 const loadFeatures = () =>
   import("../framer-features").then((res) => res.default);
-
-// TODO: Rewrite this properly using this guide https://felixgerschau.com/react-typescript-context/ the context and stuff should be in separate folders
 
 const Home: NextPage<StartpageProps> = ({
   configData,
@@ -34,6 +38,12 @@ const Home: NextPage<StartpageProps> = ({
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [config, setConfig] = useState(configData);
+  const [extensions, setExtensions] = useState<Array<Extension>>([]);
+
+  const AddNewModule = (reactComponent: Function) => {
+    extensions.push({ id: generateUuid(), element: reactComponent });
+    setExtensions([...extensions]);
+  };
 
   return (
     <GlobalContext.Provider value={{ config, setConfig }}>
@@ -60,6 +70,11 @@ const Home: NextPage<StartpageProps> = ({
                 appNameFilter={""}
                 editMode={editMode}
               />
+
+              <DynamicExtensionsDisplay
+                extensions={extensions}
+                setExtensions={setExtensions}
+              />
             </div>
             <DynamicSettingsModal
               config={config}
@@ -67,11 +82,12 @@ const Home: NextPage<StartpageProps> = ({
               setOpen={setSettingsModalOpen}
             />
           </div>
-          <div className="fixed bottom-0 left-40 m-4">
+          <div className="fixed bottom-0 left-0 m-4 flex gap-4">
             <SettingsButton setSettingsModalOpen={setSettingsModalOpen} />
             <Button onClick={() => setEditMode((prev) => !prev)}>
               Enable {editMode ? "view" : "edit"} mode
             </Button>
+            <Button onClick={() => AddNewModule(Timer)}>Add timer</Button>
           </div>
         </div>
       </LazyMotion>
