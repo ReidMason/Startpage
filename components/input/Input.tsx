@@ -3,6 +3,7 @@ import { UseFormRegisterReturn } from "react-hook-form";
 import { Autocomplete, State, Variant } from "./types";
 
 interface TextInputProps {
+  className?: string;
   type?: HTMLInputTypeAttribute;
   state?: State;
   autoComplete?: Autocomplete;
@@ -30,6 +31,7 @@ export default function Input({
   pilled,
   variant,
   disabled,
+  className,
 }: TextInputProps) {
   const textType = type ?? "text";
 
@@ -38,7 +40,7 @@ export default function Input({
   const inputVariant = `variant-${variant ?? "default"}`;
 
   return (
-    <div className="flex flex-col dark:text-primary-800">
+    <div className={`${className} flex flex-col dark:text-primary-800`}>
       {label && (
         <label className="dark:text-primary-50" htmlFor={register?.name}>
           {label}

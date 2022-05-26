@@ -4,8 +4,9 @@ import { StateSetter } from "../../../types/common";
 import Modal from "../../modal/Modal";
 import SettingsContent from "./SettingsContent";
 import SideMenu from "./SideMenu";
-import { MenuIcon } from "@heroicons/react/outline";
 import { useEffect, useState } from "react";
+import SideMenuIcon from "./SideMenuIcon";
+import { settingsSections } from "./settingsSections";
 
 interface SettingsModalProps {
   open: boolean;
@@ -18,6 +19,9 @@ export default function SettingsModal({
   setOpen,
   config,
 }: SettingsModalProps) {
+  const [scrolledSectionName, setScrolledSectionName] = useState(
+    settingsSections[0].name
+  );
   const [width, setWidth] = useState(999);
   const [menuVisible, setMenuVisible] = useState(false);
   const mobileWidth = 922;
@@ -56,6 +60,25 @@ export default function SettingsModal({
     closeMenuBar();
   };
 
+  const handleScroll = () => {
+    for (let i = 0; i < settingsSections.length; i++) {
+      const section = settingsSections[i];
+      const element = section.ref?.current;
+      if (element && isScrolledIntoView(element)) {
+        setScrolledSectionName(section.name);
+        return;
+      }
+    }
+  };
+
+  function isScrolledIntoView(el: HTMLDivElement) {
+    var rect = el.getBoundingClientRect();
+    var elemTop = rect.top;
+    var elemBottom = rect.bottom;
+
+    return elemTop >= 0 && elemBottom <= window.innerHeight;
+  }
+
   return (
     <Modal open={open} setOpen={setOpen}>
       <AnimatePresence initial={false}>
@@ -74,40 +97,21 @@ export default function SettingsModal({
               ease: [0.04, 0.62, 0.23, 0.98],
             }}
           >
-            <SideMenu />
+            <SideMenu
+              scrolledSectionName={scrolledSectionName}
+              closeMenuBar={closeMenuBar}
+            />
           </m.div>
         )}
       </AnimatePresence>
 
-      {isMobile(width) && (
-        <m.div
-          className="fixed bottom-0 z-20"
-          key="menu-open-button"
-          initial="collapsed"
-          animate="open"
-          exit="collapsed"
-          variants={{
-            open: { y: 0 },
-            collapsed: { y: 50 },
-          }}
-          transition={{
-            duration: 0.4,
-            ease: [0.04, 0.62, 0.23, 0.98],
-          }}
-        >
-          <button
-            className="rounded-full bg-primary-900/50 p-2 shadow-xl"
-            onClick={openMenuBar}
-          >
-            <MenuIcon className="h-8 w-8" />
-          </button>
-        </m.div>
-      )}
+      {isMobile(width) && <SideMenuIcon openMenuBar={openMenuBar} />}
 
       <SettingsContent
         onClick={handleSettingsContentClicked}
         config={config}
         closeModal={() => setOpen(false)}
+        onScroll={handleScroll}
       />
     </Modal>
   );

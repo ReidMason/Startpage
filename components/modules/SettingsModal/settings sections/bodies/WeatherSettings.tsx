@@ -1,7 +1,7 @@
 import { Controller } from "react-hook-form";
-import Input from "../../../input/Input";
-import Toggle from "../../../toggle/Toggle";
-import { SettingsSectionProps } from "../types";
+import Input from "../../../../input/Input";
+import Toggle from "../../../../toggle/Toggle";
+import { SettingsSectionProps } from "../../types";
 
 export default function WeatherSettings({
   register,

@@ -1,5 +1,5 @@
-import Input from "../../../input/Input";
-import { SettingsSectionProps } from "../types";
+import Input from "../../../../input/Input";
+import { SettingsSectionProps } from "../../types";
 
 export default function GeneralSettings({ register }: SettingsSectionProps) {
   return (
@@ -24,7 +24,6 @@ export default function GeneralSettings({ register }: SettingsSectionProps) {
         placeholder="Custom search url"
         register={register("general.customSearchUrl")}
       />
-      <div className="bg-yellow-500 py-96">Something</div>
     </>
   );
 }
