@@ -6,14 +6,8 @@ import {
   Transition,
 } from "framer-motion";
 import React from "react";
+import PresenceAnimation from "../animations/PresenceAnimation";
 import { Extension } from "./types";
-
-const classNames = {
-  enter: "transition duration-150 scale-0 opacity-40 origin-bottom",
-  enterActive: "transition duration-150 scale-100 opacity-100 origin-bottom",
-  enterDone: "",
-  exit: "transition duration-150 opacity-0 transform -translate-y-3",
-};
 
 interface ExtensionsDisplayProps {
   extensions: Array<Extension>;
@@ -40,17 +34,9 @@ export default function ExtensionsDisplay({
         <AnimatePresence initial={false}>
           {extensions.map((extension) => (
             <m.div layout transition={spring} key={extension.id}>
-              <m.div
+              <PresenceAnimation
                 className="hover:bg-nord-1 group relative overflow-hidden rounded p-3 hover:shadow-md"
                 key={"animate-" + extension.id}
-                initial="exit"
-                animate="open"
-                exit="exit"
-                variants={{
-                  open: { y: 0, opacity: 1, display: "block" },
-                  exit: { y: "50%", opacity: 0, display: "absolute" },
-                }}
-                transition={{ duration: 0.1 }}
               >
                 <button
                   className="text-nord-4 bg-nord-11 absolute top-0 right-0 rounded-bl-md p-0.5 opacity-0 shadow-sm transition-all hover:-translate-x-0.5 hover:translate-y-0.5 hover:scale-125 group-hover:opacity-100"
@@ -72,7 +58,7 @@ export default function ExtensionsDisplay({
                   </svg>
                 </button>
                 <extension.element />
-              </m.div>
+              </PresenceAnimation>
             </m.div>
           ))}
         </AnimatePresence>

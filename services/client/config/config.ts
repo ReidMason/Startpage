@@ -3,7 +3,7 @@ import { Config } from "../../server/config/types";
 export async function updateConfig(config: Config, newConfig: Partial<Config>) {
   const updatedConfig: Config = { ...config!, ...newConfig };
 
-  await saveConfig(updatedConfig);
+  // await saveConfig(updatedConfig);
 
   return updatedConfig;
 }

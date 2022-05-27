@@ -1,7 +1,13 @@
 import dynamic from "next/dynamic";
 import { App as AppInterface } from "../../../services/server/config/types";
 import App from "../../app/App";
-import { m, AnimatePresence } from "framer-motion";
+import {
+  m,
+  AnimatePresence,
+  domMax,
+  LazyMotion,
+  Transition,
+} from "framer-motion";
 
 interface AppsGridProps {
   apps: Array<AppInterface>;
@@ -22,8 +28,13 @@ export default function AppsGrid({
     x.name.toLowerCase().includes(appNameFilter)
   );
 
+  const spring: Transition = {
+    type: "spring",
+    duration: 0.25,
+  };
+
   return (
-    <div className="">
+    <LazyMotion features={domMax}>
       <AnimatePresence initial={false}>
         {editMode && (
           <m.div
@@ -62,12 +73,14 @@ export default function AppsGrid({
           >
             <div className="gap grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {filteredApps.map((app) => (
-                <App app={app} key={app.id} />
+                <m.div layout transition={spring} key={app.id}>
+                  <App app={app} />
+                </m.div>
               ))}
             </div>
           </m.div>
         )}
       </AnimatePresence>
-    </div>
+    </LazyMotion>
   );
 }
