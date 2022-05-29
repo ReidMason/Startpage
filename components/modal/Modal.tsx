@@ -1,6 +1,8 @@
 import { Dialog } from "@headlessui/react";
-import { Dispatch, ReactNode, SetStateAction } from "react";
+import { Dispatch, ReactNode, SetStateAction, useEffect } from "react";
 import { m, AnimatePresence } from "framer-motion";
+import { useContext } from "react";
+import GlobalContext from "../../contexts/GlobalContext/GlobalContext";
 
 type StateSetter<T> = Dispatch<SetStateAction<T>>;
 
@@ -11,6 +13,12 @@ export interface ModalProps {
 }
 
 export default function Modal({ open, setOpen, children }: ModalProps) {
+  const { setBlurred } = useContext(GlobalContext);
+
+  useEffect(() => {
+    if (setBlurred) setBlurred(open);
+  }, [open]);
+
   return (
     <AnimatePresence>
       {open && (

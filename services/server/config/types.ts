@@ -6,12 +6,17 @@ export interface Config {
   weather: WeatherConfig;
 }
 
+export const appearances = ["dark", "light", "system"] as const;
+export type Appearance = typeof appearances[number];
+
 export interface GeneralConfig {
   searchUrl: string;
   customSearchUrl: string;
   customSearchEnabled: boolean;
   calendarUrl: string;
   searchPlaceholder: string;
+  theme: string;
+  appearance: Appearance;
 }
 
 export interface WeatherConfig {

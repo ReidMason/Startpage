@@ -1,4 +1,4 @@
-import { UIEventHandler, useContext, useRef } from "react";
+import { UIEventHandler, useContext, useEffect, useRef } from "react";
 import Button from "../../button/Button";
 import { useForm } from "react-hook-form";
 import { Config } from "../../../services/server/config/types";
@@ -26,8 +26,20 @@ export default function SettingsContent({
     register,
     handleSubmit,
     control,
+    watch,
     formState: { errors },
   } = useForm<Config>({ defaultValues: config });
+
+  useEffect(() => {
+    const subscription = watch((data) => {
+      setConfig!(data as Config);
+      console.log(data);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [watch]);
 
   const saveSettings = async (data: Config) => {
     await saveConfig(data);
@@ -36,18 +48,6 @@ export default function SettingsContent({
   };
 
   settingsSections.map((x) => (x.ref = useRef(null)));
-
-  const scrollTest = () => {
-    const section = settingsSections.find(
-      (x) => x.name.toLowerCase() === "providers"
-    );
-    if (!section) return;
-
-    const ref = section.ref?.current;
-    if (!ref) return;
-
-    ref.scrollIntoView();
-  };
 
   return (
     <form

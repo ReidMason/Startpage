@@ -13,6 +13,7 @@ async function ensureCacheFileExists() {
   try {
     await fs.stat("./data/cache.json");
   } catch (ex) {
+    console.warn("Failed to find cache file. Generating a new one.");
     await fs.writeFile("./data/cache.json", JSON.stringify({}));
   }
 }

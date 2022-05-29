@@ -8,6 +8,7 @@ import {
   LazyMotion,
   Transition,
 } from "framer-motion";
+import LayoutGrid from "../../grid/LayoutGrid";
 
 interface AppsGridProps {
   apps: Array<AppInterface>;
@@ -42,43 +43,47 @@ export default function AppsGrid({
             key="editable-apps-grid"
             initial="hidden"
             animate="shown"
-            exit="hidden"
+            exit="exit"
             variants={{
-              shown: { opacity: 1 },
-              hidden: { opacity: 0.5 },
+              shown: { opacity: 1, y: 0 },
+              hidden: { opacity: 0, y: "100%" },
+              exit: { opacity: 0, y: "-100%" },
             }}
             transition={{
-              duration: 0.2,
+              duration: 0.4,
             }}
           >
-            <div className="gap grid gap-4 first-line:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              <DynamicEditableAppsGrid apps={apps} />
-            </div>
+            <m.div layout transition={spring}>
+              <LayoutGrid>
+                <DynamicEditableAppsGrid apps={apps} />
+              </LayoutGrid>
+            </m.div>
           </m.div>
         )}
         {!editMode && (
-          <m.div
-            className="w-full"
-            key="apps-grid"
-            initial="hidden"
-            animate="shown"
-            exit="hidden"
-            variants={{
-              shown: { opacity: 1 },
-              hidden: { opacity: 1 },
-            }}
-            transition={{
-              delay: 0.05,
-            }}
-          >
-            <div className="gap grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {filteredApps.map((app) => (
+          <LayoutGrid>
+            {filteredApps.map((app) => (
+              <m.div
+                className="w-full"
+                key="editable-apps-grid"
+                initial="hidden"
+                animate="shown"
+                exit="exit"
+                variants={{
+                  shown: { opacity: 1, y: 0 },
+                  hidden: { opacity: 0, y: "100%" },
+                  exit: { opacity: 0, y: "-100%" },
+                }}
+                transition={{
+                  duration: 0.4,
+                }}
+              >
                 <m.div layout transition={spring} key={app.id}>
                   <App app={app} />
                 </m.div>
-              ))}
-            </div>
-          </m.div>
+              </m.div>
+            ))}
+          </LayoutGrid>
         )}
       </AnimatePresence>
     </LazyMotion>

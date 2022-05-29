@@ -1,6 +1,8 @@
 import { domMax, LazyMotion, m } from "framer-motion";
 import { State, Variant } from "../input/types";
 import { Switch } from "@headlessui/react";
+import { springTranstition } from "../../common";
+import FormElementWrapper from "../FormElement/FormElementWrapper";
 
 interface ToggleProps {
   state?: State;
@@ -10,6 +12,7 @@ interface ToggleProps {
   variant?: Variant;
   onChange: (checked: boolean) => void;
   disabled?: boolean;
+  noHelperText?: boolean;
 }
 
 export default function Toggle({
@@ -20,13 +23,8 @@ export default function Toggle({
   variant,
   onChange,
   disabled,
+  noHelperText,
 }: ToggleProps) {
-  const spring = {
-    type: "spring",
-    stiffness: 700,
-    damping: 30,
-  };
-
   const disabledStyling = disabled ? "cursor-not-allowed opacity-50" : "";
   const indicatorStyling = value
     ? "justify-end dark:bg-primary-500"
@@ -34,25 +32,30 @@ export default function Toggle({
 
   return (
     <LazyMotion features={domMax}>
-      <Switch.Group as="div" className="flex flex-col">
-        <Switch.Label>{label}</Switch.Label>
-        <Switch
-          checked={value}
-          onChange={onChange}
-          className="relative mt-1 inline-flex h-6 w-11 items-center rounded-full"
-        >
-          <span className="sr-only">{label}</span>
-          <div
-            className={`flex h-full w-full rounded-full ${disabledStyling} ${indicatorStyling}`}
+      <FormElementWrapper
+        label={label}
+        helperText={helperText}
+        noHelperText={noHelperText}
+      >
+        <Switch.Group as="div" className="flex flex-col">
+          <Switch
+            checked={value}
+            onChange={onChange}
+            className="relative mt-1 inline-flex h-6 w-11 items-center rounded-full"
           >
-            <m.div
-              className="h-6 w-6 rounded-full bg-primary-200"
-              layout
-              transition={spring}
-            />
-          </div>
-        </Switch>
-      </Switch.Group>
+            <span className="sr-only">{label}</span>
+            <div
+              className={`flex h-full w-full rounded-full ${disabledStyling} ${indicatorStyling}`}
+            >
+              <m.div
+                className="h-6 w-6 rounded-full bg-primary-200"
+                layout
+                transition={springTranstition}
+              />
+            </div>
+          </Switch>
+        </Switch.Group>
+      </FormElementWrapper>
     </LazyMotion>
   );
 }

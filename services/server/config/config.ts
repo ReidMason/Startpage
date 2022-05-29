@@ -1,11 +1,36 @@
 import fs from "fs";
 import { Config } from "./types";
+import { merge } from "lodash-es";
 
 const CONFIG_PATH = "./data/config.json";
 
+const defaultConfigData: Config = {
+  version: parseInt(process.env.CONFIG_VERSION ?? "1"),
+  general: {
+    searchUrl: "https://www.google.com/search?q=",
+    customSearchUrl: "",
+    customSearchEnabled: false,
+    calendarUrl: "https://calendar.google.com/calendar/",
+    searchPlaceholder: "Search...",
+    theme: "default",
+    appearance: "system",
+  },
+  apps: [],
+  providers: [],
+  weather: {
+    enabled: false,
+    location: "",
+    detailed: false,
+    apiKey: "",
+  },
+};
+
 export async function getConfig(): Promise<Config> {
   await ensureConfigExists();
-  return JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8"));
+
+  const config = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8"));
+
+  return merge(defaultConfigData, config);
 }
 
 async function ensureConfigExists() {
@@ -13,25 +38,7 @@ async function ensureConfigExists() {
   try {
     await fs.statSync(CONFIG_PATH);
   } catch (ex) {
-    console.info("Failed to find config file. Generating a new one.");
-    const defaultConfigData: Config = {
-      version: parseInt(process.env.CONFIG_VERSION ?? "1"),
-      general: {
-        searchUrl: "https://www.google.com/search?q=",
-        customSearchUrl: "",
-        customSearchEnabled: false,
-        calendarUrl: "https://calendar.google.com/calendar/",
-        searchPlaceholder: "Search...",
-      },
-      apps: [],
-      providers: [],
-      weather: {
-        enabled: false,
-        location: "",
-        detailed: false,
-        apiKey: "",
-      },
-    };
+    console.warn("Failed to find config file. Generating a new one.");
     await saveConfig(defaultConfigData);
   }
 }

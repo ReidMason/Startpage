@@ -1,4 +1,5 @@
 import React from "react";
+import { Config } from "../../../../services/server/config/types";
 import Collapse from "../../../collapse/Collapse";
 import HorizontalRule from "../../../horizontal rule/HorizontalRule";
 import { SettingsSection, SettingsSectionProps } from "../types";
