@@ -23,7 +23,7 @@ export default function TimerDisplay({
 
   return (
     <div
-      className={`border-nord-4 flex border-b align-baseline transition-all ${
+      className={`flex border-b border-primary-100 align-baseline transition-all dark:border-primary-700 ${
         editModeFirstRender ? "opacity-50" : ""
       } ${
         editMode && !editModeFirstRender

@@ -3,11 +3,15 @@ import type { Variant, Styles, State, Type } from "./types";
 
 const styles: Styles = {
   default: {
-    default: "text-primary-50 bg-primary-400 hover:bg-primary-300",
-    danger: "text-primary-50 bg-red-400 hover:bg-red-300",
-    warning: "text-primary-50 bg-yellow-400 hover:bg-yellow-300",
-    success: "text-primary-50 bg-green-400 hover:bg-green-300",
-    grey: "text-primary-50 bg-grey-400 hover:bg-primary-300",
+    default:
+      "text-primary-400 dark:text-primary-50 dark:bg-primary-400 bg-primary-200 hover:bg-primary-300",
+    danger:
+      "text-primary-400 dark:text-primary-50 bg-red-200 dark:bg-red-400 hover:bg-red-300",
+    warning:
+      "text-primary-400 dark:text-primary-50 bg-yellow-200 dark:bg-yellow-400 hover:bg-yellow-300",
+    success:
+      "text-primary-400 dark:text-primary-50 bg-green-200 dark:bg-green-400 hover:bg-green-300",
+    grey: "text-primary-400 dark:text-primary-50 bg-grey-200 dark:bg-grey-400 hover:bg-grey-300",
     dark: "text-primary-50 bg-primary-600 hover:bg-primary-500",
   },
   outline: {
@@ -63,7 +67,7 @@ export default function Button({
   return (
     <button
       onClick={onClick}
-      className={`${dynamicStyles} min-w-[8rem] border-2 border-transparent p-1 px-4 transition duration-300 ${className}`}
+      className={`${dynamicStyles} min-w-[8rem] cursor-pointer border-2 border-transparent p-1 px-4 transition duration-300 ${className}`}
       type={buttonType}
       disabled={disabled}
     >

@@ -1,20 +1,18 @@
 import type { GetStaticProps, NextPage } from "next";
 import { Config } from "../services/server/config/types";
-import AppsGrid from "../components/modules/AppsGrid/AppsGrid";
-import GreetingText from "../components/modules/GreetingText";
 import { Weather } from "../services/server/weather/types";
-import SettingsButton from "../components/SettingsButton";
-import { useState } from "react";
-import Button from "../components/button/Button";
+import SettingsButtons from "../components/SettingsButtons";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { getConfig } from "../services/server/config/config";
 import { LazyMotion } from "framer-motion";
 import { getWeatherData } from "../services/server/weather/weather";
-import WeatherDisplay from "../components/modules/WeatherDisplay";
 import GlobalContext from "../contexts/GlobalContext/GlobalContext";
 import { Extension } from "../components/extensions/types";
-import { generateUuid } from "../utils";
-import Timer from "../components/extensions/timer/Timer";
+import Grid from "../components/grid/Grid";
+import Greeting from "../components/modules/Greeting/Greeting";
+import Searchbar from "../components/modules/Searchbar/Searchbar";
+import AppsGrid from "../components/modules/AppsGrid/AppsGrid";
 
 interface StartpageProps {
   configData: Config;
@@ -24,6 +22,7 @@ interface StartpageProps {
 const DynamicSettingsModal = dynamic(
   () => import("../components/modules/SettingsModal/SettingsModal")
 );
+
 const DynamicExtensionsDisplay = dynamic(
   () => import("../components/extensions/ExtensionsDisplay")
 );
@@ -36,61 +35,80 @@ const Home: NextPage<StartpageProps> = ({
   weatherData,
 }: StartpageProps) => {
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
-  const [editMode, setEditMode] = useState(false);
   const [config, setConfig] = useState(configData);
+  const [editMode, setEditMode] = useState(false);
+  const [appFilter, setAppFilter] = useState("");
   const [extensions, setExtensions] = useState<Array<Extension>>([]);
+  const [darkmode, setDarkmode] = useState<boolean>(true);
+  const [blurred, setBlurred] = useState<boolean>(false);
 
-  const AddNewModule = (reactComponent: Function) => {
-    extensions.push({ id: generateUuid(), element: reactComponent });
-    setExtensions([...extensions]);
-  };
+  useEffect(() => {
+    // Darkmode check
+    // setDarkmode(window.matchMedia("(prefers-color-scheme: dark)").matches);
+  }, []);
+
+  useEffect(() => {
+    if (config.general.appearance === "system") {
+      const useDarkmode = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+      if (useDarkmode) document.documentElement.classList.add("dark");
+      else document.documentElement.classList.remove("dark");
+    } else if (config.general.appearance === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [darkmode, config]);
 
   return (
-    <GlobalContext.Provider value={{ config, setConfig }}>
-      <LazyMotion features={loadFeatures} strict>
-        <div
-          className={`h-screen transition ${settingsModalOpen ? "blur" : ""}`}
-        >
-          <div className="container mx-auto mb-8 pt-12 text-white lg:pt-28">
-            <div className="mx-auto w-10/12 max-w-screen-xl px-4 md:w-11/12 lg:w-full">
-              <div className="mb-4 md:flex">
-                <GreetingText calendarUrl={config.general.calendarUrl} />
-                <div className="ml-auto">
-                  {config.weather.enabled && weatherData && (
-                    <WeatherDisplay
-                      weatherData={weatherData}
-                      detailed={config.weather.detailed}
-                    />
-                  )}
-                </div>
-              </div>
-
-              <AppsGrid
-                apps={config.apps}
-                appNameFilter={""}
+    <GlobalContext.Provider
+      value={{ config, setConfig, darkmode, setDarkmode, setBlurred }}
+    >
+      <div className={`h-screen ${blurred && "blur"}`}>
+        <LazyMotion features={loadFeatures} strict>
+          <Grid className="container mx-auto gap-8 px-8 pt-28 text-primary-300 dark:text-primary-100">
+            <div className="col-span-full">
+              <Searchbar config={config} setAppFilter={setAppFilter} />
+            </div>
+            <div className="col-span-full">
+              <Greeting
+                appFilter={appFilter}
+                config={config}
+                weatherData={weatherData}
                 editMode={editMode}
               />
-
+            </div>
+            <div className="col-span-full sm:mb-12 md:mb-24">
+              <AppsGrid
+                apps={config.apps}
+                appNameFilter={appFilter}
+                editMode={editMode}
+              />
+            </div>
+            <div className="col-span-full">
               <DynamicExtensionsDisplay
                 extensions={extensions}
                 setExtensions={setExtensions}
               />
             </div>
-            <DynamicSettingsModal
-              config={config}
-              open={settingsModalOpen}
-              setOpen={setSettingsModalOpen}
-            />
-          </div>
-          <div className="fixed bottom-0 left-0 m-4 flex gap-4">
-            <SettingsButton setSettingsModalOpen={setSettingsModalOpen} />
-            <Button onClick={() => setEditMode((prev) => !prev)}>
-              Enable {editMode ? "view" : "edit"} mode
-            </Button>
-            <Button onClick={() => AddNewModule(Timer)}>Add timer</Button>
-          </div>
-        </div>
-      </LazyMotion>
+          </Grid>
+
+          <SettingsButtons
+            setSettingsModalOpen={setSettingsModalOpen}
+            editMode={editMode}
+            setEditMode={setEditMode}
+            extensions={extensions}
+            setExtensions={setExtensions}
+          />
+
+          <DynamicSettingsModal
+            config={config}
+            open={settingsModalOpen}
+            setOpen={setSettingsModalOpen}
+          />
+        </LazyMotion>
+      </div>
     </GlobalContext.Provider>
   );
 };

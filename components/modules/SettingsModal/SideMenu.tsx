@@ -22,11 +22,17 @@ export default function SideMenu({
   return (
     <div className="sticky top-24 flex h-full w-64 flex-col p-6 pt-12 text-primary-50 dark:bg-primary-900">
       <h1 className="mb-4 text-center text-2xl">Settings</h1>
-      <Input placeholder="Search..." pilled state="dark" />
+      <Input placeholder="Search..." pilled state="dark" noLabel noHelperText />
       <div className="ml-2 flex flex-col gap-2">
         {settingsSections.map((section) => (
           <Button
-            className="text-left"
+            className={`text-left 
+              ${
+                scrolledSectionName === section.name
+                  ? "bg-primary-200 dark:bg-primary-500"
+                  : ""
+              }
+            `}
             variant="ghost"
             onClick={() => scrollToSection(section)}
             key={section.name}
@@ -35,13 +41,7 @@ export default function SideMenu({
               <div className={`rounded-lg p-1 ${section.iconBg}`}>
                 <section.icon />
               </div>
-              <span
-                className={
-                  scrolledSectionName === section.name ? "text-red-500" : ""
-                }
-              >
-                {section.name}
-              </span>
+              <span>{section.name}</span>
             </div>
           </Button>
         ))}

@@ -8,7 +8,9 @@ export default function WeatherHeading({ control }: SettingsSectionProps) {
     <Controller
       control={control}
       name="weather.enabled"
-      render={({ field: { ref, ...field } }) => <Toggle {...field} />}
+      render={({ field: { ref, ...field } }) => (
+        <Toggle {...field} noHelperText />
+      )}
     />
   );
 }

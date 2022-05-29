@@ -207,68 +207,66 @@ export default function Timer() {
   };
 
   return (
-    <div className="flex w-52 flex-col items-center gap-4">
-      <div className="flex flex-col items-center gap-2">
-        <label
-          className={`pl-4 ${timerFinished ? "animate-bounce" : ""} ${
-            (!editMode || editModeFirstRender) && !timerRunning
-              ? "cursor-pointer"
-              : ""
-          }`}
-          onClick={enableEditMode}
-          onMouseDown={(e) => e.preventDefault()}
-        >
-          <TimerDisplay
-            editMode={editMode}
-            editModeFirstRender={editModeFirstRender}
-            timer={editMode ? timer : timeRemaining}
-          />
-          <input
-            className="absolute h-0 w-0 text-black opacity-0"
-            autoComplete="off"
-            id="timeEditor"
-            onBlur={() => setEditMode(false)}
-            onSubmit={startTimer}
-            value={timeDisplay}
-            onChange={handleTimerInput}
-            type="tel"
-            maxLength={6}
-          />
-        </label>
+    <div className="flex flex-col items-center gap-2">
+      <label
+        className={`pl-4 ${timerFinished ? "animate-bounce" : ""} ${
+          (!editMode || editModeFirstRender) && !timerRunning
+            ? "cursor-pointer"
+            : ""
+        }`}
+        onClick={enableEditMode}
+        onMouseDown={(e) => e.preventDefault()}
+      >
+        <TimerDisplay
+          editMode={editMode}
+          editModeFirstRender={editModeFirstRender}
+          timer={editMode ? timer : timeRemaining}
+        />
+        <input
+          className="absolute h-0 w-0 text-black opacity-0"
+          autoComplete="off"
+          id="timeEditor"
+          onBlur={() => setEditMode(false)}
+          onSubmit={startTimer}
+          value={timeDisplay}
+          onChange={handleTimerInput}
+          type="tel"
+          maxLength={6}
+        />
+      </label>
 
-        <div className="grid grid-cols-2 gap-4">
-          {!timerRunning ? (
-            timerFinished ? (
-              <Button
-                className="w-24 min-w-0"
-                onClick={acknowledgeAlarmFinished}
-                disabled={!anyTimerValueEntered}
-              >
-                Okay
-              </Button>
-            ) : (
-              <Button
-                className="w-24 min-w-0"
-                onClick={startTimer}
-                disabled={!anyTimerValueEntered}
-              >
-                Start
-              </Button>
-            )
-          ) : (
-            <Button className="w-24 min-w-0" onClick={stopTimer}>
-              Stop
+      <div className="grid grid-cols-2 gap-4">
+        {!timerRunning ? (
+          timerFinished ? (
+            <Button
+              className="w-24 min-w-0"
+              onClick={acknowledgeAlarmFinished}
+              disabled={!anyTimerValueEntered}
+            >
+              Okay
             </Button>
-          )}
-
-          <Button
-            className="w-24 min-w-0"
-            onClick={resetTimer}
-            disabled={!anyTimerValueEntered || timerAndTimeRemainingMatch}
-          >
-            Reset
+          ) : (
+            <Button
+              className="w-24 min-w-0"
+              onClick={startTimer}
+              disabled={!anyTimerValueEntered}
+            >
+              Start
+            </Button>
+          )
+        ) : (
+          <Button className="w-24 min-w-0" onClick={stopTimer}>
+            Stop
           </Button>
-        </div>
+        )}
+
+        <Button
+          className="w-24 min-w-0"
+          onClick={resetTimer}
+          disabled={!anyTimerValueEntered || timerAndTimeRemainingMatch}
+        >
+          Reset
+        </Button>
       </div>
     </div>
   );
