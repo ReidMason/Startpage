@@ -32,14 +32,20 @@ export default function SettingsButtons({
 
   return (
     <div className="fixed bottom-0 left-0 m-4 flex gap-4">
-      <Button variant="outline" onClick={openSettings}>
+      <Button pilled variant="outline" onClick={openSettings}>
         Settings
       </Button>
 
-      <Button onClick={() => setEditMode((prev) => !prev)}>
+      <Button
+        pilled
+        variant="outline"
+        onClick={() => setEditMode((prev) => !prev)}
+      >
         Enable {editMode ? "view" : "edit"} mode
       </Button>
-      <Button onClick={() => addNewModule(Timer)}>Add timer</Button>
+      <Button pilled variant="outline" onClick={() => addNewModule(Timer)}>
+        Add timer
+      </Button>
     </div>
   );
 }

@@ -13,6 +13,7 @@ import Grid from "../components/grid/Grid";
 import Greeting from "../components/modules/Greeting/Greeting";
 import Searchbar from "../components/modules/Searchbar/Searchbar";
 import AppsGrid from "../components/modules/AppsGrid/AppsGrid";
+import Button from "../components/button/Button";
 
 interface StartpageProps {
   configData: Config;
@@ -40,12 +41,18 @@ const Home: NextPage<StartpageProps> = ({
   const [appFilter, setAppFilter] = useState("");
   const [extensions, setExtensions] = useState<Array<Extension>>([]);
   const [darkmode, setDarkmode] = useState<boolean>(true);
-  const [blurred, setBlurred] = useState<boolean>(false);
+  const [glass, setGlass] = useState(true);
+  const [cacheKey, setCacheKey] = useState(Math.random());
 
-  useEffect(() => {
-    // Darkmode check
-    // setDarkmode(window.matchMedia("(prefers-color-scheme: dark)").matches);
-  }, []);
+  const updateConfig = (newConfig: Config) => {
+    setConfig(JSON.parse(JSON.stringify(newConfig)));
+  };
+
+  const updateCacheKey = () => {
+    console.log("Updating cache key");
+
+    setCacheKey(Math.random());
+  };
 
   useEffect(() => {
     if (config.general.appearance === "system") {
@@ -61,17 +68,28 @@ const Home: NextPage<StartpageProps> = ({
     }
   }, [darkmode, config]);
 
+  console.log("Re-render");
+
   return (
     <GlobalContext.Provider
-      value={{ config, setConfig, darkmode, setDarkmode, setBlurred }}
+      value={{ config, updateConfig, darkmode, updateCacheKey }}
     >
-      <div className={`h-screen ${blurred && "blur"}`}>
+      <div
+        className={`h-screen bg-cover lg:pt-36`}
+        style={{
+          backgroundImage: `url("/static/background.png?v=${cacheKey}")`,
+        }}
+      >
         <LazyMotion features={loadFeatures} strict>
-          <Grid className="container mx-auto gap-8 px-8 pt-28 text-primary-300 dark:text-primary-100">
-            <div className="col-span-full">
+          <Grid
+            className={`container mx-auto gap-8 p-16 text-primary-300 transition dark:text-primary-100 ${
+              glass && "rounded-2xl bg-primary-900/30 backdrop-blur-xl"
+            }`}
+          >
+            <div className="col-span-full mb-4">
               <Searchbar config={config} setAppFilter={setAppFilter} />
             </div>
-            <div className="col-span-full">
+            <div className="col-span-full mb-12">
               <Greeting
                 appFilter={appFilter}
                 config={config}
@@ -79,7 +97,11 @@ const Home: NextPage<StartpageProps> = ({
                 editMode={editMode}
               />
             </div>
-            <div className="col-span-full sm:mb-12 md:mb-24">
+            <div
+              className={`col-span-full ${
+                extensions.length ? "sm:mb-12 md:mb-24" : ""
+              }`}
+            >
               <AppsGrid
                 apps={config.apps}
                 appNameFilter={appFilter}
@@ -92,6 +114,10 @@ const Home: NextPage<StartpageProps> = ({
                 setExtensions={setExtensions}
               />
             </div>
+
+            <Button onClick={() => setGlass((prev) => !prev)}>
+              Toggle glas
+            </Button>
           </Grid>
 
           <SettingsButtons

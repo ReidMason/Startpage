@@ -32,13 +32,15 @@ export default function SettingsSectionWrapper({
             />
           }
           body={
-            section.customLayout ? (
-              <section.content {...sectionProps} />
-            ) : (
-              <div className="grid grid-cols-1 gap-x-4 md:grid-cols-2 lg:pl-4 xl:grid-cols-3">
+            <div className="lg:pl-4">
+              {section.customLayout ? (
                 <section.content {...sectionProps} />
-              </div>
-            )
+              ) : (
+                <div className="grid grid-cols-1 gap-x-4 md:grid-cols-2 xl:grid-cols-3">
+                  <section.content {...sectionProps} />
+                </div>
+              )}
+            </div>
           }
         />
       </div>

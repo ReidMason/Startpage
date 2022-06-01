@@ -93,17 +93,16 @@ export default function Searchbar({ config, setAppFilter }: SearchBarProps) {
   };
 
   return (
-    <div className="px-1 pb-2">
+    <div>
       <input
         autoFocus
         spellCheck="false"
-        className="mb-2 h-10 w-full bg-transparent text-3xl outline-none placeholder:text-primary-400/50"
+        className="h-10 w-full border-b-2 border-primary-200/40 bg-transparent pb-4 text-3xl outline-none placeholder:text-primary-50/50"
         placeholder={config.general.searchPlaceholder}
         onChange={updateSearchTerm}
         onKeyDown={handleKeyDown}
         aria-label="searchbar"
       />
-      <HorizontalRule />
     </div>
   );
 }

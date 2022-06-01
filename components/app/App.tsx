@@ -12,7 +12,7 @@ export default function App({ app, preview }: AppProps) {
 
   return (
     <a
-      className={`flex flex-1 items-center rounded border border-primary-400/0 p-2 transition hover:border-primary-200 hover:bg-primary-100 hover:shadow-lg focus:bg-primary-100 focus:shadow-lg focus:outline-none hover:dark:border-primary-400/80 hover:dark:bg-primary-900`}
+      className={`flex flex-1 items-center rounded-lg p-2 transition duration-200 hover:scale-105 hover:bg-primary-100 hover:shadow-lg focus:bg-primary-100 focus:shadow-lg focus:outline-none hover:dark:bg-primary-100/30 focus:dark:bg-primary-100/30`}
       {...(preview ? {} : { href: app.url })}
     >
       <div className="mr-2 text-4xl">

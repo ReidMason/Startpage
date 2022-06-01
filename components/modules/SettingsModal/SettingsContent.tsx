@@ -20,7 +20,7 @@ export default function SettingsContent({
   onClick,
   onScroll,
 }: SettingsContentProps) {
-  const { setConfig } = useContext(GlobalContext);
+  const { updateConfig } = useContext(GlobalContext);
 
   const {
     register,
@@ -30,24 +30,25 @@ export default function SettingsContent({
     formState: { errors },
   } = useForm<Config>({ defaultValues: config });
 
-  useEffect(() => {
-    const subscription = watch((data) => {
-      setConfig!(data as Config);
-      console.log(data);
-    });
+  const appearance = watch("general.appearance");
 
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [watch]);
+  useEffect(() => {
+    if (appearance != config.general.appearance) {
+      console.log("Appearance changed");
+      config.general.appearance = appearance;
+      updateConfig(config);
+    }
+  }, [appearance]);
 
   const saveSettings = async (data: Config) => {
     await saveConfig(data);
-    setConfig!(data);
+    updateConfig(data);
     closeModal();
   };
 
-  settingsSections.map((x) => (x.ref = useRef(null)));
+  // useEffect(() => {
+  //   settingsSections.map((x) => (x.ref = useRef(null)));
+  // }, []);
 
   return (
     <form
@@ -60,7 +61,7 @@ export default function SettingsContent({
         onScroll={onScroll}
       >
         {settingsSections.map((section) => (
-          <div ref={section.ref} key={section.name} className="last:h-full">
+          <div key={section.name} className="last:h-full">
             <SettingsSectionWrapper
               section={section}
               sectionProps={{ control, register }}

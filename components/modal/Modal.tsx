@@ -1,8 +1,6 @@
 import { Dialog } from "@headlessui/react";
 import { Dispatch, ReactNode, SetStateAction, useEffect } from "react";
 import { m, AnimatePresence } from "framer-motion";
-import { useContext } from "react";
-import GlobalContext from "../../contexts/GlobalContext/GlobalContext";
 
 type StateSetter<T> = Dispatch<SetStateAction<T>>;
 
@@ -13,12 +11,6 @@ export interface ModalProps {
 }
 
 export default function Modal({ open, setOpen, children }: ModalProps) {
-  const { setBlurred } = useContext(GlobalContext);
-
-  useEffect(() => {
-    if (setBlurred) setBlurred(open);
-  }, [open]);
-
   return (
     <AnimatePresence>
       {open && (
@@ -32,9 +24,9 @@ export default function Modal({ open, setOpen, children }: ModalProps) {
               open: { opacity: 1 },
               collapsed: { opacity: 0 },
             }}
-            transition={{ duration: 0.15, ease: [0.04, 0.62, 0.23, 0.98] }}
+            transition={{ duration: 0.15 }}
           >
-            <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-25" />
+            <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-xl" />
           </m.div>
 
           <m.div
@@ -44,10 +36,10 @@ export default function Modal({ open, setOpen, children }: ModalProps) {
             animate="open"
             exit="collapsed"
             variants={{
-              open: { scale: 1, originY: 1, originX: 0, opacity: 1 },
-              collapsed: { scale: 0, originY: 1, originX: 0, opacity: 0 },
+              open: { scale: 1, opacity: 1 },
+              collapsed: { scale: 0, opacity: 0 },
             }}
-            transition={{ duration: 0.2, ease: [0.04, 0.62, 0.23, 0.98] }}
+            transition={{ duration: 0.2 }}
           >
             <div className="flex h-full items-center justify-center p-4">
               <Dialog.Panel className="h-5/6 w-full max-w-7xl transform overflow-hidden rounded-lg bg-primary-800 text-left align-middle shadow-xl transition-all">

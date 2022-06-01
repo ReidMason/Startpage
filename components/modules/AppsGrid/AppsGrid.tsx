@@ -45,19 +45,17 @@ export default function AppsGrid({
             animate="shown"
             exit="exit"
             variants={{
-              shown: { opacity: 1, y: 0 },
-              hidden: { opacity: 0, y: "100%" },
-              exit: { opacity: 0, y: "-100%" },
+              shown: { opacity: 1 },
+              hidden: { opacity: 0 },
+              exit: { opacity: 0 },
             }}
             transition={{
               duration: 0.4,
             }}
           >
-            <m.div layout transition={spring}>
-              <LayoutGrid>
-                <DynamicEditableAppsGrid apps={apps} />
-              </LayoutGrid>
-            </m.div>
+            <LayoutGrid>
+              <DynamicEditableAppsGrid apps={apps} />
+            </LayoutGrid>
           </m.div>
         )}
         {!editMode && (
@@ -70,15 +68,16 @@ export default function AppsGrid({
                 animate="shown"
                 exit="exit"
                 variants={{
-                  shown: { opacity: 1, y: 0 },
-                  hidden: { opacity: 0, y: "100%" },
-                  exit: { opacity: 0, y: "-100%" },
+                  shown: { opacity: 1 },
+                  hidden: { opacity: 0 },
+                  exit: { opacity: 0 },
                 }}
                 transition={{
                   duration: 0.4,
                 }}
+                key={app.id}
               >
-                <m.div layout transition={spring} key={app.id}>
+                <m.div layout transition={spring}>
                   <App app={app} />
                 </m.div>
               </m.div>
