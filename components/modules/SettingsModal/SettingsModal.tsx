@@ -30,11 +30,6 @@ export default function SettingsModal({
     return width < mobileWidth;
   };
 
-  useEffect(() => {
-    window.addEventListener("resize", handleWidthChange);
-    handleWidthChange();
-  }, []);
-
   const handleWidthChange = () => {
     const windowWidth = window.innerWidth;
     setWidth(windowWidth);
@@ -45,6 +40,11 @@ export default function SettingsModal({
       openMenuBar();
     }
   };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleWidthChange);
+    handleWidthChange();
+  }, [handleWidthChange]);
 
   const closeMenuBar = () => {
     setMenuVisible(false);

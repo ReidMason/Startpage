@@ -35,7 +35,11 @@ export default function RadioGroup({
               }}
             >
               {options.map((option) => (
-                <RadioGroupHui.Option value={option} className="z-10">
+                <RadioGroupHui.Option
+                  value={option}
+                  className="z-10"
+                  key={option}
+                >
                   <div className="cursor-pointer px-3 py-1 text-center outline outline-1 outline-primary-100/20 hover:bg-primary-400">
                     {option}
                   </div>

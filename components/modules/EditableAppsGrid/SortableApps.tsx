@@ -2,6 +2,7 @@ import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { PlusCircleIcon } from "@heroicons/react/solid";
 import { AnimatePresence, m } from "framer-motion";
 import React from "react";
+import { springTranstition } from "../../../common";
 import { App as AppInterface } from "../../../services/server/config/types";
 import { StateSetter } from "../../../types/common";
 import { generateUuid } from "../../../utils";
@@ -52,7 +53,7 @@ export default function SortableApps({
                   bounce: 0.15,
                 }}
               >
-                <App app={app} preview editMode />
+                <App app={app} preview />
               </m.div>
             </SortableItem>
 

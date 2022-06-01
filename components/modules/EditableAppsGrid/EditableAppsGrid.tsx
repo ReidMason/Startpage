@@ -46,9 +46,12 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
     if (over && over.id == "bin") {
       updateApps(modifiedApps.filter((x) => x.id != active.id));
     } else if (over && active.id !== over.id) {
+      console.log(active);
+      console.log(over);
+
       setModifiedApps((modifiedApps) => {
         const oldIndex = modifiedApps.map((x) => x.id).indexOf(active.id);
-        const newIndex = modifiedApps.map((x) => x.id).indexOf(over.id);
+        const newIndex = modifiedApps.map((x) => x.id).indexOf(over.id) - 1;
 
         return arrayMove(modifiedApps, oldIndex, newIndex);
       });
@@ -99,14 +102,14 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
         editApp={editApp}
       />
 
-      <DragOverlay className={hoveredBin ? "border-4 border-red-500" : ""}>
+      <DragOverlay>
         {activeApp && (
           <div
-            className={`cursor-grabbing rounded border-2 border-primary-200 transition-opacity ${
-              hoveredBin ? "opacity-20" : ""
+            className={`cursor-grabbing rounded outline transition-opacity ${
+              hoveredBin ? "opacity-20 outline-red-500" : "outline-primary-200"
             }`}
           >
-            <App app={activeApp} preview editMode />
+            <App app={activeApp} preview />
           </div>
         )}
       </DragOverlay>

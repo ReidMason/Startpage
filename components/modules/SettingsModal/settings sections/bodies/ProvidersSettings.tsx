@@ -13,7 +13,7 @@ export default function ProvidersSettings({
   });
 
   return (
-    <div className="flex flex-col">
+    <>
       {fields.map((field, index) => (
         <div key={field.id} className="flex gap-4">
           <Input
@@ -34,7 +34,7 @@ export default function ProvidersSettings({
           />
         </div>
       ))}
-    </div>
+    </>
   );
 }
 

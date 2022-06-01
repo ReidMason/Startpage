@@ -3,8 +3,8 @@ import { StateSetter } from "../../types/common";
 
 export interface GlobalContext {
   config?: Config;
-  setConfig?: StateSetter<Config>;
+  updateConfig: (newConfig: Config) => void;
   darkmode?: boolean;
   setDarkmode?: StateSetter<boolean>;
-  setBlurred?: StateSetter<boolean>;
+  updateCacheKey: () => void;
 }

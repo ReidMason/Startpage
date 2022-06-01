@@ -16,13 +16,22 @@ export default function SideMenu({
     const current = section.ref?.current;
     if (!current) return;
     current.scrollIntoView();
-    closeMenuBar();
+    if (window.innerWidth < 922) {
+      closeMenuBar();
+    }
   };
 
   return (
     <div className="sticky top-24 flex h-full w-64 flex-col p-6 pt-12 text-primary-50 dark:bg-primary-900">
       <h1 className="mb-4 text-center text-2xl">Settings</h1>
-      <Input placeholder="Search..." pilled state="dark" noLabel noHelperText />
+      <Input
+        placeholder="Search..."
+        pilled
+        state="dark"
+        noLabel
+        noHelperText
+        className="mb-8"
+      />
       <div className="ml-2 flex flex-col gap-2">
         {settingsSections.map((section) => (
           <Button

@@ -16,15 +16,15 @@ const styles: Styles = {
   },
   outline: {
     default:
-      "text-primary-800 border-primary-400 hover:border-primary-300 dark:text-primary-50 dark:border-primary-600 hover:dark:border-primary-500",
+      "transform hover:scale-105 backdrop-blur-xl bg-primary-100/20 hover:bg-primary-100/40 text-primary-800 dark:text-primary-50 focus:outline",
     danger:
-      "text-primary-800 border-red-400 hover:border-red-300 dark:text-primary-50 dark:border-red-600 hover:dark:border-red-500",
+      "backdrop-blur-xl text-primary-800 border-red-400 hover:border-red-300 dark:text-primary-50 dark:border-red-600 hover:dark:border-red-500",
     warning:
-      "text-primary-800 border-yellow-400 hover:border-yellow-300 dark:text-primary-50 dark:border-yellow-600 hover:dark:border-yellow-500",
+      "backdrop-blur-xl text-primary-800 border-yellow-400 hover:border-yellow-300 dark:text-primary-50 dark:border-yellow-600 hover:dark:border-yellow-500",
     success:
-      "text-primary-800 border-green-400 hover:border-green-300 dark:text-primary-50 dark:border-green-600 hover:dark:border-green-500",
-    grey: "text-primary-800 border-grey-400 hover:border-grey-300 dark:text-primary-50 dark:border-grey-600 hover:dark:border-grey-500",
-    dark: "text-primary-50 border-primary-600 hover:border-primary-500",
+      "backdrop-blur-xl text-primary-800 border-green-400 hover:border-green-300 dark:text-primary-50 dark:border-green-600 hover:dark:border-green-500",
+    grey: "backdrop-blur-xl text-primary-800 border-grey-400 hover:border-grey-300 dark:text-primary-50 dark:border-grey-600 hover:dark:border-grey-500",
+    dark: "backdrop-blur-xl text-primary-50 border-primary-600 hover:border-primary-500",
   },
   ghost: {
     default: "text-primary-800 dark:text-primary-50",
