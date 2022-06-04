@@ -38,48 +38,15 @@ export default function AppsGrid({
     <LazyMotion features={domMax}>
       <AnimatePresence initial={false}>
         {editMode && (
-          <m.div
-            className="w-full"
-            key="editable-apps-grid"
-            initial="hidden"
-            animate="shown"
-            exit="exit"
-            variants={{
-              shown: { opacity: 1 },
-              hidden: { opacity: 0 },
-              exit: { opacity: 0 },
-            }}
-            transition={{
-              duration: 0.4,
-            }}
-          >
-            <LayoutGrid>
-              <DynamicEditableAppsGrid apps={apps} />
-            </LayoutGrid>
-          </m.div>
+          <LayoutGrid>
+            <DynamicEditableAppsGrid apps={apps} />
+          </LayoutGrid>
         )}
         {!editMode && (
           <LayoutGrid>
             {filteredApps.map((app) => (
-              <m.div
-                className="w-full"
-                key="editable-apps-grid"
-                initial="hidden"
-                animate="shown"
-                exit="exit"
-                variants={{
-                  shown: { opacity: 1 },
-                  hidden: { opacity: 0 },
-                  exit: { opacity: 0 },
-                }}
-                transition={{
-                  duration: 0.4,
-                }}
-                key={app.id}
-              >
-                <m.div layout transition={spring}>
-                  <App app={app} />
-                </m.div>
+              <m.div layout transition={spring} key={app.id}>
+                <App app={app} />
               </m.div>
             ))}
           </LayoutGrid>

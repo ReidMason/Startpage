@@ -76,14 +76,8 @@
 
 html,
 body {
-  @apply bg-primary-50/90;
   padding: 0;
   margin: 0;
   font-family: "Noto Sans", sans-serif;
   -webkit-tap-highlight-color: transparent;
-}
-
-html.dark,
-.dark body {
-  @apply bg-primary-900/90;
 }

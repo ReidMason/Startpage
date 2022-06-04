@@ -4,6 +4,7 @@ import GlobalContext from "../../../../../contexts/GlobalContext/GlobalContext";
 import { appearances } from "../../../../../services/server/config/types";
 import Input from "../../../../input/Input";
 import RadioGroup from "../../../../RadioGroup/RadioGroup";
+import Toggle from "../../../../toggle/Toggle";
 import { SettingsSectionProps } from "../../types";
 
 export default function GeneralSettings({
@@ -53,6 +54,22 @@ export default function GeneralSettings({
 
       <Controller
         control={control}
+        name="general.glassy"
+        render={({ field: { ref, ...field } }) => (
+          <Toggle label="Glassy theme" {...field} />
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="general.backgroundEnabled"
+        render={({ field: { ref, ...field } }) => (
+          <Toggle label="Background enabled" {...field} />
+        )}
+      />
+
+      <Controller
+        control={control}
         name="general.appearance"
         render={({ field: { ref, ...field } }) => (
           <RadioGroup
@@ -60,7 +77,6 @@ export default function GeneralSettings({
             {...field}
             options={[...appearances]}
           />
-          // <Toggle label="Detailed weather display" {...field} />
         )}
       />
     </>

@@ -2,9 +2,9 @@ import fs from "fs";
 import { Config } from "./types";
 import { merge } from "lodash-es";
 
-const CONFIG_PATH = "./data/config.json";
+const CONFIG_PATH = `${process.cwd()}/data/config.json`;
 
-const defaultConfigData: Config = {
+export const defaultConfigData: Config = {
   version: parseInt(process.env.CONFIG_VERSION ?? "1"),
   general: {
     searchUrl: "https://www.google.com/search?q=",
@@ -14,6 +14,9 @@ const defaultConfigData: Config = {
     searchPlaceholder: "Search...",
     theme: "default",
     appearance: "system",
+    glassy: true,
+    cacheKey: Math.random(),
+    backgroundEnabled: false,
   },
   apps: [],
   providers: [],
@@ -27,10 +30,8 @@ const defaultConfigData: Config = {
 
 export async function getConfig(): Promise<Config> {
   await ensureConfigExists();
-
   const config = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8"));
-
-  return merge(defaultConfigData, config);
+  return merge({}, defaultConfigData, config);
 }
 
 async function ensureConfigExists() {

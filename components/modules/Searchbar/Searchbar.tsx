@@ -62,7 +62,6 @@ export default function Searchbar({ config, setAppFilter }: SearchBarProps) {
     // Now we are going to run the command
     for (const provider of config.providers || []) {
       if (provider.prefix.toLowerCase() === prefix.toLowerCase()) {
-        console.log(searchText);
         // If there is search text we need to use it
         if (searchText.length > 0) {
           window.location.href = provider.searchUrl + searchText;

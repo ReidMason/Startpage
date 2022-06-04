@@ -13,7 +13,6 @@ import Grid from "../components/grid/Grid";
 import Greeting from "../components/modules/Greeting/Greeting";
 import Searchbar from "../components/modules/Searchbar/Searchbar";
 import AppsGrid from "../components/modules/AppsGrid/AppsGrid";
-import Button from "../components/button/Button";
 
 interface StartpageProps {
   configData: Config;
@@ -40,18 +39,17 @@ const Home: NextPage<StartpageProps> = ({
   const [editMode, setEditMode] = useState(false);
   const [appFilter, setAppFilter] = useState("");
   const [extensions, setExtensions] = useState<Array<Extension>>([]);
-  const [darkmode, setDarkmode] = useState<boolean>(true);
-  const [glass, setGlass] = useState(true);
-  const [cacheKey, setCacheKey] = useState(Math.random());
 
-  const updateConfig = (newConfig: Config) => {
+  const updateConfig = (newConfig: Config, updateCacheKey: boolean = false) => {
+    if (!updateCacheKey) newConfig.general.cacheKey = config.general.cacheKey;
+
     setConfig(JSON.parse(JSON.stringify(newConfig)));
   };
 
   const updateCacheKey = () => {
-    console.log("Updating cache key");
-
-    setCacheKey(Math.random());
+    const newConfig = config;
+    newConfig.general.cacheKey = Math.random();
+    updateConfig(config, true);
   };
 
   useEffect(() => {
@@ -66,24 +64,23 @@ const Home: NextPage<StartpageProps> = ({
     } else {
       document.documentElement.classList.remove("dark");
     }
-  }, [darkmode, config]);
-
-  console.log("Re-render");
+  }, [config]);
 
   return (
-    <GlobalContext.Provider
-      value={{ config, updateConfig, darkmode, updateCacheKey }}
-    >
+    <GlobalContext.Provider value={{ config, updateConfig, updateCacheKey }}>
       <div
-        className={`h-screen bg-cover lg:pt-36`}
+        className={`h-full min-h-screen bg-cover bg-fixed pb-24 lg:pt-36`}
         style={{
-          backgroundImage: `url("/static/background.png?v=${cacheKey}")`,
+          backgroundImage: config.general.backgroundEnabled
+            ? `url("/static/background.png?v=${config.general.cacheKey}")`
+            : undefined,
         }}
       >
         <LazyMotion features={loadFeatures} strict>
           <Grid
             className={`container mx-auto gap-8 p-16 text-primary-300 transition dark:text-primary-100 ${
-              glass && "rounded-2xl bg-primary-900/30 backdrop-blur-xl"
+              config.general.glassy &&
+              "rounded-2xl bg-primary-900/30 backdrop-blur-xl"
             }`}
           >
             <div className="col-span-full mb-4">
@@ -110,14 +107,11 @@ const Home: NextPage<StartpageProps> = ({
             </div>
             <div className="col-span-full">
               <DynamicExtensionsDisplay
+                config={config}
                 extensions={extensions}
                 setExtensions={setExtensions}
               />
             </div>
-
-            <Button onClick={() => setGlass((prev) => !prev)}>
-              Toggle glas
-            </Button>
           </Grid>
 
           <SettingsButtons
@@ -143,7 +137,9 @@ export default Home;
 
 export const getStaticProps: GetStaticProps = async () => {
   const configData = await getConfig();
-  const weatherData = await getWeatherData();
+  const weatherData = await getWeatherData(configData.weather);
+
+  console.log(configData.general.cacheKey);
 
   return {
     props: {

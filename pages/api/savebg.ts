@@ -10,11 +10,11 @@ export default async function saveBackground(
 ) {
   if (req.method === "POST") {
     const form = new formidable.IncomingForm();
-    form.parse(req, async (err, fields, files) => {
+    await form.parse(req, async (err, fields, files) => {
       const file = files.file as formidable.File;
       await saveFile(file);
-      res.status(200).json({});
     });
+    return res.status(200).json({});
   }
 }
 

@@ -17,6 +17,9 @@ export interface GeneralConfig {
   searchPlaceholder: string;
   theme: string;
   appearance: Appearance;
+  glassy: boolean;
+  cacheKey: number;
+  backgroundEnabled: boolean;
 }
 
 export interface WeatherConfig {
@@ -39,4 +42,5 @@ export interface App {
   name: string;
   url: string;
   icon: string;
+  active?: boolean;
 }

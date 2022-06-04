@@ -1,25 +1,27 @@
 import { getUnixTime } from "../../../utils";
 import { cacheWeatherData, getCacheData } from "../cache/cache";
-import { getConfig } from "../config/config";
+import { WeatherConfig } from "../config/types";
 import { BasicWeatherData, Weather, WeatherDataResponse } from "./types";
 
-export async function getWeatherData(): Promise<Weather | null> {
-  const config = await getConfig();
+export async function getWeatherData(
+  weatherConfig: WeatherConfig
+): Promise<Weather | null> {
   return (
-    (await getCachedWeatherData(config.weather.location)) ??
-    (await requestWeatherData(config.weather.location))
+    (await getCachedWeatherData(weatherConfig.location)) ??
+    (await requestWeatherData(weatherConfig))
   );
 }
 
-async function requestWeatherData(location: string): Promise<Weather | null> {
-  const config = await getConfig();
-  console.info(`Requesting weather data for: "${location}"`);
+async function requestWeatherData(
+  weatherConfig: WeatherConfig
+): Promise<Weather | null> {
+  console.info(`Requesting weather data for: "${weatherConfig.location}"`);
   // Get basic weather data so we have the lat/lon
-  const basicWeatherData = await getBasicWeatherData(location);
+  const basicWeatherData = await getBasicWeatherData(weatherConfig);
   if (basicWeatherData === null) return null;
 
   // Request weather data
-  const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${basicWeatherData.coord.lat}&lon=${basicWeatherData.coord.lon}&exclude=minutely&units=metric&appid=${config.weather.apiKey}`;
+  const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${basicWeatherData.coord.lat}&lon=${basicWeatherData.coord.lon}&exclude=minutely&units=metric&appid=${weatherConfig.apiKey}`;
   const weatherResponse = await fetch(url);
   if (weatherResponse.status !== 200) return null;
 
@@ -28,7 +30,7 @@ async function requestWeatherData(location: string): Promise<Weather | null> {
   );
 
   // Cache the weather data
-  await cacheWeatherData(weatherData, location);
+  await cacheWeatherData(weatherData, weatherConfig.location);
 
   // Format weather data
   return weatherData;
@@ -47,10 +49,9 @@ function weatherDataResponseToWeatherData(
 }
 
 async function getBasicWeatherData(
-  location: string
+  weatherConfig: WeatherConfig
 ): Promise<BasicWeatherData | null> {
-  const config = await getConfig();
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=${config.weather.apiKey}`;
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${weatherConfig.location}&units=metric&appid=${weatherConfig.apiKey}`;
   const weatherResponse = await fetch(url);
   if (weatherResponse.status !== 200) return null;
 
