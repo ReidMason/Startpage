@@ -9,14 +9,16 @@ import {
   DragStartEvent,
   DragOverEvent,
   DragEndEvent,
+  Over,
+  Active,
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import App from "../../app/App";
 import AppEditModal from "./AppEditModal";
-import { StateSetter } from "../../../types/common";
 import GlobalContext from "../../../contexts/GlobalContext/GlobalContext";
 import { updateConfig } from "../../../services/client/config/config";
-import SortableApps from "./SortableApps";
+import SortableApps from "../DragAndDrop/SortableApps";
+import { createPortal } from "react-dom";
 
 interface EditableAppsGridProps {
   apps: Array<AppInterface>;
@@ -25,15 +27,18 @@ interface EditableAppsGridProps {
 const saveApps = async (
   newConfig: Partial<Config>,
   config: Config,
-  setConfig: StateSetter<Config>
+  setConfig: (newConfig: Config) => void
 ) => {
   setConfig(await updateConfig(config, newConfig));
 };
 
 export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
-  const { config, setConfig } = useContext(GlobalContext);
+  const { config, updateConfig: setConfig } = useContext(GlobalContext);
 
   const [modifiedApps, setModifiedApps] = useState(apps);
+  const [tempApps, setTempApps] = useState<Array<AppInterface>>(
+    apps.map((x) => ({ ...x, active: true }))
+  );
   const [activeApp, setActiveApp] = useState<AppInterface | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editableApp, setEditableApp] = useState<AppInterface>();
@@ -42,19 +47,16 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
   function handleDragEnd({ active, over }: DragEndEvent) {
     setActiveApp(null);
 
+    // Didn't drag over anything so put the item back where it was
+    if (over === null) setTempApps(modifiedApps);
+    // Valid drag so update modified apps
+    else setModifiedApps(tempApps);
+
     // App was dragged over the bin so delete it
     if (over && over.id == "bin") {
-      updateApps(modifiedApps.filter((x) => x.id != active.id));
-    } else if (over && active.id !== over.id) {
-      console.log(active);
-      console.log(over);
-
-      setModifiedApps((modifiedApps) => {
-        const oldIndex = modifiedApps.map((x) => x.id).indexOf(active.id);
-        const newIndex = modifiedApps.map((x) => x.id).indexOf(over.id) - 1;
-
-        return arrayMove(modifiedApps, oldIndex, newIndex);
-      });
+      const newApps = tempApps.filter((x) => x.id != active.id);
+      updateApps(newApps);
+      setTempApps(newApps);
     }
   }
 
@@ -72,21 +74,46 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
     setEditModalOpen(true);
   };
 
-  const handleDragOver = ({ active, over }: DragOverEvent) => {
-    if (!hoveredBin && over?.id === "bin") {
+  const updateHoveredBinState = (overId: string | undefined) => {
+    if (!hoveredBin && overId === "bin") {
       setHoveredBin(true);
     } else if (hoveredBin) {
       setHoveredBin(false);
     }
+  };
 
+  const repositionElements = (active: Active, over: Over | null) => {
     if (over && over?.id !== "bin") {
-      setModifiedApps((modifiedApps) => {
-        const oldIndex = modifiedApps.map((x) => x.id).indexOf(active.id);
-        const newIndex = modifiedApps.map((x) => x.id).indexOf(over.id);
+      setTempApps((apps) => {
+        const oldIndex = apps.map((x) => x.id).indexOf(active.id);
+        const newIndex = apps.map((x) => x.id).indexOf(over.id);
 
-        return arrayMove(modifiedApps, oldIndex, newIndex);
+        return arrayMove(apps, oldIndex, newIndex);
       });
     }
+  };
+
+  const updateActiveElementState = (active: Active, over: Over | null) => {
+    // Item is dragged outside of droppable area so we want to hide it from the list
+    if (over === null)
+      setTempApps((prev) =>
+        prev.map((x) => (x.id === active.id ? { ...x, active: false } : x))
+      );
+    // Item is back within droppable area so make sure it's active
+    else if (
+      tempApps.findIndex((x) => x.id === active.id && x.active !== false) ===
+        -1 &&
+      over.id !== "bin"
+    )
+      setTempApps((prev) =>
+        prev.map((x) => (x.id === active.id ? { ...x, active: true } : x))
+      );
+  };
+
+  const handleDragOver = ({ active, over }: DragOverEvent) => {
+    updateActiveElementState(active, over);
+    updateHoveredBinState(over?.id);
+    repositionElements(active, over);
   };
 
   return (
@@ -96,23 +123,11 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
       onDragOver={handleDragOver}
     >
       <SortableApps
-        modifiedApps={modifiedApps}
-        setModifiedApps={setModifiedApps}
+        modifiedApps={tempApps}
+        setModifiedApps={setTempApps}
         updateApps={updateApps}
         editApp={editApp}
       />
-
-      <DragOverlay>
-        {activeApp && (
-          <div
-            className={`cursor-grabbing rounded outline transition-opacity ${
-              hoveredBin ? "opacity-20 outline-red-500" : "outline-primary-200"
-            }`}
-          >
-            <App app={activeApp} preview />
-          </div>
-        )}
-      </DragOverlay>
 
       {editableApp && (
         <AppEditModal
@@ -120,6 +135,23 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
           setOpen={setEditModalOpen}
           app={editableApp}
         />
+      )}
+
+      {createPortal(
+        <DragOverlay>
+          {activeApp && (
+            <div
+              className={`cursor-grabbing rounded outline transition-opacity ${
+                hoveredBin
+                  ? "opacity-20 outline-red-500"
+                  : "outline-primary-200"
+              }`}
+            >
+              <App app={activeApp} preview />
+            </div>
+          )}
+        </DragOverlay>,
+        document.body
       )}
     </DndContext>
   );

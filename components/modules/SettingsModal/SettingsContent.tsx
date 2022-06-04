@@ -1,4 +1,12 @@
-import { UIEventHandler, useContext, useEffect, useRef } from "react";
+import {
+  createRef,
+  MutableRefObject,
+  RefObject,
+  UIEventHandler,
+  useContext,
+  useEffect,
+  useRef,
+} from "react";
 import Button from "../../button/Button";
 import { useForm } from "react-hook-form";
 import { Config } from "../../../services/server/config/types";
@@ -21,6 +29,8 @@ export default function SettingsContent({
   onScroll,
 }: SettingsContentProps) {
   const { updateConfig } = useContext(GlobalContext);
+  const elementsRef: MutableRefObject<Array<RefObject<HTMLDivElement>>> =
+    useRef(settingsSections.map(() => createRef()));
 
   const {
     register,
@@ -34,21 +44,20 @@ export default function SettingsContent({
 
   useEffect(() => {
     if (appearance != config.general.appearance) {
-      console.log("Appearance changed");
       config.general.appearance = appearance;
       updateConfig(config);
     }
   }, [appearance]);
 
   const saveSettings = async (data: Config) => {
-    await saveConfig(data);
     updateConfig(data);
+    await saveConfig(data);
     closeModal();
   };
 
-  // useEffect(() => {
-  //   settingsSections.map((x) => (x.ref = useRef(null)));
-  // }, []);
+  useEffect(() => {
+    settingsSections.map((x, index) => (x.ref = elementsRef.current[index]));
+  }, []);
 
   return (
     <form
@@ -61,7 +70,7 @@ export default function SettingsContent({
         onScroll={onScroll}
       >
         {settingsSections.map((section) => (
-          <div key={section.name} className="last:h-full">
+          <div key={section.name} className="last:h-full" ref={section.ref}>
             <SettingsSectionWrapper
               section={section}
               sectionProps={{ control, register }}

@@ -8,9 +8,10 @@ export default async function getConfig(
   if (req.method === "POST") {
     const newConfigData = JSON.parse(req.body);
     await saveConfig(newConfigData);
-    res.status(200).json(newConfigData);
 
     // Revalidate static content
     await res.unstable_revalidate("/");
+
+    return res.status(200).json(newConfigData);
   }
 }

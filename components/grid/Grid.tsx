@@ -6,9 +6,5 @@ interface GridProps {
 }
 
 export default function Grid({ children, className }: GridProps) {
-  return (
-    <div className={`grid w-full grid-cols-12 gap-4 ${className ?? ""}`}>
-      {children}
-    </div>
-  );
+  return <div className={`${className ?? ""}`}>{children}</div>;
 }

@@ -1,3 +1,4 @@
+import { createRef, useRef } from "react";
 import Button from "../../button/Button";
 import Input from "../../input/Input";
 import { settingsSections } from "./settingsSections";
@@ -33,7 +34,7 @@ export default function SideMenu({
         className="mb-8"
       />
       <div className="ml-2 flex flex-col gap-2">
-        {settingsSections.map((section) => (
+        {settingsSections.map((section, index) => (
           <Button
             className={`text-left 
               ${
