@@ -33,7 +33,7 @@ const Home: NextPage<StartpageProps> = ({
   configData,
   weatherData,
 }: StartpageProps) => {
-  const [settingsModalOpen, setSettingsModalOpen] = useState(true);
+  const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   const [config, setConfig] = useState(configData);
   const [editMode, setEditMode] = useState(false);
   const [appFilter, setAppFilter] = useState("");
