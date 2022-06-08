@@ -1,4 +1,4 @@
-import type { GetStaticProps, NextPage } from "next";
+import type { GetServerSideProps, GetStaticProps, NextPage } from "next";
 import { Config } from "../services/server/config/types";
 import { Weather } from "../services/server/weather/types";
 import SettingsButtons from "../components/SettingsButtons";
@@ -134,7 +134,7 @@ const Home: NextPage<StartpageProps> = ({
 
 export default Home;
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const configData = await getConfig();
   const weatherData = await getWeatherData(configData.weather);
 
@@ -143,6 +143,5 @@ export const getStaticProps: GetStaticProps = async () => {
       configData,
       weatherData,
     },
-    revalidate: 3600,
   };
 };
