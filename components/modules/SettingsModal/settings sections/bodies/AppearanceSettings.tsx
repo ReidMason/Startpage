@@ -66,7 +66,7 @@ export default function AppearanceSettings({
               <p className="text-lg font-semibold">
                 Drag an image file here or click to select a file
               </p>
-              <small className="text-primary-50/80">
+              <small className="dark:text-primary-50/80">
                 The smaller the file size, the faster the image will load
               </small>
             </div>
