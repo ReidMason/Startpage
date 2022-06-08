@@ -4,9 +4,9 @@ import { StateSetter } from "../../../types/common";
 import Modal from "../../modal/Modal";
 import SettingsContent from "./SettingsContent";
 import SideMenu from "./SideMenu";
-import { useEffect, useState } from "react";
+import { UIEvent, useEffect, useState } from "react";
 import SideMenuIcon from "./SideMenuIcon";
-import { settingsSections } from "./settingsSections";
+import { settingsSections as defaultSettingsSections } from "./settingsSections";
 
 interface SettingsModalProps {
   open: boolean;
@@ -19,14 +19,17 @@ export default function SettingsModal({
   setOpen,
   config,
 }: SettingsModalProps) {
+  const [settingsSections, setSettingsSections] = useState(
+    defaultSettingsSections
+  );
   const [scrolledSectionName, setScrolledSectionName] = useState(
     settingsSections[0].name
   );
   const [width, setWidth] = useState(999);
   const [menuVisible, setMenuVisible] = useState(false);
-  const mobileWidth = 922;
 
   const isMobile = (width: number) => {
+    const mobileWidth = 922;
     return width < mobileWidth;
   };
 
@@ -60,24 +63,28 @@ export default function SettingsModal({
     closeMenuBar();
   };
 
-  const handleScroll = () => {
+  const handleScroll = (e: UIEvent<HTMLDivElement>) => {
+    const scrollTop = e.currentTarget.getBoundingClientRect().top;
+
     for (let i = 0; i < settingsSections.length; i++) {
       const section = settingsSections[i];
       const element = section.ref?.current;
-      if (element && isScrolledIntoView(element)) {
+
+      if (element && isScrolledIntoView(element, scrollTop)) {
         setScrolledSectionName(section.name);
         return;
       }
     }
   };
 
-  function isScrolledIntoView(el: HTMLDivElement) {
+  const isScrolledIntoView = (el: HTMLDivElement, scrollTop: number) => {
     var rect = el.getBoundingClientRect();
-    var elemTop = rect.top;
-    var elemBottom = rect.bottom;
+    return rect.bottom >= scrollTop;
+  };
 
-    return elemTop >= 0 && elemBottom <= window.innerHeight;
-  }
+  const closeWithoutSaving = () => {
+    setOpen(false);
+  };
 
   return (
     <Modal open={open} setOpen={setOpen}>
@@ -98,6 +105,8 @@ export default function SettingsModal({
             }}
           >
             <SideMenu
+              config={config}
+              settingsSections={settingsSections}
               scrolledSectionName={scrolledSectionName}
               closeMenuBar={closeMenuBar}
             />
@@ -108,9 +117,11 @@ export default function SettingsModal({
       {isMobile(width) && <SideMenuIcon openMenuBar={openMenuBar} />}
 
       <SettingsContent
+        settingsSections={settingsSections}
+        setSettingsSections={setSettingsSections}
         onClick={handleSettingsContentClicked}
         config={config}
-        closeModal={() => setOpen(false)}
+        closeModal={closeWithoutSaving}
         onScroll={handleScroll}
       />
     </Modal>

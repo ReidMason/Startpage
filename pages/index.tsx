@@ -22,7 +22,6 @@ interface StartpageProps {
 const DynamicSettingsModal = dynamic(
   () => import("../components/modules/SettingsModal/SettingsModal")
 );
-
 const DynamicExtensionsDisplay = dynamic(
   () => import("../components/extensions/ExtensionsDisplay")
 );
@@ -34,7 +33,7 @@ const Home: NextPage<StartpageProps> = ({
   configData,
   weatherData,
 }: StartpageProps) => {
-  const [settingsModalOpen, setSettingsModalOpen] = useState(false);
+  const [settingsModalOpen, setSettingsModalOpen] = useState(true);
   const [config, setConfig] = useState(configData);
   const [editMode, setEditMode] = useState(false);
   const [appFilter, setAppFilter] = useState("");
@@ -53,13 +52,13 @@ const Home: NextPage<StartpageProps> = ({
   };
 
   useEffect(() => {
-    if (config.general.appearance === "system") {
+    if (config.appearance.appearance === "system") {
       const useDarkmode = window.matchMedia(
         "(prefers-color-scheme: dark)"
       ).matches;
       if (useDarkmode) document.documentElement.classList.add("dark");
       else document.documentElement.classList.remove("dark");
-    } else if (config.general.appearance === "dark") {
+    } else if (config.appearance.appearance === "dark") {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
@@ -71,7 +70,7 @@ const Home: NextPage<StartpageProps> = ({
       <div
         className={`h-full min-h-screen bg-cover bg-fixed pb-24 lg:pt-36`}
         style={{
-          backgroundImage: config.general.backgroundEnabled
+          backgroundImage: config.appearance.backgroundEnabled
             ? `url("/static/background.png?v=${config.general.cacheKey}")`
             : undefined,
         }}
@@ -79,7 +78,7 @@ const Home: NextPage<StartpageProps> = ({
         <LazyMotion features={loadFeatures} strict>
           <Grid
             className={`container mx-auto gap-8 p-16 text-primary-300 transition dark:text-primary-100 ${
-              config.general.glassy &&
+              config.appearance.glassy &&
               "rounded-2xl bg-primary-900/30 backdrop-blur-xl"
             }`}
           >
@@ -138,8 +137,6 @@ export default Home;
 export const getStaticProps: GetStaticProps = async () => {
   const configData = await getConfig();
   const weatherData = await getWeatherData(configData.weather);
-
-  console.log(configData.general.cacheKey);
 
   return {
     props: {

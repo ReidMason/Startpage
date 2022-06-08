@@ -1,27 +1,55 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import fs from "fs";
+import { promises as fs } from "fs";
 import formidable from "formidable";
 
 const BG_PATH = "./public/static/background.png";
+type ProcessedFile = formidable.File | null;
 
 export default async function saveBackground(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
-    const form = new formidable.IncomingForm();
-    await form.parse(req, async (err, fields, files) => {
-      const file = files.file as formidable.File;
-      await saveFile(file);
+    let status = 200,
+      resultBody = {
+        message: "Files were uploaded successfully",
+      };
+
+    /* Get files using formidable */
+    const file = await new Promise<ProcessedFile | undefined>(
+      (resolve, reject) => {
+        const form = new formidable.IncomingForm();
+        let processedFile: ProcessedFile = null;
+        form.on("file", function (_, file) {
+          processedFile = file;
+        });
+        form.on("end", () => resolve(processedFile));
+        form.on("error", (err) => reject(err));
+        form.parse(req, () => {});
+      }
+    ).catch(() => {
+      status = 500;
+      resultBody = {
+        message: "Upload error",
+      };
     });
-    return res.status(200).json({});
+
+    if (file) {
+      /* Create directory for uploads */
+      try {
+        await fs.access(BG_PATH);
+      } catch (e) {
+        await fs.mkdir(BG_PATH);
+      }
+
+      /* Move uploaded files to directory */
+      const tempPath = file.filepath;
+      await fs.rename(tempPath, BG_PATH);
+    }
+
+    res.status(status).json(resultBody);
   }
 }
-
-const saveFile = async (file: formidable.File) => {
-  var rawData = fs.readFileSync(file.filepath);
-  await fs.writeFileSync(BG_PATH, rawData);
-};
 
 export const config = {
   api: {

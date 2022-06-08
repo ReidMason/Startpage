@@ -16,7 +16,7 @@ const styles: Styles = {
   },
   outline: {
     default:
-      "transform hover:scale-105 backdrop-blur-xl bg-primary-100/20 hover:bg-primary-100/40 text-primary-800 dark:text-primary-50 focus:outline",
+      "transform hover:scale-105 backdrop-blur-xl bg-primary-100/20 hover:bg-primary-100/40 text-primary-800 dark:text-primary-50",
     danger:
       "backdrop-blur-xl text-primary-800 border-red-400 hover:border-red-300 dark:text-primary-50 dark:border-red-600 hover:dark:border-red-500",
     warning:
@@ -67,7 +67,7 @@ export default function Button({
   return (
     <button
       onClick={onClick}
-      className={`${dynamicStyles} min-w-[8rem] cursor-pointer border-2 border-transparent p-1 px-4 transition duration-300 ${className}`}
+      className={`${dynamicStyles} min-w-[8rem] cursor-pointer border-2 border-transparent p-1 px-4 transition duration-300 focus-visible:outline-2 focus-visible:outline-primary-50 ${className}`}
       type={buttonType}
       disabled={disabled}
     >

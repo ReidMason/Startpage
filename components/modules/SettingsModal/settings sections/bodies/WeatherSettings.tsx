@@ -1,6 +1,6 @@
 import { Controller } from "react-hook-form";
 import Input from "../../../../input/Input";
-import Toggle from "../../../../toggle/Toggle";
+import Switch from "../../../../switch/Switch";
 import { SettingsSectionProps } from "../../types";
 
 export default function WeatherSettings({
@@ -23,7 +23,7 @@ export default function WeatherSettings({
         control={control}
         name="weather.detailed"
         render={({ field: { ref, ...field } }) => (
-          <Toggle label="Detailed weather display" {...field} />
+          <Switch label="Detailed weather display" {...field} />
         )}
       />
     </>

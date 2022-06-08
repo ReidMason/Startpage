@@ -1,17 +1,20 @@
-import { createRef, useRef } from "react";
+import { Config } from "../../../services/server/config/types";
 import Button from "../../button/Button";
 import Input from "../../input/Input";
-import { settingsSections } from "./settingsSections";
 import { SettingsSection } from "./types";
 
 interface SideMenuProps {
   scrolledSectionName: string;
   closeMenuBar: () => void;
+  settingsSections: Array<SettingsSection>;
+  config: Config;
 }
 
 export default function SideMenu({
   scrolledSectionName,
   closeMenuBar,
+  settingsSections,
+  config,
 }: SideMenuProps) {
   const scrollToSection = (section: SettingsSection) => {
     const current = section.ref?.current;
@@ -22,8 +25,14 @@ export default function SideMenu({
     }
   };
 
+  const glassyStyles = config.appearance.glassy
+    ? "backdrop-blur-3xl dark:bg-primary-900/50"
+    : "dark:bg-primary-900";
+
   return (
-    <div className="sticky top-24 flex h-full w-64 flex-col p-6 pt-12 text-primary-50 dark:bg-primary-900">
+    <div
+      className={`${glassyStyles} sticky top-24 flex h-full w-64 flex-col p-6 pt-12 text-primary-50`}
+    >
       <h1 className="mb-4 text-center text-2xl">Settings</h1>
       <Input
         placeholder="Search..."

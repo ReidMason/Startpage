@@ -2,13 +2,14 @@ import React from "react";
 import { RadioGroup as RadioGroupHui } from "@headlessui/react";
 import { domMax, LazyMotion, m } from "framer-motion";
 import { stiffSpringTransition } from "../../common";
-import FormElementWrapper from "../FormElement/FormElementWrapper";
+import FormElementWrapper from "../FormElementWrapper/FormElementWrapper";
 
 interface RadioGroupProps {
   options: Array<string>;
   value: string;
   onChange: (checked: string) => void;
   label?: string;
+  glassy?: boolean;
 }
 
 export default function RadioGroup({
@@ -16,8 +17,13 @@ export default function RadioGroup({
   value,
   onChange,
   label,
+  glassy,
 }: RadioGroupProps) {
   const chosenIndex = options.findIndex((x) => x === value);
+
+  const glassyStyles = glassy
+    ? "backdrop-blur bg-primary-100/20"
+    : "dark:bg-primary-700 outline outline-2 outline-primary-100/60";
 
   return (
     <LazyMotion features={domMax}>
@@ -27,7 +33,9 @@ export default function RadioGroup({
           onChange={onChange}
           className="flex flex-col"
         >
-          <div className="relative overflow-hidden rounded-lg outline outline-1 outline-primary-100 dark:bg-primary-700">
+          <div
+            className={`${glassyStyles} relative overflow-hidden rounded-lg`}
+          >
             <div
               className="grid w-full"
               style={{
@@ -40,7 +48,7 @@ export default function RadioGroup({
                   className="z-10"
                   key={option}
                 >
-                  <div className="cursor-pointer px-3 py-1 text-center outline outline-1 outline-primary-100/20 hover:bg-primary-400">
+                  <div className="cursor-pointer px-3 py-1.5 text-center outline outline-1 outline-primary-100/20 hover:bg-primary-400">
                     {option}
                   </div>
                 </RadioGroupHui.Option>
@@ -54,7 +62,7 @@ export default function RadioGroup({
                 }}
               >
                 <m.div
-                  className="h-full w-full bg-primary-400"
+                  className="h-full w-full bg-primary-400/50"
                   transition={stiffSpringTransition}
                   layout
                 />

@@ -4,6 +4,14 @@ export interface Config {
   apps: Array<App>;
   providers: Array<Provider>;
   weather: WeatherConfig;
+  appearance: AppearanceConfig;
+}
+
+export interface AppearanceConfig {
+  backgroundEnabled: boolean;
+  theme: string;
+  appearance: Appearance;
+  glassy: boolean;
 }
 
 export const appearances = ["dark", "light", "system"] as const;
@@ -15,11 +23,7 @@ export interface GeneralConfig {
   customSearchEnabled: boolean;
   calendarUrl: string;
   searchPlaceholder: string;
-  theme: string;
-  appearance: Appearance;
-  glassy: boolean;
   cacheKey: number;
-  backgroundEnabled: boolean;
 }
 
 export interface WeatherConfig {

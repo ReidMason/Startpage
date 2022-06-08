@@ -33,7 +33,7 @@ export default function ExtensionsDisplay({
     duration: 0.25,
   };
 
-  const styling = config.general.glassy
+  const styling = config.appearance.glassy
     ? "background-blur focus:bg-primary-100/20 hover:bg-primary-50/20"
     : "hover:bg-primary-100/50 hover:dark:bg-primary-700";
 

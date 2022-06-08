@@ -12,10 +12,12 @@ export const defaultConfigData: Config = {
     customSearchEnabled: false,
     calendarUrl: "https://calendar.google.com/calendar/",
     searchPlaceholder: "Search...",
+    cacheKey: Math.random(),
+  },
+  appearance: {
     theme: "default",
     appearance: "system",
     glassy: true,
-    cacheKey: Math.random(),
     backgroundEnabled: false,
   },
   apps: [],
