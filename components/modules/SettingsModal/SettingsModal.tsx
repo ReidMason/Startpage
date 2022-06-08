@@ -4,7 +4,16 @@ import { StateSetter } from "../../../types/common";
 import Modal from "../../modal/Modal";
 import SettingsContent from "./SettingsContent";
 import SideMenu from "./SideMenu";
-import { UIEvent, useEffect, useState } from "react";
+import {
+  createRef,
+  MutableRefObject,
+  RefObject,
+  UIEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import SideMenuIcon from "./SideMenuIcon";
 import { settingsSections as defaultSettingsSections } from "./settingsSections";
 
@@ -19,8 +28,14 @@ export default function SettingsModal({
   setOpen,
   config,
 }: SettingsModalProps) {
-  const [settingsSections, setSettingsSections] = useState(
-    defaultSettingsSections
+  const elementsRef: MutableRefObject<Array<RefObject<HTMLDivElement>>> =
+    useRef(defaultSettingsSections.map(() => createRef()));
+  // Add refs to the settings sections
+  const [settingsSections] = useState(
+    defaultSettingsSections.map((x, index) => ({
+      ...x,
+      ref: elementsRef.current[index],
+    }))
   );
   const [scrolledSectionName, setScrolledSectionName] = useState(
     settingsSections[0].name
@@ -33,7 +48,7 @@ export default function SettingsModal({
     return width < mobileWidth;
   };
 
-  const handleWidthChange = () => {
+  const handleWidthChange = useCallback(() => {
     const windowWidth = window.innerWidth;
     setWidth(windowWidth);
 
@@ -42,7 +57,7 @@ export default function SettingsModal({
     } else if (!isMobile(windowWidth)) {
       openMenuBar();
     }
-  };
+  }, []);
 
   useEffect(() => {
     window.addEventListener("resize", handleWidthChange);
@@ -118,7 +133,6 @@ export default function SettingsModal({
 
       <SettingsContent
         settingsSections={settingsSections}
-        setSettingsSections={setSettingsSections}
         onClick={handleSettingsContentClicked}
         config={config}
         closeModal={closeWithoutSaving}
