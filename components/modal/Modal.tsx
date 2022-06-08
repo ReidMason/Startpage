@@ -42,7 +42,7 @@ export default function Modal({ open, setOpen, children }: ModalProps) {
             transition={{ duration: 0.2 }}
           >
             <div className="flex h-full items-center justify-center p-4">
-              <Dialog.Panel className="h-5/6 w-full max-w-7xl transform overflow-hidden rounded-lg bg-primary-800 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="h-5/6 w-full max-w-7xl transform overflow-hidden rounded-lg text-left align-middle shadow-xl transition-all">
                 <div className="flex h-full flex-col">
                   <div className="flex h-full">{children}</div>
                 </div>

@@ -35,23 +35,19 @@ export default function AppsGrid({
   };
 
   return (
-    <LazyMotion features={domMax}>
-      <AnimatePresence initial={false}>
-        {editMode && (
-          <LayoutGrid>
-            <DynamicEditableAppsGrid apps={apps} />
-          </LayoutGrid>
-        )}
-        {!editMode && (
-          <LayoutGrid>
-            {filteredApps.map((app) => (
-              <m.div layout transition={spring} key={app.id}>
-                <App app={app} />
-              </m.div>
-            ))}
-          </LayoutGrid>
-        )}
-      </AnimatePresence>
-    </LazyMotion>
+    <>
+      {editMode && (
+        <LayoutGrid>
+          <DynamicEditableAppsGrid apps={apps} />
+        </LayoutGrid>
+      )}
+      {!editMode && (
+        <LayoutGrid>
+          {filteredApps.map((app) => (
+            <App app={app} key={app.id} />
+          ))}
+        </LayoutGrid>
+      )}
+    </>
   );
 }

@@ -18,7 +18,7 @@ export default function SettingsSectionHeader({
       <div className={`rounded-lg p-1 ${iconBg}`}>
         <Icon className="h-5 w-5" />
       </div>
-      <h2 className="text-xl">{name}</h2>
+      <h2 className="text-2xl">{name}</h2>
       {heading}
     </div>
   );

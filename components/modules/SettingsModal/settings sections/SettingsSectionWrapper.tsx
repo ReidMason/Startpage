@@ -36,7 +36,7 @@ export default function SettingsSectionWrapper({
               {section.customLayout ? (
                 <section.content {...sectionProps} />
               ) : (
-                <div className="grid grid-cols-1 gap-x-4 md:grid-cols-2 xl:grid-cols-3">
+                <div className="grid grid-cols-1 items-start gap-x-4 md:grid-cols-2 xl:grid-cols-3">
                   <section.content {...sectionProps} />
                 </div>
               )}
