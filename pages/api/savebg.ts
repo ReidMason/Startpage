@@ -35,13 +35,6 @@ export default async function saveBackground(
     });
 
     if (file) {
-      /* Create directory for uploads */
-      try {
-        await fs.access(BG_PATH);
-      } catch (e) {
-        await fs.mkdir(BG_PATH);
-      }
-
       /* Move uploaded files to directory */
       const tempPath = file.filepath;
       await fs.rename(tempPath, BG_PATH);
