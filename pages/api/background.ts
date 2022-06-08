@@ -1,11 +1,14 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { promises as fs } from "fs";
+import { promises } from "fs";
 import formidable from "formidable";
+import imageminJpegtran from "imagemin-jpegtran";
+import imageminPngquant from "imagemin-pngquant";
+import imagemin from "imagemin";
 
 const BG_PATH = "./public/static/background.png";
 type ProcessedFile = formidable.File | null;
 
-export default async function saveBackground(
+export default async function background(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -37,7 +40,16 @@ export default async function saveBackground(
     if (file) {
       /* Move uploaded files to directory */
       const tempPath = file.filepath;
-      await fs.rename(tempPath, BG_PATH);
+      await promises.rename(tempPath, BG_PATH);
+      await imagemin([BG_PATH], {
+        destination: "./data/",
+        plugins: [
+          imageminJpegtran(),
+          imageminPngquant({
+            quality: [0.6, 0.8],
+          }),
+        ],
+      });
     }
 
     res.status(status).json(resultBody);

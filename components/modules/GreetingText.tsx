@@ -48,7 +48,7 @@ export default function GreetingText({ calendarUrl }: GreetingProps) {
             calendarUrl ? "cursor-pointer" : ""
           }`}
           href={calendarUrl ? calendarUrl : undefined}
-          tabIndex={1}
+          tabIndex={-1}
         >
           {dayOfWeek}
           <sup>{dateOrdinal}</sup> {monthAndYear}

@@ -21,7 +21,7 @@ export default function AppearanceSettings({
     const body = new FormData();
     body.append("file", files[0], files[0].name);
 
-    const response = await fetch("/api/savebg", {
+    const response = await fetch("/api/background", {
       method: "POST",
       body,
     });

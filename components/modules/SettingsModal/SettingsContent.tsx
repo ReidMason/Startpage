@@ -3,6 +3,7 @@ import {
   MutableRefObject,
   RefObject,
   UIEventHandler,
+  useCallback,
   useContext,
   useEffect,
   useRef,
@@ -23,7 +24,6 @@ interface SettingsContentProps {
   onClick?: () => void;
   onScroll?: UIEventHandler<HTMLDivElement>;
   settingsSections: Array<SettingsSection>;
-  setSettingsSections: StateSetter<Array<SettingsSection>>;
 }
 
 export default function SettingsContent({
@@ -32,11 +32,8 @@ export default function SettingsContent({
   onClick,
   onScroll,
   settingsSections,
-  setSettingsSections,
 }: SettingsContentProps) {
   const { updateConfig } = useContext(GlobalContext);
-  const elementsRef: MutableRefObject<Array<RefObject<HTMLDivElement>>> =
-    useRef(settingsSections.map(() => createRef()));
 
   const {
     register,
@@ -53,21 +50,13 @@ export default function SettingsContent({
       config.appearance = appearance;
       updateConfig(config);
     }
-  }, [appearance]);
+  }, [appearance, config, updateConfig]);
 
   const saveSettings = async (data: Config) => {
     updateConfig(data);
     await saveConfig(data);
     closeModal();
   };
-
-  useEffect(() => {
-    const newSettingsSections = settingsSections.map((x, index) => ({
-      ...x,
-      ref: elementsRef.current[index],
-    }));
-    setSettingsSections(newSettingsSections);
-  }, []);
 
   const glassyStyles = config.appearance.glassy
     ? "backdrop-blur-3xl dark:bg-primary-800/30"

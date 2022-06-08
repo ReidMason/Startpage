@@ -39,6 +39,7 @@ export default function Dropzone({ children, onFileUpload }: DropzoneProps) {
       state="danger"
     >
       <ReactDropzone
+        onDrop={() => setDraggedOver(false)}
         onDragOver={() => setDraggedOver(true)}
         onDragLeave={() => setDraggedOver(false)}
         onDropRejected={dropRejected}
