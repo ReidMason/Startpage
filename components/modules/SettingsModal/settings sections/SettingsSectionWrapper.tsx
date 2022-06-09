@@ -17,7 +17,7 @@ export default function SettingsSectionWrapper({
     section;
 
   return (
-    <div key={section.name} className="mb-6 flex flex-col gap-8">
+    <div key={section.name} className="flex flex-col">
       <div>
         <Collapse
           header={
@@ -31,11 +31,11 @@ export default function SettingsSectionWrapper({
             />
           }
           body={
-            <div className="lg:pl-4">
+            <div className="mb-4 lg:pl-4">
               {section.customLayout ? (
                 <section.content {...sectionProps} />
               ) : (
-                <div className="grid grid-cols-1 items-start gap-x-4 md:grid-cols-2 xl:grid-cols-3">
+                <div className="grid grid-cols-1 items-start gap-4 gap-x-4 md:grid-cols-2 xl:grid-cols-3">
                   <section.content {...sectionProps} />
                 </div>
               )}

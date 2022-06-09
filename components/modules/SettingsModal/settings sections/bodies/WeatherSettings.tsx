@@ -9,6 +9,13 @@ export default function WeatherSettings({
 }: SettingsSectionProps) {
   return (
     <>
+      <Controller
+        control={control}
+        name="weather.enabled"
+        render={({ field: { ref, ...field } }) => (
+          <Switch label="Weather display enabled" {...field} />
+        )}
+      />
       <Input
         label="Api key"
         placeholder="Api key"

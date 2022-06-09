@@ -54,7 +54,7 @@ export default function GreetingText({ calendarUrl }: GreetingProps) {
           <sup>{dateOrdinal}</sup> {monthAndYear}
         </a>
       </div>
-      <p className="text-5xl font-bold" aria-label="greeting">
+      <p className="text-4xl font-bold md:text-5xl" aria-label="greeting">
         {greeting}
       </p>
     </div>

@@ -14,6 +14,7 @@ import Greeting from "../components/modules/Greeting/Greeting";
 import Searchbar from "../components/modules/Searchbar/Searchbar";
 import AppsGrid from "../components/modules/AppsGrid/AppsGrid";
 import { RecursivePartial } from "../common";
+import HorizontalRule from "../components/horizontal rule/HorizontalRule";
 
 interface StartpageProps {
   configData: Config;
@@ -69,7 +70,7 @@ const Home: NextPage<StartpageProps> = ({
   return (
     <GlobalContext.Provider value={{ config, updateConfig, updateCacheKey }}>
       <div
-        className={`h-full min-h-screen bg-cover bg-fixed pb-24 lg:pt-36`}
+        className="h-full min-h-screen bg-cover bg-fixed sm:pb-24 lg:pt-36"
         style={{
           backgroundImage: config.appearance.backgroundEnabled
             ? `url("/static/background.png?v=${config.general.cacheKey}")`
@@ -78,15 +79,15 @@ const Home: NextPage<StartpageProps> = ({
       >
         <LazyMotion features={loadFeatures} strict>
           <Grid
-            className={`container mx-auto gap-8 p-16 text-primary-300 transition dark:text-primary-100 ${
+            className={`container mx-auto gap-8 p-8 text-primary-300 transition dark:text-primary-100 sm:p-16 ${
               config.appearance.glassy &&
-              "rounded-2xl bg-primary-900/30 backdrop-blur-xl"
+              "bg-primary-900/30 backdrop-blur-xl sm:rounded-2xl"
             }`}
           >
             <div className="col-span-full mb-4">
               <Searchbar config={config} setAppFilter={setAppFilter} />
             </div>
-            <div className="col-span-full mb-12">
+            <div className="col-span-full mb-2 md:mb-12">
               <Greeting
                 appFilter={appFilter}
                 config={config}

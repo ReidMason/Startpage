@@ -8,7 +8,6 @@ import AppearanceSettings from "./settings sections/bodies/AppearanceSettings";
 import GeneralSettings from "./settings sections/bodies/GeneralSettings";
 import ProvidersSettings from "./settings sections/bodies/ProvidersSettings";
 import WeatherSettings from "./settings sections/bodies/WeatherSettings";
-import WeatherHeading from "./settings sections/headers/WeatherHeading";
 import { SettingsSection } from "./types";
 
 export const settingsSections: Array<SettingsSection> = [
@@ -29,7 +28,6 @@ export const settingsSections: Array<SettingsSection> = [
     icon: CloudIcon,
     iconBg: "bg-green-500",
     content: WeatherSettings,
-    heading: WeatherHeading,
   },
   {
     name: "Providers",

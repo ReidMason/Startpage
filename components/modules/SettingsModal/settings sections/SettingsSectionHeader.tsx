@@ -14,12 +14,12 @@ export default function SettingsSectionHeader({
   heading,
 }: SettingsSectionHeaderProps) {
   return (
-    <div className="mb-4 flex items-center gap-2">
+    <div className="flex items-center gap-3">
       <div className={`rounded-lg p-1 ${iconBg}`}>
         <Icon className="h-5 w-5" />
       </div>
-      <h2 className="text-2xl">{name}</h2>
-      {heading}
+      <h2 className="text-xl">{name}</h2>
+      <div className="ml-4">{heading}</div>
     </div>
   );
 }

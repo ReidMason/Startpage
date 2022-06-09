@@ -8,6 +8,7 @@ interface DropzoneProps {
   loading?: boolean;
   icon: ({}) => JSX.Element;
   mainText: string;
+  mainTextMobile: string;
   smallText: string;
   backgroundUrl?: string;
 }
@@ -24,6 +25,7 @@ export default function Dropzone({
   mainText,
   smallText,
   backgroundUrl,
+  mainTextMobile,
 }: DropzoneProps) {
   const [errorMessage, setErrorMessage] = useState("");
   const [draggedOver, setDraggedOver] = useState(false);
@@ -64,25 +66,28 @@ export default function Dropzone({
       >
         {({ getRootProps, getInputProps }) => (
           <div
-            className={`cursor-default overflow-hidden rounded-lg bg-primary-100/40 ${loadingStyles} ${
+            className={`bg-primary-100/40 cursor-default overflow-hidden rounded-lg ${loadingStyles} ${
               draggedOver && "text-green-300"
             }`}
             {...getRootProps()}
           >
             <input {...getInputProps()} />
             <div
-              className="flex items-center justify-center gap-4 bg-black/50 bg-cover p-8 bg-blend-darken"
+              className="flex items-center justify-center gap-4 bg-black/50 bg-cover p-4 bg-blend-darken sm:p-8"
               style={{
                 backgroundImage: backgroundUrl
                   ? `url("${backgroundUrl}")`
                   : undefined,
               }}
             >
-              <div className="h-12 w-12">
+              <div className="w-12">
                 {loading ? <LoadingSpinner /> : <Icon />}
               </div>
               <div className="flex flex-col">
-                <p className="text-lg font-semibold">{mainText}</p>
+                <div className="text-md font-semibold sm:text-lg">
+                  <p className="hidden sm:block">{mainText}</p>
+                  <p className="block sm:hidden">{mainTextMobile}</p>
+                </div>
                 <small className="dark:text-primary-50/80">{smallText}</small>
               </div>
             </div>

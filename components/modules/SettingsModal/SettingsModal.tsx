@@ -14,7 +14,6 @@ import {
   useRef,
   useState,
 } from "react";
-import SideMenuIcon from "./SideMenuIcon";
 import { settingsSections as defaultSettingsSections } from "./settingsSections";
 
 interface SettingsModalProps {
@@ -129,14 +128,14 @@ export default function SettingsModal({
         )}
       </AnimatePresence>
 
-      {isMobile(width) && <SideMenuIcon openMenuBar={openMenuBar} />}
-
       <SettingsContent
         settingsSections={settingsSections}
         onClick={handleSettingsContentClicked}
         config={config}
         closeModal={closeWithoutSaving}
         onScroll={handleScroll}
+        openMenuBar={openMenuBar}
+        isMobile={isMobile(width)}
       />
     </Modal>
   );

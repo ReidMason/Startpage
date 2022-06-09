@@ -1,4 +1,3 @@
-import Button from "../../../../button/Button";
 import Input from "../../../../input/Input";
 import { SettingsSectionProps } from "../../types";
 

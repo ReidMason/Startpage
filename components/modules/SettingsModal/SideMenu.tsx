@@ -58,7 +58,7 @@ export default function SideMenu({
           >
             <div className="flex items-center gap-2">
               <div className={`rounded-lg p-1 ${section.iconBg}`}>
-                <section.icon />
+                {/* <section.icon /> */}
               </div>
               <span>{section.name}</span>
             </div>

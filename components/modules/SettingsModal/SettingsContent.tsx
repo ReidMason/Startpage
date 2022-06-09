@@ -1,13 +1,4 @@
-import {
-  createRef,
-  MutableRefObject,
-  RefObject,
-  UIEventHandler,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-} from "react";
+import { UIEventHandler, useContext, useEffect } from "react";
 import Button from "../../button/Button";
 import { useForm, useWatch } from "react-hook-form";
 import { Config } from "../../../services/server/config/types";
@@ -15,8 +6,8 @@ import { saveConfig } from "../../../services/client/config/config";
 import GlobalContext from "../../../contexts/GlobalContext/GlobalContext";
 import SettingsSectionWrapper from "./settings sections/SettingsSectionWrapper";
 import { SettingsSection } from "./types";
-import { StateSetter } from "../../../types/common";
 import { m } from "framer-motion";
+import SideMenuIcon from "./SideMenuIcon";
 
 interface SettingsContentProps {
   closeModal: () => void;
@@ -24,6 +15,8 @@ interface SettingsContentProps {
   onClick?: () => void;
   onScroll?: UIEventHandler<HTMLDivElement>;
   settingsSections: Array<SettingsSection>;
+  openMenuBar: () => void;
+  isMobile: boolean;
 }
 
 export default function SettingsContent({
@@ -32,6 +25,8 @@ export default function SettingsContent({
   onClick,
   onScroll,
   settingsSections,
+  openMenuBar,
+  isMobile,
 }: SettingsContentProps) {
   const { updateConfig } = useContext(GlobalContext);
 
@@ -64,13 +59,13 @@ export default function SettingsContent({
 
   return (
     <form
-      className={`${glassyStyles} z-10 flex w-full flex-col justify-between py-4 shadow-xl dark:text-primary-50`}
+      className={`${glassyStyles} z-10 flex w-full flex-col justify-between pt-4 shadow-xl dark:text-primary-50`}
       onSubmit={handleSubmit(saveSettings)}
+      onClick={onClick}
     >
       <m.div
         layoutScroll
-        className="mt-4 h-full overflow-y-auto scroll-smooth px-4"
-        onClick={onClick}
+        className="mt-4 flex h-full flex-col gap-3 overflow-y-auto scroll-smooth px-4"
         onScroll={onScroll}
       >
         {settingsSections.map((section) => (
@@ -88,11 +83,12 @@ export default function SettingsContent({
         ))}
       </m.div>
 
-      <div className="flex justify-end gap-4 px-4 pt-2">
+      <div className="bg-primary-200/10 grid grid-cols-3 gap-4 p-2">
+        {isMobile && <SideMenuIcon openMenuBar={openMenuBar} />}
         <Button type="submit" state="success">
           Save
         </Button>
-        <Button state="grey" onClick={closeModal}>
+        <Button variant="outline" onClick={closeModal}>
           Exit
         </Button>
       </div>
