@@ -1,6 +1,7 @@
 import { RefObject, SVGProps } from "react";
 import { Control, UseFormRegister } from "react-hook-form";
 import { Config } from "../../../services/server/config/types";
+import { StateSetter } from "../../../types/common";
 
 export interface SettingsSectionProps {
   register: UseFormRegister<Config>;

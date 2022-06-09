@@ -3,9 +3,6 @@ import Input from "../../../../input/Input";
 import { SettingsSectionProps } from "../../types";
 
 export default function GeneralSettings({ register }: SettingsSectionProps) {
-  const revalidate = () => {
-    fetch("/api/revalidate");
-  };
   return (
     <>
       <Input
@@ -27,8 +24,6 @@ export default function GeneralSettings({ register }: SettingsSectionProps) {
         label="Custom search url"
         register={register("general.customSearchUrl")}
       />
-
-      <Button onClick={revalidate}>Relvaidate config</Button>
     </>
   );
 }

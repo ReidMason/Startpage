@@ -55,7 +55,7 @@ export default function Input({
         value={value}
         autoComplete={autoComplete || "off"}
         {...register}
-        className={`input ${inputState} ${inputVariant} ${pilledStyles} bg-primary-100/40 px-3 py-1.5 backdrop-blur transition duration-300 focus:bg-primary-100/60 focus:outline-none dark:text-primary-50`}
+        className={`input ${inputState} ${inputVariant} ${pilledStyles} bg-primary-100/40 py-1.5 px-3 backdrop-blur transition duration-300 focus:bg-primary-100/60 focus:outline-none dark:text-primary-50`}
         type={textType}
         disabled={disabled}
         placeholder={placeholder}

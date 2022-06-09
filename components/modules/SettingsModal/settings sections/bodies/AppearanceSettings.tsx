@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Controller } from "react-hook-form";
 import GlobalContext from "../../../../../contexts/GlobalContext/GlobalContext";
 import { appearances } from "../../../../../services/server/config/types";
@@ -7,17 +7,18 @@ import RadioGroup from "../../../../RadioGroup/RadioGroup";
 import Switch from "../../../../switch/Switch";
 import { SettingsSectionProps } from "../../types";
 import { UploadIcon } from "@heroicons/react/outline";
-import Image from "next/image";
 
 export default function AppearanceSettings({
   control,
   config,
 }: SettingsSectionProps) {
   const { updateCacheKey } = useContext(GlobalContext);
+  const [fileUploading, setFileUploading] = useState(false);
 
   const onFileUpload = async (files: Array<File>) => {
     if (files.length === 0) return;
 
+    setFileUploading(true);
     const body = new FormData();
     body.append("file", files[0], files[0].name);
 
@@ -27,6 +28,7 @@ export default function AppearanceSettings({
     });
 
     if (response.ok) updateCacheKey();
+    setFileUploading(false);
   };
 
   return (
@@ -54,24 +56,14 @@ export default function AppearanceSettings({
       </div>
 
       <div className="col-span-2">
-        <Dropzone onFileUpload={onFileUpload}>
-          <div
-            className="flex items-center justify-center gap-4 bg-black/50 bg-cover p-8 bg-blend-darken"
-            style={{
-              backgroundImage: `url("/static/background.png?v=${config.general.cacheKey}")`,
-            }}
-          >
-            <UploadIcon className="h-12 w-12" />
-            <div className="flex flex-col">
-              <p className="text-lg font-semibold">
-                Drag an image file here or click to select a file
-              </p>
-              <small className="dark:text-primary-50/80">
-                The smaller the file size, the faster the image will load
-              </small>
-            </div>
-          </div>
-        </Dropzone>
+        <Dropzone
+          onFileUpload={onFileUpload}
+          icon={UploadIcon}
+          loading={fileUploading}
+          mainText="Drag an image file here or click to select a file"
+          smallText="The smaller the file size, the faster the image will load"
+          backgroundUrl={`/static/background.png?v=${config.general.cacheKey}`}
+        />
       </div>
 
       <Controller

@@ -1,4 +1,5 @@
 import { Transition } from "framer-motion";
+import { GeneralConfig } from "./services/server/config/types";
 
 export const springTranstition: Transition = {
   type: "spring",
@@ -15,4 +16,8 @@ export const stiffSpringTransition: Transition = {
 export const softSpringTransition: Transition = {
   type: "spring",
   bounce: 0.15,
+};
+
+export type RecursivePartial<T> = {
+  [P in keyof T]?: RecursivePartial<T[P]>;
 };

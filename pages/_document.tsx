@@ -4,6 +4,7 @@ export default function Document() {
   return (
     <Html lang="en" className="dark bg-primary-50/90">
       <Head />
+      <meta name="description" content="Startpage" />
       <body className="dark:bg-primary-900/90">
         <Main />
         <NextScript />
