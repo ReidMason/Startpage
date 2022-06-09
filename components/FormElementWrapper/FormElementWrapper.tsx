@@ -1,9 +1,9 @@
 import React from "react";
-import { State, StateStyles, Styles } from "../button/types";
+import { State, StateStyles } from "../button/types";
 
 export interface FormElementProps {
   label?: string;
-  helperText?: string;
+  helperText?: string | React.ReactNode;
   noHelperText?: boolean;
   noLabel?: boolean;
   className?: string;
@@ -47,9 +47,9 @@ export default function FormElementWrapper({
         </label>
       )}
       {children}
-      {!noHelperText && (
+      {helperText && (
         <small
-          className={`${stateClasses} h-4 transform text-sm duration-300 ${
+          className={`${stateClasses} mb-2 h-4 transform text-sm duration-300 ${
             helperText ? "" : "opacity-0"
           }`}
         >

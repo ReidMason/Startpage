@@ -48,7 +48,7 @@ export default function RadioGroup({
                   className="z-10"
                   key={option}
                 >
-                  <div className="cursor-pointer px-3 py-1.5 text-center outline outline-1 outline-primary-100/20 hover:bg-primary-400">
+                  <div className="outline-primary-100/20 cursor-pointer px-3 py-1.5 text-center outline outline-1 hover:bg-primary-400">
                     {option}
                   </div>
                 </RadioGroupHui.Option>
@@ -62,7 +62,7 @@ export default function RadioGroup({
                 }}
               >
                 <m.div
-                  className="h-full w-full bg-primary-400/50"
+                  className="h-full w-full bg-primary-500"
                   transition={stiffSpringTransition}
                   layout
                 />

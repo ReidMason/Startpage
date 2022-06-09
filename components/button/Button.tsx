@@ -10,7 +10,7 @@ const styles: Styles = {
     warning:
       "text-primary-400 dark:text-primary-50 bg-yellow-200 dark:bg-yellow-400 hover:bg-yellow-300",
     success:
-      "text-primary-400 dark:text-primary-50 bg-green-200 dark:bg-green-400 hover:bg-green-300",
+      "text-primary-400 dark:text-primary-50 bg-green-300 dark:bg-green-500 hover:bg-green-300",
     grey: "text-primary-400 dark:text-primary-50 bg-grey-200 dark:bg-grey-400 hover:bg-grey-300",
     dark: "text-primary-50 bg-primary-600 hover:bg-primary-500",
   },
@@ -67,7 +67,7 @@ export default function Button({
   return (
     <button
       onClick={onClick}
-      className={`${dynamicStyles} min-w-[8rem] cursor-pointer border-2 border-transparent p-1 px-4 transition duration-300 focus-visible:outline-2 focus-visible:outline-primary-50 ${className}`}
+      className={`${dynamicStyles} cursor-pointer border-2 border-transparent p-1 px-4 transition duration-300 focus-visible:outline-2 focus-visible:outline-primary-50 sm:min-w-[8rem] ${className}`}
       type={buttonType}
       disabled={disabled}
     >

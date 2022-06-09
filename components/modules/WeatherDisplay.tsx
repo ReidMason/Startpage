@@ -19,9 +19,11 @@ export default function WeatherDisplay({
         width={100}
         height={100}
       />
-      <div>
-        <p className="mb-2 capitalize">{weatherData.description}</p>
-        <div className="flex items-end justify-between gap-4">
+      <div className="flex flex-col justify-center">
+        <p className="mb-2 hidden capitalize md:block">
+          {weatherData.description}
+        </p>
+        <div className="flex items-center justify-between gap-4 md:items-end">
           <p className="text-4xl">{Math.round(weatherData.temperature)}°C</p>
           {detailed && (
             <div className="mb-1 flex items-center gap-1 text-lg">

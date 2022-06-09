@@ -6,7 +6,7 @@ import FormElementWrapper from "../FormElementWrapper/FormElementWrapper";
 
 interface ToggleProps {
   state?: State;
-  helperText?: string;
+  helperText?: string | React.ReactNode;
   label?: string;
   value: boolean;
   variant?: Variant;

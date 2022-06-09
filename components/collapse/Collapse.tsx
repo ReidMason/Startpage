@@ -21,7 +21,7 @@ export default function Collapse({ header, body }: CollapseProps) {
           {({ open }) => (
             <>
               <Disclosure.Button className="w-full cursor-pointer" as="div">
-                <div className="flex items-center justify-between pr-4">
+                <div className="mb-3 flex items-center justify-between pr-4">
                   {header}
                   <div className="flex gap-1">
                     <m.div animate={{ x: open ? "1.5rem" : 0 }}>

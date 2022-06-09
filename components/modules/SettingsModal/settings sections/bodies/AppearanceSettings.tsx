@@ -38,41 +38,54 @@ export default function AppearanceSettings({
         name="appearance.appearance"
         render={({ field: { ref, ...field } }) => (
           <RadioGroup
-            label="Appearance"
+            label="Theme"
             {...field}
             options={[...appearances]}
             glassy={config.appearance.glassy}
           />
         )}
       />
-      <div className="lg:col-span-2">
-        <Controller
-          control={control}
-          name="appearance.glassy"
-          render={({ field: { ref, ...field } }) => (
-            <Switch label="Glassy theme" {...field} />
-          )}
-        />
-      </div>
 
-      <div className="col-span-2">
-        <Dropzone
-          onFileUpload={onFileUpload}
-          icon={UploadIcon}
-          loading={fileUploading}
-          mainText="Drag an image file here or click to select a file"
-          smallText="The smaller the file size, the faster the image will load"
-          backgroundUrl={`/static/background.png?v=${config.general.cacheKey}`}
-        />
-      </div>
+      <Controller
+        control={control}
+        name="appearance.glassy"
+        render={({ field: { ref, ...field } }) => (
+          <div className="flex items-end">
+            <Switch label="Glassy theme" {...field} />
+            <small className="mb-1 hidden opacity-70 firefox:block">
+              Partially supported on{" "}
+              <a
+                className="text-primary-300"
+                href="https://bugzilla.mozilla.org/show_bug.cgi?id=1578503"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Firefox
+              </a>
+            </small>
+          </div>
+        )}
+      />
 
       <Controller
         control={control}
         name="appearance.backgroundEnabled"
         render={({ field: { ref, ...field } }) => (
-          <Switch label="Background image enabled" {...field} />
+          <Switch label="Background image" {...field} />
         )}
       />
+
+      <div className="sm:col-span-2">
+        <Dropzone
+          onFileUpload={onFileUpload}
+          icon={UploadIcon}
+          loading={fileUploading}
+          mainText="Drag an image file here or click to select a file"
+          mainTextMobile="Tap here to upload an image"
+          smallText="The smaller the file size, the faster the image will load"
+          backgroundUrl={`/static/background.png?v=${config.general.cacheKey}`}
+        />
+      </div>
     </>
   );
 }

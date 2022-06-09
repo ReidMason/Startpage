@@ -8,27 +8,14 @@ interface SideMenuIconProps {
 
 export default function SideMenuIcon({ openMenuBar }: SideMenuIconProps) {
   return (
-    <m.div
-      className="fixed bottom-0 z-20"
-      key="menu-open-button"
-      initial="collapsed"
-      animate="open"
-      exit="collapsed"
-      variants={{
-        open: { y: 0 },
-        collapsed: { y: 50 },
-      }}
-      transition={{
-        duration: 0.4,
-        ease: [0.04, 0.62, 0.23, 0.98],
-      }}
-    >
+    <div>
       <button
-        className="rounded-full bg-primary-900/50 p-2 shadow-xl"
+        className="bg-primary-200/20 rounded-lg p-1"
         onClick={openMenuBar}
+        type="button"
       >
         <MenuIcon className="h-8 w-8" />
       </button>
-    </m.div>
+    </div>
   );
 }
