@@ -40,7 +40,7 @@ export default function FormElementWrapper({
     <div className={`${className} flex flex-col justify-end gap-2`}>
       {!noLabel && label && (
         <label
-          className="text-lg text-primary-800 dark:text-primary-50"
+          className="mb-2 h-4 text-lg text-primary-800 dark:text-primary-50"
           htmlFor={htmlFor}
         >
           {label}

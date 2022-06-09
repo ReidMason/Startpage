@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { promises } from "fs";
 import formidable from "formidable";
-import imageminJpegtran from "imagemin-jpegtran";
+import imageminMozjpeg from "imagemin-mozjpeg";
 import imageminPngquant from "imagemin-pngquant";
 import imagemin from "imagemin";
 
@@ -42,11 +42,12 @@ export default async function background(
       const tempPath = file.filepath;
       await promises.rename(tempPath, BG_PATH);
       await imagemin([BG_PATH], {
-        destination: "./data/",
+        destination: "./public/static/",
         plugins: [
-          imageminJpegtran(),
+          imageminMozjpeg({ quality: 60 }),
           imageminPngquant({
             quality: [0.6, 0.8],
+            strip: true,
           }),
         ],
       });

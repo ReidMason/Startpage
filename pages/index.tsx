@@ -13,6 +13,7 @@ import Grid from "../components/grid/Grid";
 import Greeting from "../components/modules/Greeting/Greeting";
 import Searchbar from "../components/modules/Searchbar/Searchbar";
 import AppsGrid from "../components/modules/AppsGrid/AppsGrid";
+import { RecursivePartial } from "../common";
 
 interface StartpageProps {
   configData: Config;
@@ -39,16 +40,16 @@ const Home: NextPage<StartpageProps> = ({
   const [appFilter, setAppFilter] = useState("");
   const [extensions, setExtensions] = useState<Array<Extension>>([]);
 
-  const updateConfig = (newConfig: Config, updateCacheKey: boolean = false) => {
-    if (!updateCacheKey) newConfig.general.cacheKey = config.general.cacheKey;
-
-    setConfig(JSON.parse(JSON.stringify(newConfig)));
+  const updateConfig = (newConfig: RecursivePartial<Config>) => {
+    const updatedConfig = { ...config, ...newConfig };
+    setConfig(JSON.parse(JSON.stringify(updatedConfig)));
   };
 
   const updateCacheKey = () => {
-    const newConfig = config;
-    newConfig.general.cacheKey = Math.random();
-    updateConfig(config, true);
+    const newConfig: RecursivePartial<Config> = {
+      general: { cacheKey: Math.random() },
+    };
+    updateConfig(newConfig);
   };
 
   useEffect(() => {
