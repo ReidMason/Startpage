@@ -14,7 +14,7 @@ COPY . .
 RUN yarn next build
 
 # Production image, copy all the files and run next
-FROM node:16-alpine AS runner
+FROM node:lts-buster-slim AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
