@@ -4,6 +4,7 @@ import formidable from "formidable";
 import imageminMozjpeg from "imagemin-mozjpeg";
 import imageminPngquant from "imagemin-pngquant";
 import imagemin from "imagemin";
+import sharp from "sharp";
 
 const BG_PATH = "./public/static/background.png";
 type ProcessedFile = formidable.File | null;
@@ -40,17 +41,33 @@ export default async function background(
     if (file) {
       /* Move uploaded files to directory */
       const tempPath = file.filepath;
-      await promises.rename(tempPath, BG_PATH);
-      await imagemin([BG_PATH], {
-        destination: "./public/static/",
-        plugins: [
-          imageminMozjpeg({ quality: 60 }),
-          imageminPngquant({
-            quality: [0.6, 0.8],
-            strip: true,
-          }),
-        ],
-      });
+      // await promises.rename(tempPath, BG_PATH);
+
+      console.log(BG_PATH);
+      const image = await sharp(tempPath)
+        .resize(1920, 1080)
+        .jpeg({
+          quality: 80,
+        })
+        .toFile(BG_PATH);
+
+      // const semiTransparentRedPng = await sharp({
+      //   // animated: true,
+
+      // })
+      //   .png()
+      //   .toFile("./public/static/BG_PATH");
+
+      // await imagemin([BG_PATH], {
+      //   destination: "./public/static/",
+      //   plugins: [
+      //     imageminMozjpeg({ quality: 60 }),
+      //     imageminPngquant({
+      //       quality: [0.6, 0.8],
+      //       strip: true,
+      //     }),
+      //   ],
+      // });
     }
 
     res.status(status).json(resultBody);
