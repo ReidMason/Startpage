@@ -1,4 +1,4 @@
-import { UIEventHandler, useContext, useEffect } from "react";
+import { UIEventHandler, useContext, useEffect, useRef } from "react";
 import Button from "../../button/Button";
 import { useForm, useWatch } from "react-hook-form";
 import { Config } from "../../../services/server/config/types";
@@ -28,6 +28,7 @@ export default function SettingsContent({
   openMenuBar,
   isMobile,
 }: SettingsContentProps) {
+  const scrollContainer = useRef<HTMLDivElement>(null);
   const { updateConfig } = useContext(GlobalContext);
 
   const {
@@ -65,15 +66,21 @@ export default function SettingsContent({
     >
       <m.div
         layoutScroll
-        className="mt-4 flex h-full flex-col gap-3 overflow-y-auto scroll-smooth px-4"
+        className="mt-4 grid h-screen grid-cols-1 gap-3 self-stretch overflow-y-auto scroll-smooth px-4"
         onScroll={onScroll}
+        ref={scrollContainer}
       >
-        {settingsSections.map((section) => (
+        {settingsSections.map((section, index) => (
           <div
             key={section.name}
-            className="last:h-full"
             id={section.name}
             ref={section.ref}
+            className="last:pb-4"
+            style={
+              index == settingsSections.length - 1
+                ? { height: scrollContainer.current?.clientHeight }
+                : undefined
+            }
           >
             <SettingsSectionWrapper
               section={section}
@@ -83,7 +90,7 @@ export default function SettingsContent({
         ))}
       </m.div>
 
-      <div className="bg-primary-200/10 grid grid-cols-3 gap-4 p-2">
+      <div className="grid grid-cols-3 gap-4 bg-primary-200/10 p-2">
         {isMobile && <SideMenuIcon openMenuBar={openMenuBar} />}
         <Button type="submit" state="success">
           Save

@@ -1,4 +1,4 @@
-import type { GetServerSideProps, GetStaticProps, NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import { Config } from "../services/server/config/types";
 import { Weather } from "../services/server/weather/types";
 import SettingsButtons from "../components/SettingsButtons";
@@ -14,7 +14,6 @@ import Greeting from "../components/modules/Greeting/Greeting";
 import Searchbar from "../components/modules/Searchbar/Searchbar";
 import AppsGrid from "../components/modules/AppsGrid/AppsGrid";
 import { RecursivePartial } from "../common";
-import HorizontalRule from "../components/horizontal rule/HorizontalRule";
 
 interface StartpageProps {
   configData: Config;

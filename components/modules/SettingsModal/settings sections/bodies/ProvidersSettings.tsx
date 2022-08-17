@@ -30,15 +30,18 @@ export default function ProvidersSettings({
   return (
     <>
       {fields.map((field, index) => (
-        <div key={field.key} className="flex items-center gap-4">
+        <div
+          key={field.key}
+          className="flex flex-col gap-4 sm:flex-row sm:items-center"
+        >
           <Input
-            className="w-40"
+            className="sm:w-40"
             label="Name"
             register={register(`providers.${index}.name`)}
           />
 
           <Input
-            className="w-40"
+            className="sm:w-40"
             label="Prefix"
             register={register(`providers.${index}.prefix`)}
           />
@@ -49,7 +52,7 @@ export default function ProvidersSettings({
           />
           <FormElementWrapper label=" ">
             <Button
-              className="min-w-0 px-0 py-0"
+              className="px-1 sm:min-w-0"
               state="danger"
               onClick={() => remove(index)}
             >
@@ -58,7 +61,8 @@ export default function ProvidersSettings({
           </FormElementWrapper>
         </div>
       ))}
-      <Button state="success" onClick={createNewProvider}>
+
+      <Button className="mt-4" state="success" onClick={createNewProvider}>
         New
       </Button>
     </>
