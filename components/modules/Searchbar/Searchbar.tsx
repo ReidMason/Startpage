@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Config } from "../../../services/server/config/types";
 import { StateSetter } from "../../../types/common";
-import HorizontalRule from "../../horizontal rule/HorizontalRule";
 
 interface SearchBarProps {
   config: Config;
@@ -96,7 +95,7 @@ export default function Searchbar({ config, setAppFilter }: SearchBarProps) {
       <input
         autoFocus
         spellCheck="false"
-        className="border-primary-200/40 placeholder:text-primary-50/80 h-10 w-full border-b-2 bg-transparent pb-4 text-3xl outline-none"
+        className="h-10 w-full border-b-2 border-primary-200/40 bg-transparent py-2 text-3xl outline-none placeholder:text-primary-50/80"
         placeholder={config.general.searchPlaceholder}
         onChange={updateSearchTerm}
         onKeyDown={handleKeyDown}

@@ -1,4 +1,4 @@
-import type { GetServerSideProps, GetStaticProps, NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import { Config } from "../services/server/config/types";
 import { Weather } from "../services/server/weather/types";
 import SettingsButtons from "../components/SettingsButtons";
@@ -14,7 +14,6 @@ import Greeting from "../components/modules/Greeting/Greeting";
 import Searchbar from "../components/modules/Searchbar/Searchbar";
 import AppsGrid from "../components/modules/AppsGrid/AppsGrid";
 import { RecursivePartial } from "../common";
-import HorizontalRule from "../components/horizontal rule/HorizontalRule";
 
 interface StartpageProps {
   configData: Config;
@@ -70,7 +69,7 @@ const Home: NextPage<StartpageProps> = ({
   return (
     <GlobalContext.Provider value={{ config, updateConfig, updateCacheKey }}>
       <div
-        className="h-full min-h-screen bg-cover bg-fixed sm:pb-24 lg:pt-36"
+        className="h-full min-h-screen bg-cover bg-fixed pt-[5%]"
         style={{
           backgroundImage: config.appearance.backgroundEnabled
             ? `url("/static/background.png?v=${config.general.cacheKey}")`
