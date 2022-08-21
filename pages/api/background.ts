@@ -1,9 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { promises } from "fs";
 import formidable from "formidable";
-import imageminMozjpeg from "imagemin-mozjpeg";
-import imageminPngquant from "imagemin-pngquant";
-import imagemin from "imagemin";
 import sharp from "sharp";
 
 const BG_PATH = "./public/static/background.png";
