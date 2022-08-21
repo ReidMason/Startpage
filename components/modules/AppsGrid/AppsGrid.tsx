@@ -1,13 +1,7 @@
 import dynamic from "next/dynamic";
 import { App as AppInterface } from "../../../services/server/config/types";
 import App from "../../app/App";
-import {
-  m,
-  AnimatePresence,
-  domMax,
-  LazyMotion,
-  Transition,
-} from "framer-motion";
+import { Transition } from "framer-motion";
 import LayoutGrid from "../../grid/LayoutGrid";
 
 interface AppsGridProps {
