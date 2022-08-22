@@ -45,6 +45,7 @@ const configRouter = trpc
       newConfig.general.cacheKey = Math.random();
 
       await saveConfig(newConfig);
+      console.log("Saving config!");
       return { message: "Config saved" };
     },
   });

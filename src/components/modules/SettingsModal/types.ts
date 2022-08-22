@@ -1,7 +1,6 @@
 import { RefObject, SVGProps } from "react";
 import { Control, UseFormRegister } from "react-hook-form";
-import { configSchema } from "../../../backend/routers/config/schemas";
-import { StateSetter } from "../../../../types/common";
+import { Config } from "../../../backend/routers/config/schemas";
 
 export interface SettingsSectionProps {
   register: UseFormRegister<Config>;

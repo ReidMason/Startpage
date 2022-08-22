@@ -1,7 +1,7 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import {
   App as AppInterface,
-  Config,
+  PartialConfig,
 } from "../../../backend/routers/config/schemas";
 import {
   DndContext,
@@ -15,26 +15,24 @@ import {
 import { arrayMove } from "@dnd-kit/sortable";
 import App from "../../app/App";
 import AppEditModal from "./AppEditModal";
-import GlobalContext from "../../../../contexts/GlobalContext/GlobalContext";
 import SortableApps from "../DragAndDrop/SortableApps";
 import { createPortal } from "react-dom";
+import { trpc } from "../../../utils/trpc";
 
 interface EditableAppsGridProps {
   apps: Array<AppInterface>;
 }
 
 export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
-  const { config, saveConfig } = useContext(GlobalContext);
+  const config = trpc.useQuery(["config.get"]);
+  const configMutation = trpc.useMutation(["config.save"]);
 
-  const saveApps = async (
-    newConfig: Partial<Config>,
-    config: Config,
-    setConfig: (newConfig: Config) => void
-  ) => {
-    const fullNewConfig = JSON.parse(
-      JSON.stringify({ ...config, ...newConfig })
-    ) as Config;
-    await saveConfig(fullNewConfig);
+  const saveConfig = async (newConfig: PartialConfig) => {
+    await configMutation.mutateAsync(newConfig, {
+      onSuccess: () => {
+        config.refetch();
+      },
+    });
   };
 
   const [modifiedApps, setModifiedApps] = useState(apps);
@@ -57,15 +55,10 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
     // App was dragged over the bin so delete it
     if (over && over.id == "bin") {
       const newApps = tempApps.filter((x) => x.id != active.id);
-      updateApps(newApps);
+      saveConfig({ apps: newApps });
       setTempApps(newApps);
     }
   }
-
-  const updateApps = (newApps: Array<AppInterface>) => {
-    saveApps({ apps: newApps }, config!, setConfig!);
-    setModifiedApps(newApps);
-  };
 
   const handleDragStart = ({ active }: DragStartEvent) => {
     setActiveApp(modifiedApps.find((x) => x.id == active.id) || null);
@@ -124,12 +117,12 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
     >
-      <SortableApps
+      {/* <SortableApps
         modifiedApps={tempApps}
         setModifiedApps={setTempApps}
         updateApps={updateApps}
         editApp={editApp}
-      />
+      /> */}
 
       {editableApp && (
         <AppEditModal
