@@ -33,7 +33,6 @@ export default function AppsGrid({
 
   return (
     <>
-      <p>{config.data?.version}</p>
       {editMode && (
         <LayoutGrid>
           <DynamicEditableAppsGrid apps={apps} />
