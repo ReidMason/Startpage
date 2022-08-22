@@ -1,8 +1,7 @@
 import { UIEventHandler, useContext, useEffect, useRef } from "react";
 import Button from "../../button/Button";
 import { useForm, useWatch } from "react-hook-form";
-import { ConfigSchema } from "../../../backend/routers/config/schemas";
-import { saveConfig } from "../../../../services/client/config/config";
+import { Config } from "../../../backend/routers/config/schemas";
 import GlobalContext from "../../../../contexts/GlobalContext/GlobalContext";
 import SettingsSectionWrapper from "./settings sections/SettingsSectionWrapper";
 import { SettingsSection } from "./types";
@@ -29,7 +28,7 @@ export default function SettingsContent({
   isMobile,
 }: SettingsContentProps) {
   const scrollContainer = useRef<HTMLDivElement>(null);
-  const { updateConfig } = useContext(GlobalContext);
+  const { updateConfig, saveConfig } = useContext(GlobalContext);
 
   const {
     register,

@@ -11,7 +11,6 @@ import Searchbar from "../components/modules/Searchbar/Searchbar";
 import AppsGrid from "../components/modules/AppsGrid/AppsGrid";
 import { RecursivePartial } from "../../common";
 import { trpc } from "../utils/trpc";
-import Button from "../components/button/Button";
 import { Config } from "../backend/routers/config/schemas";
 
 const DynamicSettingsModal = dynamic(
@@ -27,7 +26,18 @@ const loadFeatures = () =>
 const Home: NextPage = () => {
   const config = trpc.useQuery(["config.get"]);
   const configMutation = trpc.useMutation(["config.save"]);
-  const weather = trpc.useQuery(["weather.get", {}]);
+  const weather = trpc.useQuery(
+    [
+      "weather.get",
+      {
+        location: config.data?.weather.location ?? "",
+        apiKey: config.data?.weather.apiKey ?? "",
+      },
+    ],
+    {
+      enabled: !!config.data && config.data.weather.enabled,
+    }
+  );
 
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -51,17 +61,15 @@ const Home: NextPage = () => {
 
   if (config.isLoading || !config.data) return <div>Loading...</div>;
 
-  const testMutation = async () => {
-    const newConfig: typeof config.data = JSON.parse(
-      JSON.stringify(config.data)
-    );
-    newConfig.appearance.backgroundEnabled = true;
-    const result = await configMutation.mutateAsync(newConfig);
-    console.log(result.message);
+  const saveConfig = async (newConfig: Config) => {
+    await configMutation.mutateAsync(newConfig);
+    config.refetch();
   };
 
-  const updateConfig = (newConfig: RecursivePartial<Config>) => {
-    const updatedConfig = { ...config, ...newConfig };
+  const updateConfig = async (newConfig: RecursivePartial<Config>) => {
+    const updatedConfig = { ...config, ...newConfig } as Config;
+    // const result = await configMutation.mutateAsync(updatedConfig);
+    // config.refetch();
     // setConfig(JSON.parse(JSON.stringify(updatedConfig)));
   };
 
@@ -74,9 +82,8 @@ const Home: NextPage = () => {
 
   return (
     <GlobalContext.Provider
-      value={{ config: config.data, updateConfig, updateCacheKey }}
+      value={{ config: config.data, updateConfig, saveConfig, updateCacheKey }}
     >
-      <Button onClick={testMutation}>Testing mutation</Button>
       <div
         className="h-full min-h-screen bg-cover bg-fixed pt-[5%]"
         style={{
