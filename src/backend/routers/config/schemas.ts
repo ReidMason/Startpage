@@ -1,11 +1,17 @@
 import { z } from "zod";
 
-export type Config = z.infer<typeof ConfigSchema>;
-
 export const appearances = ["dark", "light", "system"] as const;
 export const themes = ["default"] as const;
 
-export const ConfigSchema = z.object({
+const appSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  url: z.string(),
+  icon: z.string(),
+  active: z.boolean().optional(),
+});
+
+export const configSchema = z.object({
   version: z.number().default(1),
   general: z
     .object({
@@ -17,17 +23,7 @@ export const ConfigSchema = z.object({
       cacheKey: z.number().default(Math.random),
     })
     .default({}),
-  apps: z
-    .array(
-      z.object({
-        id: z.string(),
-        name: z.string(),
-        url: z.string(),
-        icon: z.string(),
-        active: z.boolean().optional(),
-      })
-    )
-    .default([]),
+  apps: z.array(appSchema).default([]),
   providers: z
     .array(
       z.object({
@@ -56,3 +52,8 @@ export const ConfigSchema = z.object({
     })
     .default({}),
 });
+
+export type Config = z.infer<typeof configSchema>;
+const deepPartialConfig = configSchema.deepPartial();
+export type PartialConfig = z.infer<typeof deepPartialConfig>;
+export type App = z.infer<typeof appSchema>;

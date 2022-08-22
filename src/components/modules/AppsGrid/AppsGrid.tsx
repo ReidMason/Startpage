@@ -3,6 +3,7 @@ import { App as AppInterface } from "../../../backend/routers/config/schemas";
 import App from "../../app/App";
 import { Transition } from "framer-motion";
 import LayoutGrid from "../../grid/LayoutGrid";
+import { trpc } from "../../../utils/trpc";
 
 interface AppsGridProps {
   apps: Array<AppInterface>;
@@ -19,6 +20,8 @@ export default function AppsGrid({
   appNameFilter,
   editMode,
 }: AppsGridProps) {
+  const config = trpc.useQuery(["config.get"]);
+
   const filteredApps = apps.filter((x) =>
     x.name.toLowerCase().includes(appNameFilter)
   );
@@ -30,6 +33,7 @@ export default function AppsGrid({
 
   return (
     <>
+      <p>{config.data?.version}</p>
       {editMode && (
         <LayoutGrid>
           <DynamicEditableAppsGrid apps={apps} />
