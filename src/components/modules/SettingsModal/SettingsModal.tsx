@@ -1,5 +1,5 @@
 import { AnimatePresence, m } from "framer-motion";
-import { Config } from "../../../../services/server/config/types";
+import { Config } from "../../../backend/routers/config/types";
 import { StateSetter } from "../../../../types/common";
 import Modal from "../../modal/Modal";
 import SettingsContent from "./SettingsContent";

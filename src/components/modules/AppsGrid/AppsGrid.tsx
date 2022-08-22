@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { App as AppInterface } from "../../../../services/server/config/types";
+import { App as AppInterface } from "../../../backend/routers/config/types";
 import App from "../../app/App";
 import { Transition } from "framer-motion";
 import LayoutGrid from "../../grid/LayoutGrid";

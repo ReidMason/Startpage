@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import { App as AppInterface } from "../../../services/server/config/types";
+import { App as AppInterface } from "../../backend/routers/config/types";
 
 interface AppProps {
   app: AppInterface;

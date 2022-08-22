@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { Config } from "../../services/server/config/types";
+import { Config } from "../backend/routers/config/types";
 import SettingsButtons from "../components/SettingsButtons";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";

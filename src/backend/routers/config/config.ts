@@ -1,10 +1,12 @@
+import * as trpc from "@trpc/server";
+import { merge } from "lodash-es";
+import { z } from "zod";
 import fs from "fs";
 import { Config } from "./types";
-import { merge } from "lodash-es";
 
 const CONFIG_PATH = `${process.cwd()}/data/config.json`;
 
-export const defaultConfigData: Config = {
+const defaultConfigData: Config = {
   version: parseInt(process.env.CONFIG_VERSION ?? "1"),
   general: {
     searchUrl: "https://www.google.com/search?q=",
@@ -30,12 +32,6 @@ export const defaultConfigData: Config = {
   },
 };
 
-export async function getConfig(): Promise<Config> {
-  await ensureConfigExists();
-  const config = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8"));
-  return merge({}, defaultConfigData, config);
-}
-
 async function ensureConfigExists() {
   // Try getting stats for the cache file, if it errors the file doesn't exist so we need to create it
   try {
@@ -46,6 +42,20 @@ async function ensureConfigExists() {
   }
 }
 
-export async function saveConfig(newConfig: Config) {
+async function saveConfig(newConfig: Config) {
   await fs.writeFileSync(CONFIG_PATH, JSON.stringify(newConfig));
 }
+
+export async function getConfig() {
+  await ensureConfigExists();
+  const config: Config = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8"));
+  return merge({}, defaultConfigData, config);
+}
+
+const configRouter = trpc.router().query("get", {
+  async resolve() {
+    return await getConfig();
+  },
+});
+
+export default configRouter;

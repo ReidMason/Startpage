@@ -1,4 +1,4 @@
-import { Weather } from "../weather/types";
+import { Weather } from "../routers/weather/types";
 
 export default interface Cache {
   cachedWeatherData: Array<WeatherDataCache>;
