@@ -1,5 +1,4 @@
 import { Transition } from "framer-motion";
-import { GeneralConfig } from "./services/server/config/types";
 
 export const springTranstition: Transition = {
   type: "spring",
