@@ -1,4 +1,4 @@
-import { UIEventHandler, useEffect, useRef } from "react";
+import { UIEventHandler, useCallback, useEffect, useRef } from "react";
 import Button from "../../button/Button";
 import { useForm, useWatch } from "react-hook-form";
 import { Config, PartialConfig } from "../../../backend/routers/config/schemas";
@@ -29,8 +29,6 @@ export default function SettingsContent({
   const config = trpc.useQuery(["config.get"]);
   const configMutation = trpc.useMutation(["config.save"]);
 
-  if (config.isLoading || !config.data) return <div>Loading...</div>;
-
   const {
     register,
     handleSubmit,
@@ -39,23 +37,32 @@ export default function SettingsContent({
     formState: { errors },
   } = useForm<Config>({ defaultValues: config.data });
 
-  const saveConfig = async (newConfig: PartialConfig) => {
-    await configMutation.mutateAsync(newConfig, {
-      onSuccess: () => {
-        config.refetch();
-      },
-    });
-  };
+  const saveConfig = useCallback(
+    async (newConfig: PartialConfig) => {
+      await configMutation.mutateAsync(newConfig, {
+        onSuccess: () => {
+          config.refetch();
+        },
+      });
+    },
+    [config, configMutation]
+  );
 
   const appearance = useWatch({ name: "appearance", control });
 
   useEffect(() => {
-    if (JSON.stringify(appearance) !== JSON.stringify(config.data.appearance)) {
+    if (
+      config.data &&
+      JSON.stringify(appearance) !== JSON.stringify(config.data.appearance)
+    ) {
       config.data.appearance = appearance;
       // TODO: Stop this from saving to file, instead this should just update the preview config
       saveConfig(config.data);
     }
   }, [appearance, config, saveConfig]);
+
+  // TODO: Add a better loading state
+  if (config.isLoading || !config.data) return <div>Loading...</div>;
 
   const saveSettings = async (data: Config) => {
     saveConfig(data);

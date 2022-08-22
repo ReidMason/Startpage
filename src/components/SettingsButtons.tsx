@@ -1,5 +1,3 @@
-import { useContext } from "react";
-import GlobalContext from "../../contexts/GlobalContext/GlobalContext";
 import { StateSetter } from "../../types/common";
 import { generateUuid } from "../../utils";
 import Button from "./button/Button";
