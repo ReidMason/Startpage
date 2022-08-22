@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import {
   App as AppInterface,
+  Config,
   ConfigSchema,
 } from "../../../backend/routers/config/schemas";
 import {
@@ -16,7 +17,6 @@ import { arrayMove } from "@dnd-kit/sortable";
 import App from "../../app/App";
 import AppEditModal from "./AppEditModal";
 import GlobalContext from "../../../../contexts/GlobalContext/GlobalContext";
-import { updateConfig } from "../../../../services/client/config/config";
 import SortableApps from "../DragAndDrop/SortableApps";
 import { createPortal } from "react-dom";
 
@@ -24,16 +24,23 @@ interface EditableAppsGridProps {
   apps: Array<AppInterface>;
 }
 
-const saveApps = async (
-  newConfig: Partial<Config>,
-  config: Config,
-  setConfig: (newConfig: Config) => void
-) => {
-  setConfig(await updateConfig(config, newConfig));
-};
-
 export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
-  const { config, updateConfig: setConfig } = useContext(GlobalContext);
+  const {
+    config,
+    updateConfig: setConfig,
+    saveConfig,
+  } = useContext(GlobalContext);
+
+  const saveApps = async (
+    newConfig: Partial<Config>,
+    config: Config,
+    setConfig: (newConfig: Config) => void
+  ) => {
+    const fullNewConfig = JSON.parse(
+      JSON.stringify({ ...config, ...newConfig })
+    ) as Config;
+    await saveConfig(fullNewConfig);
+  };
 
   const [modifiedApps, setModifiedApps] = useState(apps);
   const [tempApps, setTempApps] = useState<Array<AppInterface>>(

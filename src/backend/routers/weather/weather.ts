@@ -3,11 +3,10 @@ import { z } from "zod";
 import { cacheWeatherData, getCacheData } from "../../cache/cache";
 import { BasicWeatherData, Weather, WeatherDataResponse } from "./schemas";
 import { getUnixTime } from "../../../../utils";
-import { getConfig } from "../config/config";
 
 async function getWeatherData(
   location: string,
-  apiKey?: string
+  apiKey: string
 ): Promise<Weather | null> {
   return (
     (await getCachedWeatherData(location)) ??
@@ -17,13 +16,11 @@ async function getWeatherData(
 
 async function requestWeatherData(
   location: string,
-  apiKey?: string
+  apiKey: string
 ): Promise<Weather | null> {
-  if (!apiKey) apiKey = await (await getConfig()).weather.apiKey;
-
   console.info(`Requesting weather data for: "${location}"`);
   // Get basic weather data so we have the lat/lon
-  const basicWeatherData = await getBasicWeatherData(location);
+  const basicWeatherData = await getBasicWeatherData(location, apiKey);
   if (basicWeatherData === null) return null;
 
   // Request weather data
@@ -56,10 +53,8 @@ function weatherDataResponseToWeatherData(
 
 async function getBasicWeatherData(
   location: string,
-  apiKey?: string
+  apiKey: string
 ): Promise<BasicWeatherData | null> {
-  if (!apiKey) apiKey = await (await getConfig()).weather.apiKey;
-
   const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=${apiKey}`;
   const weatherResponse = await fetch(url);
   if (weatherResponse.status !== 200) return null;
@@ -90,18 +85,9 @@ async function getCachedWeatherData(location: string): Promise<Weather | null> {
 }
 
 const weatherRouter = trpc.router().query("get", {
-  input: z.object({ location: z.string().optional() }),
+  input: z.object({ location: z.string(), apiKey: z.string() }),
   async resolve({ input }) {
-    console.log(input);
-    if (!input.location) {
-      const config = await getConfig();
-      return await getWeatherData(
-        config.weather.location,
-        config.weather.apiKey
-      );
-    }
-
-    return await getWeatherData(input.location);
+    return await getWeatherData(input.location, input.apiKey);
   },
 });
 
