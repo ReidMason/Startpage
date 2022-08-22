@@ -1,4 +1,4 @@
-import { Config } from "../../src/backend/routers/config/types";
+import { ConfigSchema } from "../../src/backend/routers/config/types";
 
 export interface GlobalContext {
   config?: Config;

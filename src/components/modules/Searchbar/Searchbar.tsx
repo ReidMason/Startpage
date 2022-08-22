@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Config } from "../../../backend/routers/config/types";
+import { ConfigSchema } from "../../../backend/routers/config/types";
 import { StateSetter } from "../../../../types/common";
 
 interface SearchBarProps {
