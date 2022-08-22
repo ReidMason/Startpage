@@ -2,7 +2,6 @@ import { useContext, useState } from "react";
 import {
   App as AppInterface,
   Config,
-  ConfigSchema,
 } from "../../../backend/routers/config/schemas";
 import {
   DndContext,
@@ -25,11 +24,7 @@ interface EditableAppsGridProps {
 }
 
 export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
-  const {
-    config,
-    updateConfig: setConfig,
-    saveConfig,
-  } = useContext(GlobalContext);
+  const { config, saveConfig } = useContext(GlobalContext);
 
   const saveApps = async (
     newConfig: Partial<Config>,

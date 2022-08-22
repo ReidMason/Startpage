@@ -1,11 +1,11 @@
 import * as trpc from "@trpc/server";
 import { merge } from "lodash-es";
 import fs from "fs";
-import { Config, ConfigSchema } from "./schemas";
+import { Config, configSchema } from "./schemas";
 
 const CONFIG_PATH = `${process.cwd()}/data/config.json`;
 
-const defaultConfig = ConfigSchema.parse({});
+const defaultConfig = configSchema.parse({});
 
 async function ensureConfigExists() {
   // Try getting stats for the cache file, if it errors the file doesn't exist so we need to create it
@@ -35,9 +35,16 @@ const configRouter = trpc
     },
   })
   .mutation("save", {
-    input: ConfigSchema,
+    input: configSchema.deepPartial(),
     async resolve({ input }) {
-      await saveConfig(input);
+      const currentConfig = await getConfig();
+      const newConfig: Config = {
+        ...currentConfig,
+        ...input,
+      };
+      newConfig.general.cacheKey = Math.random();
+
+      await saveConfig(newConfig);
       return { message: "Config saved" };
     },
   });
