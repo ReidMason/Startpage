@@ -61,6 +61,7 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
   }
 
   const updateApps = (newApps: Array<AppInterface>) => {
+    // TODO: This causes a screen refresh every time we create a new app, instead just save once and use a local state for the changes
     saveConfig({ apps: newApps });
   };
 

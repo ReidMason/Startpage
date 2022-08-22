@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { configSchema } from "../../../backend/routers/config/schemas";
 import { StateSetter } from "../../../../types/common";
+import { Config } from "../../../backend/routers/config/schemas";
 
 interface SearchBarProps {
   config: Config;

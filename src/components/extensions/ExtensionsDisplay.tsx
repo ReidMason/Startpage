@@ -10,7 +10,7 @@ import PresenceAnimation from "../animations/PresenceAnimation";
 import LayoutGrid from "../grid/LayoutGrid";
 import { Extension } from "./types";
 import { XIcon } from "@heroicons/react/outline";
-import { configSchema } from "../../backend/routers/config/schemas";
+import { Config } from "../../backend/routers/config/schemas";
 
 interface ExtensionsDisplayProps {
   extensions: Array<Extension>;
