@@ -60,6 +60,10 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
     }
   }
 
+  const updateApps = (newApps: Array<AppInterface>) => {
+    saveConfig({ apps: newApps });
+  };
+
   const handleDragStart = ({ active }: DragStartEvent) => {
     setActiveApp(modifiedApps.find((x) => x.id == active.id) || null);
   };
@@ -117,12 +121,12 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
     >
-      {/* <SortableApps
+      <SortableApps
         modifiedApps={tempApps}
         setModifiedApps={setTempApps}
         updateApps={updateApps}
         editApp={editApp}
-      /> */}
+      />
 
       {editableApp && (
         <AppEditModal
