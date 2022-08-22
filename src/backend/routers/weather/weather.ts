@@ -1,7 +1,7 @@
 import * as trpc from "@trpc/server";
 import { z } from "zod";
 import { cacheWeatherData, getCacheData } from "../../cache/cache";
-import { BasicWeatherData, Weather, WeatherDataResponse } from "./types";
+import { BasicWeatherData, Weather, WeatherDataResponse } from "./schemas";
 import { getUnixTime } from "../../../../utils";
 import { getConfig } from "../config/config";
 

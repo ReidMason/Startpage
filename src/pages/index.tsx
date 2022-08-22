@@ -12,7 +12,7 @@ import AppsGrid from "../components/modules/AppsGrid/AppsGrid";
 import { RecursivePartial } from "../../common";
 import { trpc } from "../utils/trpc";
 import Button from "../components/button/Button";
-import { Config } from "../backend/routers/config/types";
+import { Config } from "../backend/routers/config/schemas";
 
 const DynamicSettingsModal = dynamic(
   () => import("../components/modules/SettingsModal/SettingsModal")

@@ -1,7 +1,7 @@
 import { UIEventHandler, useContext, useEffect, useRef } from "react";
 import Button from "../../button/Button";
 import { useForm, useWatch } from "react-hook-form";
-import { ConfigSchema } from "../../../backend/routers/config/types";
+import { ConfigSchema } from "../../../backend/routers/config/schemas";
 import { saveConfig } from "../../../../services/client/config/config";
 import GlobalContext from "../../../../contexts/GlobalContext/GlobalContext";
 import SettingsSectionWrapper from "./settings sections/SettingsSectionWrapper";

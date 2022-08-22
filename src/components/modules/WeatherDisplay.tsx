@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 import Image from "next/image";
-import { Weather } from "../../backend/routers/weather/types";
+import { Weather } from "../../backend/routers/weather/schemas";
 
 interface WeatherDisplayProps {
   weatherData: Weather;

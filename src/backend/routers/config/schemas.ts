@@ -1,7 +1,10 @@
 import { z } from "zod";
 
+export type Config = z.infer<typeof ConfigSchema>;
+
 export const appearances = ["dark", "light", "system"] as const;
 export const themes = ["default"] as const;
+
 export const ConfigSchema = z.object({
   version: z.number().default(1),
   general: z
@@ -53,5 +56,3 @@ export const ConfigSchema = z.object({
     })
     .default({}),
 });
-
-export type Config = z.infer<typeof ConfigSchema>;

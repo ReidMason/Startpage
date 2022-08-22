@@ -1,4 +1,4 @@
-import { ConfigSchema } from "../../../backend/routers/config/types";
+import { ConfigSchema } from "../../../backend/routers/config/schemas";
 import Button from "../../button/Button";
 import Input from "../../input/Input";
 import { SettingsSection } from "./types";
