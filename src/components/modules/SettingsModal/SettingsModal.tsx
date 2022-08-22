@@ -1,5 +1,5 @@
 import { AnimatePresence, m } from "framer-motion";
-import { configSchema } from "../../../backend/routers/config/schemas";
+import { Config } from "../../../backend/routers/config/schemas";
 import { StateSetter } from "../../../../types/common";
 import Modal from "../../modal/Modal";
 import SettingsContent from "./SettingsContent";
@@ -131,7 +131,6 @@ export default function SettingsModal({
       <SettingsContent
         settingsSections={settingsSections}
         onClick={handleSettingsContentClicked}
-        config={config}
         closeModal={closeWithoutSaving}
         onScroll={handleScroll}
         openMenuBar={openMenuBar}

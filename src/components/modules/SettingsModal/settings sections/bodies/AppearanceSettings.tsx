@@ -1,19 +1,31 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Controller } from "react-hook-form";
-import GlobalContext from "../../../../../../contexts/GlobalContext/GlobalContext";
-import { appearances } from "../../../../../backend/routers/config/schemas";
+import {
+  appearances,
+  PartialConfig,
+} from "../../../../../backend/routers/config/schemas";
 import Dropzone from "../../../../dropzone/Dropzone";
 import RadioGroup from "../../../../RadioGroup/RadioGroup";
 import Switch from "../../../../switch/Switch";
 import { SettingsSectionProps } from "../../types";
 import { UploadIcon } from "@heroicons/react/outline";
+import { trpc } from "../../../../../utils/trpc";
 
 export default function AppearanceSettings({
   control,
   config,
 }: SettingsSectionProps) {
-  const { updateCacheKey } = useContext(GlobalContext);
   const [fileUploading, setFileUploading] = useState(false);
+  const configMutation = trpc.useMutation(["config.save"]);
+  const trpcUtils = trpc.useContext();
+
+  const saveConfig = async (newConfig: PartialConfig) => {
+    await configMutation.mutateAsync(newConfig, {
+      onSuccess: () => {
+        trpcUtils.invalidateQueries(["config.get"]);
+      },
+    });
+  };
 
   const onFileUpload = async (files: Array<File>) => {
     if (files.length === 0) return;
@@ -27,7 +39,7 @@ export default function AppearanceSettings({
       body,
     });
 
-    if (response.ok) updateCacheKey();
+    if (response.ok) saveConfig({});
     setFileUploading(false);
   };
 

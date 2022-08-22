@@ -1,16 +1,15 @@
-import { UIEventHandler, useContext, useEffect, useRef } from "react";
+import { UIEventHandler, useEffect, useRef } from "react";
 import Button from "../../button/Button";
 import { useForm, useWatch } from "react-hook-form";
-import { Config } from "../../../backend/routers/config/schemas";
-import GlobalContext from "../../../../contexts/GlobalContext/GlobalContext";
+import { Config, PartialConfig } from "../../../backend/routers/config/schemas";
 import SettingsSectionWrapper from "./settings sections/SettingsSectionWrapper";
 import { SettingsSection } from "./types";
 import { m } from "framer-motion";
 import SideMenuIcon from "./SideMenuIcon";
+import { trpc } from "../../../utils/trpc";
 
 interface SettingsContentProps {
   closeModal: () => void;
-  config: Config;
   onClick?: () => void;
   onScroll?: UIEventHandler<HTMLDivElement>;
   settingsSections: Array<SettingsSection>;
@@ -20,7 +19,6 @@ interface SettingsContentProps {
 
 export default function SettingsContent({
   closeModal,
-  config,
   onClick,
   onScroll,
   settingsSections,
@@ -28,7 +26,10 @@ export default function SettingsContent({
   isMobile,
 }: SettingsContentProps) {
   const scrollContainer = useRef<HTMLDivElement>(null);
-  const { updateConfig, saveConfig } = useContext(GlobalContext);
+  const config = trpc.useQuery(["config.get"]);
+  const configMutation = trpc.useMutation(["config.save"]);
+
+  if (config.isLoading || !config.data) return <div>Loading...</div>;
 
   const {
     register,
@@ -36,24 +37,33 @@ export default function SettingsContent({
     control,
     watch,
     formState: { errors },
-  } = useForm<Config>({ defaultValues: config });
+  } = useForm<Config>({ defaultValues: config.data });
+
+  const saveConfig = async (newConfig: PartialConfig) => {
+    await configMutation.mutateAsync(newConfig, {
+      onSuccess: () => {
+        config.refetch();
+      },
+    });
+  };
 
   const appearance = useWatch({ name: "appearance", control });
 
   useEffect(() => {
-    if (JSON.stringify(appearance) !== JSON.stringify(config.appearance)) {
-      config.appearance = appearance;
-      updateConfig(config);
+    if (JSON.stringify(appearance) !== JSON.stringify(config.data.appearance)) {
+      config.data.appearance = appearance;
+      // TODO: Stop this from saving to file, instead this should just update the preview config
+      saveConfig(config.data);
     }
-  }, [appearance, config, updateConfig]);
+  }, [appearance, config, saveConfig]);
 
   const saveSettings = async (data: Config) => {
-    updateConfig(data);
+    saveConfig(data);
     await saveConfig(data);
     closeModal();
   };
 
-  const glassyStyles = config.appearance.glassy
+  const glassyStyles = config.data.appearance.glassy
     ? "backdrop-blur-3xl dark:bg-primary-800/30"
     : "dark:bg-primary-800";
 
@@ -83,7 +93,7 @@ export default function SettingsContent({
           >
             <SettingsSectionWrapper
               section={section}
-              sectionProps={{ control, register, config }}
+              sectionProps={{ control, register, config: config.data }}
             />
           </div>
         ))}
