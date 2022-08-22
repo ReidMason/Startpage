@@ -1,8 +1,7 @@
 import * as trpc from "@trpc/server";
 import { merge } from "lodash-es";
 import fs from "fs";
-import { z } from "zod";
-import { Config, ConfigSchema } from "./types";
+import { Config, ConfigSchema } from "./schemas";
 
 const CONFIG_PATH = `${process.cwd()}/data/config.json`;
 

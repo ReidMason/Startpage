@@ -1,6 +1,6 @@
 import { FormEvent, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { App as AppInterface } from "../../../backend/routers/config/types";
+import { App as AppInterface } from "../../../backend/routers/config/schemas";
 import { StateSetter } from "../../../../types/common";
 import App from "../../app/App";
 import Input from "../../input/Input";

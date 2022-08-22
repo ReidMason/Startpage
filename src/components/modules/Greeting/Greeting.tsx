@@ -1,6 +1,6 @@
 import React from "react";
-import { ConfigSchema } from "../../../backend/routers/config/types";
-import { Weather } from "../../../backend/routers/weather/types";
+import { ConfigSchema } from "../../../backend/routers/config/schemas";
+import { Weather } from "../../../backend/routers/weather/schemas";
 import GreetingText from "../GreetingText";
 import WeatherDisplay from "../WeatherDisplay";
 

@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import { getUnixTime } from "../../../utils";
-import { Weather } from "../routers/weather/types";
+import { Weather } from "../routers/weather/schemas";
 import Cache from "./types";
 
 export async function getCacheData(): Promise<Cache> {

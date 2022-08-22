@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import {
   App as AppInterface,
   ConfigSchema,
-} from "../../../backend/routers/config/types";
+} from "../../../backend/routers/config/schemas";
 import {
   DndContext,
   DragOverlay,
