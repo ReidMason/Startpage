@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Controller } from "react-hook-form";
 import GlobalContext from "../../../../../../contexts/GlobalContext/GlobalContext";
-import { appearances } from "../../../../../../services/server/config/types";
+import { appearances } from "../../../../../backend/routers/config/types";
 import Dropzone from "../../../../dropzone/Dropzone";
 import RadioGroup from "../../../../RadioGroup/RadioGroup";
 import Switch from "../../../../switch/Switch";

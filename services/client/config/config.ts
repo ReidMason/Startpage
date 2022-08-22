@@ -1,4 +1,4 @@
-import { Config } from "../../server/config/types";
+import { Config } from "../../../src/backend/routers/config/types";
 
 export async function updateConfig(config: Config, newConfig: Partial<Config>) {
   const updatedConfig: Config = { ...config!, ...newConfig };

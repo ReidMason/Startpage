@@ -4,7 +4,7 @@ import { AnimatePresence, m } from "framer-motion";
 import React from "react";
 import { createPortal } from "react-dom";
 import { softSpringTransition } from "../../../../common";
-import { App as AppInterface } from "../../../../services/server/config/types";
+import { App as AppInterface } from "../../../backend/routers/config/types";
 import { StateSetter } from "../../../../types/common";
 import { generateUuid } from "../../../../utils";
 import PresenceAnimation from "../../animations/PresenceAnimation";

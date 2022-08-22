@@ -1,16 +1,9 @@
 import * as trpc from "@trpc/server";
 import { z } from "zod";
-import {
-  cacheWeatherData,
-  getCacheData,
-} from "../../../services/server/cache/cache";
-import {
-  BasicWeatherData,
-  Weather,
-  WeatherDataResponse,
-} from "../../../services/server/weather/types";
-import { getUnixTime } from "../../../utils";
-import { getConfig } from "./config";
+import { cacheWeatherData, getCacheData } from "../../cache/cache";
+import { BasicWeatherData, Weather, WeatherDataResponse } from "./types";
+import { getUnixTime } from "../../../../utils";
+import { getConfig } from "../config/config";
 
 async function getWeatherData(
   location: string,

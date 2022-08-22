@@ -1,4 +1,4 @@
-import { Config } from "../../../../services/server/config/types";
+import { Config } from "../../../backend/routers/config/types";
 import Button from "../../button/Button";
 import Input from "../../input/Input";
 import { SettingsSection } from "./types";
