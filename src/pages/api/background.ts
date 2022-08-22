@@ -46,24 +46,6 @@ export default async function background(
           quality: 80,
         })
         .toFile(BG_PATH);
-
-      // const semiTransparentRedPng = await sharp({
-      //   // animated: true,
-
-      // })
-      //   .png()
-      //   .toFile("./public/static/BG_PATH");
-
-      // await imagemin([BG_PATH], {
-      //   destination: "./public/static/",
-      //   plugins: [
-      //     imageminMozjpeg({ quality: 60 }),
-      //     imageminPngquant({
-      //       quality: [0.6, 0.8],
-      //       strip: true,
-      //     }),
-      //   ],
-      // });
     }
 
     res.status(status).json(resultBody);
