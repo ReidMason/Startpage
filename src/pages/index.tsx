@@ -1,5 +1,4 @@
 import type { NextPage } from "next";
-import { Config } from "../backend/routers/config/types";
 import SettingsButtons from "../components/SettingsButtons";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
@@ -12,6 +11,7 @@ import Searchbar from "../components/modules/Searchbar/Searchbar";
 import AppsGrid from "../components/modules/AppsGrid/AppsGrid";
 import { RecursivePartial } from "../../common";
 import { trpc } from "../utils/trpc";
+import Button from "../components/button/Button";
 
 const DynamicSettingsModal = dynamic(
   () => import("../components/modules/SettingsModal/SettingsModal")
@@ -25,6 +25,7 @@ const loadFeatures = () =>
 
 const Home: NextPage = () => {
   const config = trpc.useQuery(["config.get"]);
+  const configMutation = trpc.useMutation(["config.save"]);
   const weather = trpc.useQuery(["weather.get", {}]);
 
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
@@ -49,6 +50,15 @@ const Home: NextPage = () => {
 
   if (config.isLoading || !config.data) return <div>Loading...</div>;
 
+  const testMutation = async () => {
+    const newConfig: typeof config.data = JSON.parse(
+      JSON.stringify(config.data)
+    );
+    newConfig.appearance.backgroundEnabled = true;
+    const result = await configMutation.mutateAsync(newConfig);
+    console.log(result.message);
+  };
+
   const updateConfig = (newConfig: RecursivePartial<Config>) => {
     const updatedConfig = { ...config, ...newConfig };
     // setConfig(JSON.parse(JSON.stringify(updatedConfig)));
@@ -65,6 +75,7 @@ const Home: NextPage = () => {
     <GlobalContext.Provider
       value={{ config: config.data, updateConfig, updateCacheKey }}
     >
+      <Button onClick={testMutation}>Testing mutation</Button>
       <div
         className="h-full min-h-screen bg-cover bg-fixed pt-[5%]"
         style={{

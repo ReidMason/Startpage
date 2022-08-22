@@ -1,50 +1,57 @@
-export interface Config {
-  version: number;
-  general: GeneralConfig;
-  apps: Array<App>;
-  providers: Array<Provider>;
-  weather: WeatherConfig;
-  appearance: AppearanceConfig;
-}
-
-export interface AppearanceConfig {
-  backgroundEnabled: boolean;
-  theme: string;
-  appearance: Appearance;
-  glassy: boolean;
-}
+import { z } from "zod";
 
 export const appearances = ["dark", "light", "system"] as const;
-export type Appearance = typeof appearances[number];
+export const themes = ["default"] as const;
+export const ConfigSchema = z.object({
+  version: z.number().default(1),
+  general: z
+    .object({
+      searchUrl: z.string().default("https://www.google.com/search?q="),
+      customSearchUrl: z.string().default(""),
+      customSearchEnabled: z.boolean().default(false),
+      calendarUrl: z.string().default("https://calendar.google.com/calendar/"),
+      searchPlaceholder: z.string().default("Search..."),
+      cacheKey: z.number().default(Math.random),
+    })
+    .default({}),
+  apps: z
+    .array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        url: z.string(),
+        icon: z.string(),
+        active: z.boolean().optional(),
+      })
+    )
+    .default([]),
+  providers: z
+    .array(
+      z.object({
+        id: z.string(),
+        baseUrl: z.string(),
+        name: z.string(),
+        prefix: z.string(),
+        searchUrl: z.string(),
+      })
+    )
+    .default([]),
+  weather: z
+    .object({
+      enabled: z.boolean().default(false),
+      location: z.string().default(""),
+      detailed: z.boolean().default(false),
+      apiKey: z.string().default(""),
+    })
+    .default({}),
+  appearance: z
+    .object({
+      backgroundEnabled: z.boolean().default(false),
+      theme: z.enum(themes).default("default"),
+      appearance: z.enum(appearances).default("system"),
+      glassy: z.boolean().default(false),
+    })
+    .default({}),
+});
 
-export interface GeneralConfig {
-  searchUrl: string;
-  customSearchUrl: string;
-  customSearchEnabled: boolean;
-  calendarUrl: string;
-  searchPlaceholder: string;
-  cacheKey: number;
-}
-
-export interface WeatherConfig {
-  enabled: boolean;
-  location: string;
-  detailed: boolean;
-  apiKey: string;
-}
-
-export interface Provider {
-  id: string;
-  baseUrl: string;
-  name: string;
-  prefix: string;
-  searchUrl: string;
-}
-
-export interface App {
-  id: string;
-  name: string;
-  url: string;
-  icon: string;
-  active?: boolean;
-}
+export type Config = z.infer<typeof ConfigSchema>;

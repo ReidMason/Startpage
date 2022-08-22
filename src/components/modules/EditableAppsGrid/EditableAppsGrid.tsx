@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import {
   App as AppInterface,
-  Config,
+  ConfigSchema,
 } from "../../../backend/routers/config/types";
 import {
   DndContext,
