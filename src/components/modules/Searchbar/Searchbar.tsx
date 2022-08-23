@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { StateSetter } from "../../../../types/common";
 import useConfig from "../../../hooks/useConfig";
 
@@ -11,12 +11,53 @@ export default function Searchbar({ setAppFilter }: SearchBarProps) {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchRequested, setSearchRequested] = useState(true);
 
-  useEffect(() => {
-    // If we have a queued search execute it immediately
-    if (searchRequested && !config.isLoading) search();
-  }, [config.isLoading]);
+  const tryProviderSearch = useCallback(
+    (searchTerm: string) => {
+      // Don't check if there aren't any providers yet or the search term doesn't start with a slash
+      if (!config.data?.providers || !searchTerm.startsWith("/")) return false;
 
-  const search = () => {
+      // Search for words starting with a slash until a space or end of string
+      const prefixMatches = searchTerm.match(/\/([^\s]+)/gm);
+      if (prefixMatches === null || prefixMatches.length === 0) return false;
+
+      // Extract prefix and search text
+      const prefix = prefixMatches[0].replace("/", "").trim();
+      const searchText = searchTerm.replace(prefixMatches[0], "").trim();
+
+      // Now we are going to run the command
+      for (const provider of config.data?.providers || []) {
+        if (provider.prefix.toLowerCase() === prefix.toLowerCase()) {
+          // If there is search text we need to use it
+          if (searchText.length > 0)
+            window.location.href = provider.searchUrl + searchText;
+          // If there isn't go to the base url
+          else window.location.href = provider.baseUrl;
+
+          return true;
+        }
+      }
+    },
+    [config.data]
+  );
+
+  const performWebSearch = useCallback(
+    (searchTerm: string) => {
+      // Check if search term was url, if so just go straight to the page
+      try {
+        new URL(searchTerm);
+        window.location.href = searchTerm;
+        return;
+      } catch {}
+
+      const chosenSearchUrl = config.data!.general.customSearchEnabled
+        ? config.data!.general.customSearchUrl
+        : config.data!.general.searchUrl;
+      window.location.href = chosenSearchUrl + encodeURIComponent(searchTerm);
+    },
+    [config.data]
+  );
+
+  const search = useCallback(() => {
     // Ignore blank search terms
     if (searchTerm === "") return;
 
@@ -34,7 +75,12 @@ export default function Searchbar({ setAppFilter }: SearchBarProps) {
 
     // Fallback action is to perform a normal web search
     performWebSearch(searchTerm);
-  };
+  }, [searchTerm, tryProviderSearch, performWebSearch, config]);
+
+  useEffect(() => {
+    // If we have a queued search execute it immediately
+    if (searchRequested && !config.isLoading) search();
+  }, [config.isLoading, search, searchRequested]);
 
   const updateAppFilter = (searchTerm: string) => {
     // Apps search is either empty or invalid
@@ -52,46 +98,6 @@ export default function Searchbar({ setAppFilter }: SearchBarProps) {
     setSearchTerm(input);
 
     updateAppFilter(input);
-  };
-
-  const tryProviderSearch = (searchTerm: string) => {
-    // Don't check if there aren't any providers yet or the search term doesn't start with a slash
-    if (!config.data?.providers || !searchTerm.startsWith("/")) return false;
-
-    // Search for words starting with a slash until a space or end of string
-    const prefixMatches = searchTerm.match(/\/([^\s]+)/gm);
-    if (prefixMatches === null || prefixMatches.length === 0) return false;
-
-    // Extract prefix and search text
-    const prefix = prefixMatches[0].replace("/", "").trim();
-    const searchText = searchTerm.replace(prefixMatches[0], "").trim();
-
-    // Now we are going to run the command
-    for (const provider of config.data?.providers || []) {
-      if (provider.prefix.toLowerCase() === prefix.toLowerCase()) {
-        // If there is search text we need to use it
-        if (searchText.length > 0)
-          window.location.href = provider.searchUrl + searchText;
-        // If there isn't go to the base url
-        else window.location.href = provider.baseUrl;
-
-        return true;
-      }
-    }
-  };
-
-  const performWebSearch = (searchTerm: string) => {
-    // Check if search term was url, if so just go straight to the page
-    try {
-      new URL(searchTerm);
-      window.location.href = searchTerm;
-      return;
-    } catch {}
-
-    const chosenSearchUrl = config.data!.general.customSearchEnabled
-      ? config.data!.general.customSearchUrl
-      : config.data!.general.searchUrl;
-    window.location.href = chosenSearchUrl + encodeURIComponent(searchTerm);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

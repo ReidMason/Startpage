@@ -20,7 +20,7 @@ export default function EditableAppsGrid() {
     if (config.isLoading || config.isError || config.isIdle) return;
 
     if (modifiedApps === undefined) setModifiedApps(config.data.apps);
-  }, [config.isLoading, config.data, config.data?.apps]);
+  }, [config, modifiedApps]);
 
   const saveConfig = async (newConfig: PartialConfig) => {
     await configMutation.mutateAsync(newConfig, {
