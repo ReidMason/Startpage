@@ -5,7 +5,6 @@ import {
   m,
   Transition,
 } from "framer-motion";
-import React from "react";
 import PresenceAnimation from "../animations/PresenceAnimation";
 import LayoutGrid from "../grid/LayoutGrid";
 import { Extension } from "./types";

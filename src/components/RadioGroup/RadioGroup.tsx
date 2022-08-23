@@ -1,4 +1,3 @@
-import React from "react";
 import { RadioGroup as RadioGroupHui } from "@headlessui/react";
 import { domMax, LazyMotion, m } from "framer-motion";
 import { stiffSpringTransition } from "../../../common";

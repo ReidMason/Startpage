@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ReactDropzone, { FileRejection } from "react-dropzone";
 import FormElementWrapper from "../FormElementWrapper/FormElementWrapper";
 import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
@@ -66,7 +66,7 @@ export default function Dropzone({
       >
         {({ getRootProps, getInputProps }) => (
           <div
-            className={`bg-primary-100/40 cursor-default overflow-hidden rounded-lg ${loadingStyles} ${
+            className={`cursor-default overflow-hidden rounded-lg bg-primary-100/40 ${loadingStyles} ${
               draggedOver && "text-green-300"
             }`}
             {...getRootProps()}

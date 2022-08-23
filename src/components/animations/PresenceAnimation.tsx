@@ -1,8 +1,7 @@
-import React, { ReactNode } from "react";
 import { m } from "framer-motion";
 
 interface EntranceAnimationProps {
-  children: ReactNode;
+  children: React.ReactNode;
   className?: string;
 }
 

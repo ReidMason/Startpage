@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import App from "../../app/App";
+import App from "../../elements/app/App";
 import LayoutGrid from "../../grid/LayoutGrid";
 import useConfig from "../../../hooks/useConfig";
 

@@ -2,7 +2,7 @@ import { FormEvent, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { App as AppInterface } from "../../../backend/routers/config/schemas";
 import { StateSetter } from "../../../../types/common";
-import App from "../../app/App";
+import App from "../../elements/app/App";
 import Input from "../../input/Input";
 import Modal from "../../modal/Modal";
 

@@ -1,16 +1,15 @@
 import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { PlusCircleIcon } from "@heroicons/react/solid";
 import { AnimatePresence, domMax, LazyMotion, m } from "framer-motion";
-import React from "react";
 import { createPortal } from "react-dom";
 import { softSpringTransition } from "../../../../common";
 import { StateSetter } from "../../../../types/common";
 import { generateUuid } from "../../../../utils";
 import { App as AppInterface } from "../../../backend/routers/config/schemas";
-import PresenceAnimation from "../../animations/PresenceAnimation";
-import App from "../../app/App";
 import Droppable from "./Droppable";
+import PresenceAnimation from "../../animations/PresenceAnimation";
 import SortableItem from "./SortableItem";
+import App from "../../elements/app/App";
 
 interface SortableAppsProps {
   modifiedApps: Array<AppInterface>;

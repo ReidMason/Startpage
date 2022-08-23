@@ -1,5 +1,3 @@
-import React from "react";
-import { m } from "framer-motion";
 import { MenuIcon } from "@heroicons/react/outline";
 
 interface SideMenuIconProps {
@@ -10,7 +8,7 @@ export default function SideMenuIcon({ openMenuBar }: SideMenuIconProps) {
   return (
     <div>
       <button
-        className="bg-primary-200/20 rounded-lg p-1"
+        className="rounded-lg bg-primary-200/20 p-1"
         onClick={openMenuBar}
         type="button"
       >
