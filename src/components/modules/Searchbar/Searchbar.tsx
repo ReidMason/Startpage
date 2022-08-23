@@ -1,26 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StateSetter } from "../../../../types/common";
-import { Config } from "../../../backend/routers/config/schemas";
+import useConfig from "../../../hooks/useConfig";
 
 interface SearchBarProps {
-  config: Config;
   setAppFilter: StateSetter<string>;
 }
 
-export default function Searchbar({ config, setAppFilter }: SearchBarProps) {
+export default function Searchbar({ setAppFilter }: SearchBarProps) {
+  const { config } = useConfig();
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchRequested, setSearchRequested] = useState(true);
+
+  useEffect(() => {
+    // If we have a queued search execute it immediately
+    if (searchRequested && !config.isLoading) search();
+  }, [config.isLoading]);
 
   const search = () => {
     // Ignore blank search terms
-    if (searchTerm === "") {
-      setSearchTerm("");
+    if (searchTerm === "") return;
+
+    // If the config hasn't been loaded yet we queue up the search
+    if (config.isLoading) {
+      setSearchRequested(true);
       return;
     }
 
-    // Not a command so just search the text
-    if (searchTerm[0] === "/") {
-      if (tryProviderSearch(searchTerm)) return;
-    }
+    if (config.data)
+      if (searchTerm[0] === "/") {
+        // Not a command so just search the text
+        if (tryProviderSearch(searchTerm)) return;
+      }
 
     // Fallback action is to perform a normal web search
     performWebSearch(searchTerm);
@@ -46,9 +56,7 @@ export default function Searchbar({ config, setAppFilter }: SearchBarProps) {
 
   const tryProviderSearch = (searchTerm: string) => {
     // Don't check if there aren't any providers yet or the search term doesn't start with a slash
-    if (config.providers === null || !searchTerm.startsWith("/")) {
-      return false;
-    }
+    if (!config.data?.providers || !searchTerm.startsWith("/")) return false;
 
     // Search for words starting with a slash until a space or end of string
     const prefixMatches = searchTerm.match(/\/([^\s]+)/gm);
@@ -59,30 +67,30 @@ export default function Searchbar({ config, setAppFilter }: SearchBarProps) {
     const searchText = searchTerm.replace(prefixMatches[0], "").trim();
 
     // Now we are going to run the command
-    for (const provider of config.providers || []) {
+    for (const provider of config.data?.providers || []) {
       if (provider.prefix.toLowerCase() === prefix.toLowerCase()) {
         // If there is search text we need to use it
-        if (searchText.length > 0) {
+        if (searchText.length > 0)
           window.location.href = provider.searchUrl + searchText;
-        } else {
-          // If there isn't go to the base url
-          window.location.href = provider.baseUrl;
-        }
+        // If there isn't go to the base url
+        else window.location.href = provider.baseUrl;
+
         return true;
       }
     }
   };
 
   const performWebSearch = (searchTerm: string) => {
+    // Check if search term was url, if so just go straight to the page
     try {
       new URL(searchTerm);
       window.location.href = searchTerm;
       return;
     } catch {}
 
-    const chosenSearchUrl = config.general.customSearchEnabled
-      ? config.general.customSearchUrl
-      : config.general.searchUrl;
+    const chosenSearchUrl = config.data!.general.customSearchEnabled
+      ? config.data!.general.customSearchUrl
+      : config.data!.general.searchUrl;
     window.location.href = chosenSearchUrl + encodeURIComponent(searchTerm);
   };
 
@@ -91,16 +99,14 @@ export default function Searchbar({ config, setAppFilter }: SearchBarProps) {
   };
 
   return (
-    <div>
-      <input
-        autoFocus
-        spellCheck="false"
-        className="h-10 w-full border-b-2 border-primary-200/40 bg-transparent py-2 text-3xl outline-none placeholder:text-primary-50/80"
-        placeholder={config.general.searchPlaceholder}
-        onChange={updateSearchTerm}
-        onKeyDown={handleKeyDown}
-        aria-label="searchbar"
-      />
-    </div>
+    <input
+      autoFocus
+      spellCheck="false"
+      className="h-10 w-full border-b-2 border-primary-200/40 bg-transparent py-2 text-3xl outline-none placeholder:text-primary-50/80"
+      placeholder={config.data?.general.searchPlaceholder ?? ""}
+      onChange={updateSearchTerm}
+      onKeyDown={handleKeyDown}
+      aria-label="searchbar"
+    />
   );
 }

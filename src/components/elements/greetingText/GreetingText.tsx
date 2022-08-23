@@ -1,3 +1,5 @@
+import useConfig from "../../../hooks/useConfig";
+
 function getDateOrdinal(date: Date) {
   const d = date.getDate();
   if (d > 3 && d < 21) return "th";
@@ -20,11 +22,8 @@ const greetings: { [key: number]: string } = {
   3: "Good evening!",
 };
 
-interface GreetingProps {
-  calendarUrl: string;
-}
-
-export default function GreetingText({ calendarUrl }: GreetingProps) {
+export default function GreetingText() {
+  const { config } = useConfig();
   const date: Date = new Date();
 
   const greeting: string = greetings[Math.floor(date.getHours() / 6)];
@@ -45,9 +44,13 @@ export default function GreetingText({ calendarUrl }: GreetingProps) {
       <div className="mb-3" aria-label="current-date">
         <a
           className={`text-xl font-semibold ${
-            calendarUrl ? "cursor-pointer" : ""
+            config.data?.general.calendarUrl ? "cursor-pointer" : ""
           }`}
-          href={calendarUrl ? calendarUrl : undefined}
+          href={
+            config.data?.general.calendarUrl
+              ? config.data.general.calendarUrl
+              : undefined
+          }
           tabIndex={-1}
         >
           {dayOfWeek}
