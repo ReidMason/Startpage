@@ -1,28 +1,14 @@
 import React from "react";
-import { Config } from "../../../backend/routers/config/schemas";
-import { Weather } from "../../../backend/routers/weather/schemas";
-import GreetingText from "../GreetingText";
-import WeatherDisplay from "../WeatherDisplay";
+import GreetingText from "../../elements/greetingText/GreetingText";
+import WeatherDisplay from "../../elements/weatherDisplay/WeatherDisplay";
 
-interface GreetingProps {
-  config: Config;
-  weatherData?: Weather | null;
-  editMode: boolean;
-  appFilter: string;
-}
-
-export default function Greeting({ config, weatherData }: GreetingProps) {
+export default function Greeting() {
   return (
     <div className="flex flex-col">
       <div className="sm:flex">
-        <GreetingText calendarUrl={config.general.calendarUrl} />
+        <GreetingText />
         <div className="ml-auto">
-          {config.weather.enabled && weatherData && (
-            <WeatherDisplay
-              weatherData={weatherData}
-              detailed={config.weather.detailed}
-            />
-          )}
+          <WeatherDisplay />
         </div>
       </div>
     </div>

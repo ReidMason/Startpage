@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   App as AppInterface,
   PartialConfig,
@@ -17,15 +17,18 @@ import App from "../../app/App";
 import AppEditModal from "./AppEditModal";
 import SortableApps from "../DragAndDrop/SortableApps";
 import { createPortal } from "react-dom";
-import { trpc } from "../../../utils/trpc";
+import useConfig from "../../../hooks/useConfig";
 
-interface EditableAppsGridProps {
-  apps: Array<AppInterface>;
-}
+export default function EditableAppsGrid() {
+  const { config, configMutation } = useConfig();
+  const [modifiedApps, setModifiedApps] = useState<Array<AppInterface>>();
 
-export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
-  const config = trpc.useQuery(["config.get"]);
-  const configMutation = trpc.useMutation(["config.save"]);
+  useEffect(() => {
+    // Initialise the modified and temp apps lists
+    if (config.isLoading || config.isError || config.isIdle) return;
+
+    if (modifiedApps === undefined) setModifiedApps(config.data.apps);
+  }, [config.isLoading, config.data, config.data?.apps]);
 
   const saveConfig = async (newConfig: PartialConfig) => {
     await configMutation.mutateAsync(newConfig, {
@@ -35,42 +38,33 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
     });
   };
 
-  const [modifiedApps, setModifiedApps] = useState(apps);
-  const [tempApps, setTempApps] = useState<Array<AppInterface>>(
-    apps.map((x) => ({ ...x, active: true }))
-  );
   const [activeApp, setActiveApp] = useState<AppInterface | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [editableApp, setEditableApp] = useState<AppInterface>();
+  const [appBeingEdited, setAppBeingEdit] = useState<AppInterface>();
   const [hoveredBin, setHoveredBin] = useState(false);
 
   function handleDragEnd({ active, over }: DragEndEvent) {
     setActiveApp(null);
 
     // Didn't drag over anything so put the item back where it was
-    if (over === null) setTempApps(modifiedApps);
-    // Valid drag so update modified apps
-    else setModifiedApps(tempApps);
+    if (!over) {
+      ensureAppEnabled(active.id);
+      return;
+    }
 
     // App was dragged over the bin so delete it
-    if (over && over.id == "bin") {
-      const newApps = tempApps.filter((x) => x.id != active.id);
-      saveConfig({ apps: newApps });
-      setTempApps(newApps);
+    if (over.id === "bin") {
+      const newApps = modifiedApps?.filter((x) => x.id != active.id);
+      setModifiedApps(newApps);
     }
   }
 
-  const updateApps = (newApps: Array<AppInterface>) => {
-    // TODO: This causes a screen refresh every time we create a new app, instead just save once and use a local state for the changes
-    saveConfig({ apps: newApps });
-  };
-
   const handleDragStart = ({ active }: DragStartEvent) => {
-    setActiveApp(modifiedApps.find((x) => x.id == active.id) || null);
+    setActiveApp(modifiedApps?.find((x) => x.id == active.id) || null);
   };
 
   const editApp = (app: AppInterface) => {
-    setEditableApp(app);
+    setAppBeingEdit(app);
     setEditModalOpen(true);
   };
 
@@ -83,12 +77,12 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
   };
 
   const repositionElements = (active: Active, over: Over | null) => {
-    if (over && over?.id !== "bin") {
-      setTempApps((apps) => {
-        const oldIndex = apps.map((x) => x.id).indexOf(active.id);
-        const newIndex = apps.map((x) => x.id).indexOf(over.id);
+    if (over && over.id !== "bin") {
+      setModifiedApps((apps) => {
+        const oldIndex = apps!.map((x) => x.id).indexOf(active.id);
+        const newIndex = apps!.map((x) => x.id).indexOf(over.id);
 
-        return arrayMove(apps, oldIndex, newIndex);
+        return arrayMove(apps!, oldIndex, newIndex);
       });
     }
   };
@@ -96,18 +90,17 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
   const updateActiveElementState = (active: Active, over: Over | null) => {
     // Item is dragged outside of droppable area so we want to hide it from the list
     if (over === null)
-      setTempApps((prev) =>
-        prev.map((x) => (x.id === active.id ? { ...x, active: false } : x))
+      setModifiedApps((prev) =>
+        prev!.map((x) => (x.id === active.id ? { ...x, enabled: false } : x))
       );
     // Item is back within droppable area so make sure it's active
-    else if (
-      tempApps.findIndex((x) => x.id === active.id && x.active !== false) ===
-        -1 &&
-      over.id !== "bin"
-    )
-      setTempApps((prev) =>
-        prev.map((x) => (x.id === active.id ? { ...x, active: true } : x))
-      );
+    else if (over.id !== "bin") ensureAppEnabled(active.id);
+  };
+
+  const ensureAppEnabled = (appId: string) => {
+    setModifiedApps((prev) =>
+      prev!.map((x) => (x.id === appId ? { ...x, enabled: true } : x))
+    );
   };
 
   const handleDragOver = ({ active, over }: DragOverEvent) => {
@@ -122,18 +115,19 @@ export default function EditableAppsGrid({ apps }: EditableAppsGridProps) {
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
     >
-      <SortableApps
-        modifiedApps={tempApps}
-        setModifiedApps={setTempApps}
-        updateApps={updateApps}
-        editApp={editApp}
-      />
+      {modifiedApps && (
+        <SortableApps
+          modifiedApps={modifiedApps}
+          setModifiedApps={setModifiedApps}
+          editApp={editApp}
+        />
+      )}
 
-      {editableApp && (
+      {appBeingEdited && (
         <AppEditModal
           open={editModalOpen}
           setOpen={setEditModalOpen}
-          app={editableApp}
+          app={appBeingEdited}
         />
       )}
 

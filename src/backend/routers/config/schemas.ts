@@ -8,7 +8,7 @@ const appSchema = z.object({
   name: z.string(),
   url: z.string(),
   icon: z.string(),
-  active: z.boolean().optional(),
+  enabled: z.boolean().optional(),
 });
 
 export const configSchema = z.object({
