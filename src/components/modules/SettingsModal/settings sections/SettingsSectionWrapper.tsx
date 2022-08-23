@@ -1,4 +1,3 @@
-import React from "react";
 import Collapse from "../../../collapse/Collapse";
 import HorizontalRule from "../../../horizontal rule/HorizontalRule";
 import { SettingsSection, SettingsSectionProps } from "../types";

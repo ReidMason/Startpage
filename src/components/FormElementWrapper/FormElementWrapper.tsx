@@ -1,4 +1,3 @@
-import React from "react";
 import { State, StateStyles } from "../button/types";
 
 export interface FormElementProps {

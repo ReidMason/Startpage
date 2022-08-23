@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import TimerDisplay from "./TimerDisplay";
 import { isNumeric } from "../../../../utils";
 import { TimerDigit } from "./types";

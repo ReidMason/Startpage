@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function HorizontalRule() {
   return (
     <div className="flex h-0.5 opacity-60">

@@ -1,4 +1,3 @@
-import React from "react";
 import GreetingText from "../../elements/greetingText/GreetingText";
 import WeatherDisplay from "../../elements/weatherDisplay/WeatherDisplay";
 

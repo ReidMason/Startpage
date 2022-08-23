@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { StateSetter } from "../../../../types/common";
 import useConfig from "../../../hooks/useConfig";
 
