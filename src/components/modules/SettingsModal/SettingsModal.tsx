@@ -14,6 +14,7 @@ import {
   useState,
 } from "react";
 import { settingsSections as defaultSettingsSections } from "./settingsSections";
+import { trpc } from "../../../utils/trpc";
 
 interface SettingsModalProps {
   open: boolean;
@@ -23,6 +24,8 @@ interface SettingsModalProps {
 export default function SettingsModal({ open, setOpen }: SettingsModalProps) {
   const elementsRef: MutableRefObject<Array<RefObject<HTMLDivElement>>> =
     useRef(defaultSettingsSections.map(() => createRef()));
+  const trpcUtils = trpc.useContext();
+
   // Add refs to the settings sections
   const [settingsSections] = useState(
     defaultSettingsSections.map((x, index) => ({
@@ -91,6 +94,7 @@ export default function SettingsModal({ open, setOpen }: SettingsModalProps) {
   };
 
   const closeWithoutSaving = () => {
+    trpcUtils.invalidateQueries(["config.get"]);
     setOpen(false);
   };
 
