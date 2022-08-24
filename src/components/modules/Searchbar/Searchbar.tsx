@@ -9,7 +9,7 @@ interface SearchBarProps {
 export default function Searchbar({ setAppFilter }: SearchBarProps) {
   const { config } = useConfig();
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [searchRequested, setSearchRequested] = useState(true);
+  const [searchRequested, setSearchRequested] = useState(false);
 
   const tryProviderSearch = useCallback(
     (searchTerm: string) => {
