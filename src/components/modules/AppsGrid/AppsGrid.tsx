@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 import App from "../../elements/app/App";
-import LayoutGrid from "../../grid/LayoutGrid";
+import LayoutGrid from "../../layoutGrid/LayoutGrid";
 import useConfig from "../../../hooks/useConfig";
 
 interface AppsGridProps {
