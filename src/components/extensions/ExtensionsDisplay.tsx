@@ -6,7 +6,7 @@ import {
   Transition,
 } from "framer-motion";
 import PresenceAnimation from "../animations/PresenceAnimation";
-import LayoutGrid from "../grid/LayoutGrid";
+import LayoutGrid from "../layoutGrid/LayoutGrid";
 import { Extension } from "./types";
 import { XIcon } from "@heroicons/react/outline";
 import useConfig from "../../hooks/useConfig";
