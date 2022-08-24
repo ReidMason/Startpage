@@ -9,7 +9,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
   return (
     <div
-      className="h-full min-h-screen bg-cover bg-fixed pt-[5%]"
+      className="h-full min-h-screen bg-cover bg-fixed py-[5%]"
       style={{
         backgroundImage:
           !config.isLoading && config.data!.appearance.backgroundEnabled

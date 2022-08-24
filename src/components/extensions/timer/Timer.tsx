@@ -239,7 +239,7 @@ export default function Timer() {
         {!timerRunning ? (
           timerFinished ? (
             <Button
-              className="w-24 min-w-0"
+              className="sm:min-w-0"
               onClick={acknowledgeAlarmFinished}
               disabled={!anyTimerValueEntered}
             >
@@ -247,7 +247,7 @@ export default function Timer() {
             </Button>
           ) : (
             <Button
-              className="w-24 min-w-0"
+              className="sm:min-w-0"
               onClick={startTimer}
               disabled={!anyTimerValueEntered}
             >
@@ -255,13 +255,13 @@ export default function Timer() {
             </Button>
           )
         ) : (
-          <Button className="w-24 min-w-0" onClick={stopTimer}>
+          <Button className="sm:min-w-0" onClick={stopTimer}>
             Stop
           </Button>
         )}
 
         <Button
-          className="w-24 min-w-0"
+          className="sm:min-w-0"
           onClick={resetTimer}
           disabled={!anyTimerValueEntered || timerAndTimeRemainingMatch}
         >
