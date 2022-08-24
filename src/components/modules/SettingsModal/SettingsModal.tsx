@@ -1,5 +1,4 @@
 import { AnimatePresence, m } from "framer-motion";
-import { Config } from "../../../backend/routers/config/schemas";
 import { StateSetter } from "../../../../types/common";
 import Modal from "../../modal/Modal";
 import SettingsContent from "./SettingsContent";
@@ -19,14 +18,9 @@ import { settingsSections as defaultSettingsSections } from "./settingsSections"
 interface SettingsModalProps {
   open: boolean;
   setOpen: StateSetter<boolean>;
-  config: Config;
 }
 
-export default function SettingsModal({
-  open,
-  setOpen,
-  config,
-}: SettingsModalProps) {
+export default function SettingsModal({ open, setOpen }: SettingsModalProps) {
   const elementsRef: MutableRefObject<Array<RefObject<HTMLDivElement>>> =
     useRef(defaultSettingsSections.map(() => createRef()));
   // Add refs to the settings sections
@@ -119,7 +113,6 @@ export default function SettingsModal({
             }}
           >
             <SideMenu
-              config={config}
               settingsSections={settingsSections}
               scrolledSectionName={scrolledSectionName}
               closeMenuBar={closeMenuBar}
