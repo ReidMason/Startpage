@@ -1,16 +1,16 @@
 import type { NextPage } from "next";
 import SettingsButtons from "../components/SettingsButtons";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import { LazyMotion } from "framer-motion";
 import { Extension } from "../components/extensions/types";
-import Grid from "../components/grid/Grid";
 import Greeting from "../components/modules/Greeting/Greeting";
 import Searchbar from "../components/modules/Searchbar/Searchbar";
 import AppsGrid from "../components/modules/AppsGrid/AppsGrid";
-import type { Config, PartialConfig } from "../backend/routers/config/schemas";
+import type { PartialConfig } from "../backend/routers/config/schemas";
 import useConfig from "../hooks/useConfig";
 import MainLayout from "../components/layouts/MainLayout";
+import { updateDarkMode } from "../../utils";
 
 const DynamicSettingsModal = dynamic(
   () => import("../components/modules/SettingsModal/SettingsModal")
@@ -22,22 +22,8 @@ const DynamicExtensionsDisplay = dynamic(
 const loadFramerFeatures = () =>
   import("../../framer-features").then((res) => res.default);
 
-const setDarkTheme = (config: Config) => {
-  if (config.appearance.appearance === "system") {
-    const useDarkmode = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-    if (useDarkmode) document.documentElement.classList.add("dark");
-    else document.documentElement.classList.remove("dark");
-  } else if (config.appearance.appearance === "dark") {
-    document.documentElement.classList.add("dark");
-  } else {
-    document.documentElement.classList.remove("dark");
-  }
-};
-
 const Home: NextPage = () => {
-  const { config, configMutation } = useConfig(setDarkTheme);
+  const { config, configMutation } = useConfig(updateDarkMode);
 
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -55,7 +41,7 @@ const Home: NextPage = () => {
   return (
     <MainLayout>
       <LazyMotion features={loadFramerFeatures} strict>
-        <Grid
+        <div
           className={`container mx-auto gap-8 p-8 text-primary-300 transition dark:text-primary-100 sm:p-16 ${
             config.data?.appearance.glassy &&
             "bg-primary-900/30 backdrop-blur-xl sm:rounded-2xl"
@@ -82,7 +68,7 @@ const Home: NextPage = () => {
               setExtensions={setExtensions}
             />
           </div>
-        </Grid>
+        </div>
 
         <SettingsButtons
           setSettingsModalOpen={setSettingsModalOpen}

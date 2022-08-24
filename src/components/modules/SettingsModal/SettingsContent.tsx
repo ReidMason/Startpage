@@ -14,6 +14,7 @@ import { m } from "framer-motion";
 import SideMenuIcon from "./SideMenuIcon";
 import useConfig from "../../../hooks/useConfig";
 import { trpc } from "../../../utils/trpc";
+import { updateDarkMode } from "../../../../utils";
 
 interface SettingsContentProps {
   closeModal: () => void;
@@ -76,6 +77,7 @@ export default function SettingsContent({
       // TODO: Stop this from saving to file, instead this should just update the preview config
       const newConfig = { ...modifiedConfig, appearance };
       setModifiedConfig(newConfig);
+      updateDarkMode(newConfig);
       // saveConfig(newConfig);
     }
   }, [appearance, modifiedConfig]);
