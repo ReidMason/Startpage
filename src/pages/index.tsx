@@ -8,7 +8,7 @@ import Grid from "../components/grid/Grid";
 import Greeting from "../components/modules/Greeting/Greeting";
 import Searchbar from "../components/modules/Searchbar/Searchbar";
 import AppsGrid from "../components/modules/AppsGrid/AppsGrid";
-import type { PartialConfig } from "../backend/routers/config/schemas";
+import type { Config, PartialConfig } from "../backend/routers/config/schemas";
 import useConfig from "../hooks/useConfig";
 import MainLayout from "../components/layouts/MainLayout";
 
@@ -22,28 +22,27 @@ const DynamicExtensionsDisplay = dynamic(
 const loadFramerFeatures = () =>
   import("../../framer-features").then((res) => res.default);
 
+const setDarkTheme = (config: Config) => {
+  if (config.appearance.appearance === "system") {
+    const useDarkmode = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    if (useDarkmode) document.documentElement.classList.add("dark");
+    else document.documentElement.classList.remove("dark");
+  } else if (config.appearance.appearance === "dark") {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+};
+
 const Home: NextPage = () => {
-  const { config, configMutation } = useConfig();
+  const { config, configMutation } = useConfig(setDarkTheme);
 
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [appFilter, setAppFilter] = useState("");
   const [extensions, setExtensions] = useState<Array<Extension>>([]);
-
-  useEffect(() => {
-    if (!config.data) return;
-    if (config.data.appearance.appearance === "system") {
-      const useDarkmode = window.matchMedia(
-        "(prefers-color-scheme: dark)"
-      ).matches;
-      if (useDarkmode) document.documentElement.classList.add("dark");
-      else document.documentElement.classList.remove("dark");
-    } else if (config.data.appearance.appearance === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [config]);
 
   const saveConfig = async (newConfig: PartialConfig) => {
     await configMutation.mutateAsync(newConfig, {
@@ -77,13 +76,12 @@ const Home: NextPage = () => {
             <AppsGrid appNameFilter={appFilter} editMode={editMode} />
           </div>
 
-          {/* <div className="col-span-full">
+          <div className="col-span-full">
             <DynamicExtensionsDisplay
-              config={config.data}
               extensions={extensions}
               setExtensions={setExtensions}
             />
-          </div> */}
+          </div>
         </Grid>
 
         <SettingsButtons
@@ -93,12 +91,11 @@ const Home: NextPage = () => {
           extensions={extensions}
           setExtensions={setExtensions}
         />
-        {/*
+
         <DynamicSettingsModal
-          config={config.data}
           open={settingsModalOpen}
           setOpen={setSettingsModalOpen}
-        /> */}
+        />
       </LazyMotion>
     </MainLayout>
   );

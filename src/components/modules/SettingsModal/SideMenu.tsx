@@ -1,4 +1,5 @@
 import { Config } from "../../../backend/routers/config/schemas";
+import useConfig from "../../../hooks/useConfig";
 import Button from "../../button/Button";
 import Input from "../../input/Input";
 import { SettingsSection } from "./types";
@@ -7,15 +8,14 @@ interface SideMenuProps {
   scrolledSectionName: string;
   closeMenuBar: () => void;
   settingsSections: Array<SettingsSection>;
-  config: Config;
 }
 
 export default function SideMenu({
   scrolledSectionName,
   closeMenuBar,
   settingsSections,
-  config,
 }: SideMenuProps) {
+  const { config } = useConfig();
   const scrollToSection = (section: SettingsSection) => {
     const current = section.ref?.current;
     if (!current) return;
@@ -25,7 +25,7 @@ export default function SideMenu({
     }
   };
 
-  const glassyStyles = config.appearance.glassy
+  const glassyStyles = config.data?.appearance.glassy
     ? "backdrop-blur-3xl dark:bg-primary-900/50"
     : "dark:bg-primary-900";
 

@@ -1,4 +1,10 @@
-import { UIEventHandler, useCallback, useEffect, useRef } from "react";
+import {
+  UIEventHandler,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Button from "../../button/Button";
 import { useForm, useWatch } from "react-hook-form";
 import { Config, PartialConfig } from "../../../backend/routers/config/schemas";
@@ -6,6 +12,7 @@ import SettingsSectionWrapper from "./settings sections/SettingsSectionWrapper";
 import { SettingsSection } from "./types";
 import { m } from "framer-motion";
 import SideMenuIcon from "./SideMenuIcon";
+import useConfig from "../../../hooks/useConfig";
 import { trpc } from "../../../utils/trpc";
 
 interface SettingsContentProps {
@@ -26,22 +33,32 @@ export default function SettingsContent({
   isMobile,
 }: SettingsContentProps) {
   const scrollContainer = useRef<HTMLDivElement>(null);
-  const config = trpc.useQuery(["config.get"]);
-  const configMutation = trpc.useMutation(["config.save"]);
+  const { config, configMutation } = useConfig();
 
   const {
     register,
     handleSubmit,
     control,
+    reset,
     watch,
     formState: { errors },
   } = useForm<Config>({ defaultValues: config.data });
+  const trpcUtils = trpc.useContext();
+
+  const [modifiedConfig, setModifiedConfig] = useState<Config>();
+
+  useEffect(() => {
+    if (!config.isLoading && modifiedConfig === undefined) {
+      setModifiedConfig(config.data);
+      reset(config.data);
+    }
+  }, [config.isLoading, setModifiedConfig]);
 
   const saveConfig = useCallback(
     async (newConfig: PartialConfig) => {
       await configMutation.mutateAsync(newConfig, {
         onSuccess: () => {
-          config.refetch();
+          trpcUtils.invalidateQueries(["config.get"]);
         },
       });
     },
@@ -52,17 +69,19 @@ export default function SettingsContent({
 
   useEffect(() => {
     if (
-      config.data &&
-      JSON.stringify(appearance) !== JSON.stringify(config.data.appearance)
+      modifiedConfig !== undefined &&
+      appearance !== undefined &&
+      JSON.stringify(appearance) !== JSON.stringify(modifiedConfig.appearance)
     ) {
-      config.data.appearance = appearance;
       // TODO: Stop this from saving to file, instead this should just update the preview config
-      saveConfig(config.data);
+      const newConfig = { ...modifiedConfig, appearance };
+      setModifiedConfig(newConfig);
+      // saveConfig(newConfig);
     }
-  }, [appearance, config, saveConfig]);
+  }, [appearance, modifiedConfig]);
 
   // TODO: Add a better loading state
-  if (config.isLoading || !config.data) return <div>Loading...</div>;
+  if (config.isLoading || config.isIdle) return <div>Loading...</div>;
 
   const saveSettings = async (data: Config) => {
     saveConfig(data);
@@ -70,7 +89,7 @@ export default function SettingsContent({
     closeModal();
   };
 
-  const glassyStyles = config.data.appearance.glassy
+  const glassyStyles = modifiedConfig?.appearance.glassy
     ? "backdrop-blur-3xl dark:bg-primary-800/30"
     : "dark:bg-primary-800";
 
@@ -98,10 +117,12 @@ export default function SettingsContent({
                 : undefined
             }
           >
-            <SettingsSectionWrapper
-              section={section}
-              sectionProps={{ control, register, config: config.data }}
-            />
+            {modifiedConfig && (
+              <SettingsSectionWrapper
+                section={section}
+                sectionProps={{ control, register, config: modifiedConfig }}
+              />
+            )}
           </div>
         ))}
       </m.div>

@@ -9,19 +9,18 @@ import PresenceAnimation from "../animations/PresenceAnimation";
 import LayoutGrid from "../grid/LayoutGrid";
 import { Extension } from "./types";
 import { XIcon } from "@heroicons/react/outline";
-import { Config } from "../../backend/routers/config/schemas";
+import useConfig from "../../hooks/useConfig";
 
 interface ExtensionsDisplayProps {
   extensions: Array<Extension>;
   setExtensions: Function;
-  config: Config;
 }
 
 export default function ExtensionsDisplay({
   extensions,
   setExtensions,
-  config,
 }: ExtensionsDisplayProps) {
+  const { config } = useConfig();
   const removeExtension = (extensionId: string) => {
     extensions = extensions.filter((x) => x.id !== extensionId);
     setExtensions([...extensions]);
@@ -32,7 +31,7 @@ export default function ExtensionsDisplay({
     duration: 0.25,
   };
 
-  const styling = config.appearance.glassy
+  const styling = config.data?.appearance.glassy
     ? "background-blur focus:bg-primary-100/20 hover:bg-primary-50/20"
     : "hover:bg-primary-100/50 hover:dark:bg-primary-700";
 

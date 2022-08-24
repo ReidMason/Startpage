@@ -31,7 +31,6 @@ const configRouter = trpc
   .router()
   .query("get", {
     async resolve() {
-      console.log("Loading configuration");
       // await new Promise((r) => setTimeout(r, 5000));
       return await getConfig();
     },
@@ -39,6 +38,7 @@ const configRouter = trpc
   .mutation("save", {
     input: configSchema.deepPartial(),
     async resolve({ input }) {
+      console.log("Saving configuration");
       const currentConfig = await getConfig();
       const newConfig: Config = {
         ...currentConfig,
