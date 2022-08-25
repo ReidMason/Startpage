@@ -1,7 +1,7 @@
 import { useDroppable } from "@dnd-kit/core";
 import { TrashIcon } from "@heroicons/react/solid";
 
-export default function Droppable() {
+export default function AppsBinDroppable() {
   const { isOver, setNodeRef } = useDroppable({
     id: "bin",
   });

@@ -6,7 +6,7 @@ import { softSpringTransition } from "../../../../common";
 import { StateSetter } from "../../../../types/common";
 import { generateUuid } from "../../../../utils";
 import { App as AppInterface } from "../../../backend/routers/config/schemas";
-import Droppable from "./Droppable";
+import AppsBinDroppable from "./AppsBinDroppable";
 import PresenceAnimation from "../../animations/PresenceAnimation";
 import SortableItem from "./SortableItem";
 import App from "../../elements/app/App";
@@ -74,7 +74,7 @@ export default function SortableApps({
 
         {createPortal(
           <div className="fixed bottom-24 right-24">
-            <Droppable />
+            <AppsBinDroppable />
           </div>,
           document.body
         )}
