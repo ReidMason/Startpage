@@ -31,10 +31,6 @@ export default function ExtensionsDisplay({
     duration: 0.25,
   };
 
-  const styling = config.data?.appearance.glassy
-    ? "background-blur focus:bg-primary-100/20 hover:bg-primary-50/20"
-    : "hover:bg-primary-100/50 hover:dark:bg-primary-700";
-
   return (
     <LazyMotion features={domMax}>
       <LayoutGrid>
@@ -42,7 +38,7 @@ export default function ExtensionsDisplay({
           {extensions.map((extension) => (
             <m.div layout transition={spring} key={extension.id}>
               <PresenceAnimation
-                className={`${styling} group relative overflow-hidden rounded-lg p-3 transition hover:shadow-md`}
+                className="glassy:background-blur group relative overflow-hidden rounded-lg p-3 transition hover:bg-primary-100/50 hover:shadow-md dark:hover:bg-primary-700 dark:glassy:hover:bg-primary-50/20 dark:glassy:focus:bg-primary-100/20"
                 key={"animate-" + extension.id}
               >
                 <button

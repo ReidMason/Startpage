@@ -4,10 +4,10 @@ import {
   SearchIcon,
   PhotographIcon,
 } from "@heroicons/react/solid";
-import AppearanceSettings from "./settings sections/bodies/AppearanceSettings";
-import GeneralSettings from "./settings sections/bodies/GeneralSettings";
-import ProvidersSettings from "./settings sections/bodies/ProvidersSettings";
-import WeatherSettings from "./settings sections/bodies/WeatherSettings";
+import AppearanceSettings from "./settings sections/sections/AppearanceSettings";
+import GeneralSettings from "./settings sections/sections/GeneralSettings";
+import ProvidersSettings from "./settings sections/sections/ProvidersSettings";
+import WeatherSettings from "./settings sections/sections/WeatherSettings";
 import { SettingsSection } from "./types";
 
 export const settingsSections: Array<SettingsSection> = [
@@ -34,6 +34,6 @@ export const settingsSections: Array<SettingsSection> = [
     icon: SearchIcon,
     iconBg: "bg-sky-400",
     content: ProvidersSettings,
-    customLayout: true,
+    hasCustomLayout: true,
   },
 ];

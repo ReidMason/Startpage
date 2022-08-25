@@ -1,13 +1,13 @@
 import { Disclosure } from "@headlessui/react";
-import { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
 
 interface CollapseProps {
-  header: ReactNode;
-  body: ReactNode;
+  header: React.ReactNode;
+  children: React.ReactNode;
 }
 
-export default function Collapse({ header, body }: CollapseProps) {
+export default function Collapse({ header, children }: CollapseProps) {
   const [defaultOpen, setDefaultOpen] = useState<boolean>();
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export default function Collapse({ header, body }: CollapseProps) {
                         ease: [0.04, 0.62, 0.23, 0.98],
                       }}
                     >
-                      {body}
+                      {children}
                     </m.div>
                   )}
                 </AnimatePresence>

@@ -36,7 +36,7 @@ export default function FormElementWrapper({
   const stateClasses = stateStyles[state ?? "default"];
 
   return (
-    <div className={`${className ?? ""} flex flex-col justify-end gap-2`}>
+    <div className={`flex flex-col justify-end gap-2 ${className ?? ""}`}>
       {!noLabel && label && (
         <label
           className="mb-2 h-4 text-lg text-primary-800 dark:text-primary-50"
@@ -46,7 +46,7 @@ export default function FormElementWrapper({
         </label>
       )}
       {children}
-      {helperText && (
+      {!noHelperText && helperText && (
         <small
           className={`${stateClasses} mb-2 h-4 transform text-sm duration-300 ${
             helperText ? "" : "opacity-0"

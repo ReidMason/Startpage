@@ -10,7 +10,7 @@ import AppsGrid from "../components/modules/AppsGrid/AppsGrid";
 import type { PartialConfig } from "../backend/routers/config/schemas";
 import useConfig from "../hooks/useConfig";
 import MainLayout from "../components/layouts/MainLayout";
-import { updateDarkMode } from "../../utils";
+import { updateGlobalClasses } from "../../utils";
 
 const DynamicSettingsModal = dynamic(
   () => import("../components/modules/SettingsModal/SettingsModal")
@@ -23,7 +23,7 @@ const loadFramerFeatures = () =>
   import("../../framer-features").then((res) => res.default);
 
 const Home: NextPage = () => {
-  const { config, configMutation } = useConfig(updateDarkMode);
+  const { config, configMutation } = useConfig(updateGlobalClasses);
 
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -41,12 +41,7 @@ const Home: NextPage = () => {
   return (
     <MainLayout>
       <LazyMotion features={loadFramerFeatures} strict>
-        <div
-          className={`container mx-auto gap-8 p-8 text-primary-300 transition dark:text-primary-100 sm:p-16 ${
-            config.data?.appearance.glassy &&
-            "bg-primary-900/30 backdrop-blur-xl sm:rounded-2xl"
-          }`}
-        >
+        <div className="glasy:sm:rounded-2xl container mx-auto gap-8 p-8 text-primary-300 transition glassy:bg-primary-900/30 glassy:backdrop-blur-xl dark:text-primary-100 sm:p-16">
           <div className="col-span-full mb-4">
             <Searchbar setAppFilter={setAppFilter} />
           </div>

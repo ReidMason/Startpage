@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { Config, PartialConfig } from "./src/backend/routers/config/schemas";
+import { Config } from "./src/backend/routers/config/schemas";
 
 export function getUnixTime(): number {
   // Gets unix time in seconds
@@ -20,7 +20,7 @@ export function getHost(): string {
   return host.endsWith("/") ? host.slice(0, -1) : host;
 }
 
-export const updateDarkMode = (config: Config) => {
+export const updateGlobalClasses = (config: Config) => {
   if (config.appearance.appearance === "system") {
     const useDarkmode = window.matchMedia(
       "(prefers-color-scheme: dark)"
@@ -32,4 +32,7 @@ export const updateDarkMode = (config: Config) => {
   } else {
     document.documentElement.classList.remove("dark");
   }
+
+  if (config.appearance.glassy) document.body.classList.add("glassy");
+  else document.body.classList.remove("glassy");
 };

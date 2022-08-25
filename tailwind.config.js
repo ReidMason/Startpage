@@ -76,6 +76,7 @@ module.exports = {
   plugins: [
     plugin(function ({ addVariant }) {
       addVariant("firefox", "@-moz-document url-prefix()");
+      addVariant("glassy", ".glassy &");
     }),
   ],
 };

@@ -37,7 +37,7 @@ export default function Switch({
         helperText={helperText}
         noHelperText={noHelperText}
       >
-        <SwitchHui.Group as="div" className="flex flex-col">
+        <SwitchHui.Group as="div">
           <SwitchHui
             checked={value}
             onChange={onChange}

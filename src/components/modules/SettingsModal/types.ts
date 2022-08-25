@@ -13,7 +13,6 @@ export interface SettingsSection {
   icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
   iconBg: string;
   content: ({}: SettingsSectionProps) => JSX.Element;
-  heading?: ({}: SettingsSectionProps) => JSX.Element;
-  customLayout?: boolean;
+  hasCustomLayout?: boolean;
   ref?: RefObject<HTMLDivElement>;
 }
