@@ -1,7 +1,17 @@
+import { Controller, useWatch } from "react-hook-form";
 import Input from "../../../../input/Input";
+import Switch from "../../../../switch/Switch";
 import { SettingsSectionProps } from "../../types";
 
-export default function GeneralSettings({ register }: SettingsSectionProps) {
+export default function GeneralSettings({
+  register,
+  control,
+}: SettingsSectionProps) {
+  var customSearchEnabled = useWatch({
+    name: "general.customSearchEnabled",
+    control,
+  });
+
   return (
     <>
       <Input
@@ -19,10 +29,22 @@ export default function GeneralSettings({ register }: SettingsSectionProps) {
         placeholder="Search url"
         register={register("general.searchUrl")}
       />
-      <Input
-        label="Custom search url"
-        register={register("general.customSearchUrl")}
+
+      <Controller
+        control={control}
+        name="general.customSearchEnabled"
+        render={({ field: { ref, ...field } }) => (
+          <Switch label="Custom search" {...field} />
+        )}
       />
+
+      {customSearchEnabled && (
+        <Input
+          label="Custom search url"
+          register={register("general.customSearchUrl")}
+          disabled={true}
+        />
+      )}
     </>
   );
 }
