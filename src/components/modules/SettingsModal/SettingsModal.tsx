@@ -1,8 +1,8 @@
 import { AnimatePresence, m } from "framer-motion";
 import { StateSetter } from "../../../../types/common";
 import Modal from "../../modal/Modal";
-import SettingsContent from "./SettingsContent";
-import SideMenu from "./SideMenu";
+import SettingsContent from "./elements/SettingsContent";
+import SettingsSideMenu from "./elements/SettingsSideMenu";
 import {
   createRef,
   MutableRefObject,
@@ -48,11 +48,8 @@ export default function SettingsModal({ open, setOpen }: SettingsModalProps) {
     const windowWidth = window.innerWidth;
     setWidth(windowWidth);
 
-    if (isMobile(windowWidth)) {
-      closeMenuBar();
-    } else if (!isMobile(windowWidth)) {
-      openMenuBar();
-    }
+    if (isMobile(windowWidth)) closeMenuBar();
+    else if (!isMobile(windowWidth)) openMenuBar();
   }, []);
 
   useEffect(() => {
@@ -116,7 +113,7 @@ export default function SettingsModal({ open, setOpen }: SettingsModalProps) {
               ease: [0.04, 0.62, 0.23, 0.98],
             }}
           >
-            <SideMenu
+            <SettingsSideMenu
               settingsSections={settingsSections}
               scrolledSectionName={scrolledSectionName}
               closeMenuBar={closeMenuBar}

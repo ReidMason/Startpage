@@ -45,49 +45,50 @@ export default function AppearanceSettings({
 
   return (
     <>
-      <Controller
-        control={control}
-        name="appearance.appearance"
-        render={({ field: { ref, ...field } }) => (
-          <RadioGroup
-            label="Theme"
-            {...field}
-            options={[...appearances]}
-            glassy={config.appearance.glassy}
-          />
-        )}
-      />
+      <div className="col-span-full">
+        <Controller
+          control={control}
+          name="appearance.appearance"
+          render={({ field: { ref, ...field } }) => (
+            <RadioGroup label="Theme" {...field} options={[...appearances]} />
+          )}
+        />
+      </div>
 
-      <Controller
-        control={control}
-        name="appearance.glassy"
-        render={({ field: { ref, ...field } }) => (
-          <div className="flex items-end">
-            <Switch label="Glassy theme" {...field} />
-            <small className="mb-1 hidden opacity-70 firefox:block">
-              Partially supported on{" "}
-              <a
-                className="text-primary-300"
-                href="https://bugzilla.mozilla.org/show_bug.cgi?id=1578503"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Firefox
-              </a>
-            </small>
-          </div>
-        )}
-      />
+      <div className="col-span-3">
+        <Controller
+          control={control}
+          name="appearance.glassy"
+          render={({ field: { ref, ...field } }) => (
+            <div className="flex items-end">
+              <Switch label="Glassy theme" {...field} />
+              <small className="mb-1 hidden opacity-70 firefox:block">
+                Partially supported on{" "}
+                <a
+                  className="text-primary-300"
+                  href="https://bugzilla.mozilla.org/show_bug.cgi?id=1578503"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Firefox
+                </a>
+              </small>
+            </div>
+          )}
+        />
+      </div>
 
-      <Controller
-        control={control}
-        name="appearance.backgroundEnabled"
-        render={({ field: { ref, ...field } }) => (
-          <Switch label="Background image" {...field} />
-        )}
-      />
+      <div className="col-span-3">
+        <Controller
+          control={control}
+          name="appearance.backgroundEnabled"
+          render={({ field: { ref, ...field } }) => (
+            <Switch label="Background image" {...field} />
+          )}
+        />
+      </div>
 
-      <div className="sm:col-span-2">
+      <div className="col-span-full">
         <Dropzone
           onFileUpload={onFileUpload}
           icon={UploadIcon}

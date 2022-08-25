@@ -1,10 +1,12 @@
 import { MenuIcon } from "@heroicons/react/outline";
 
-interface SideMenuIconProps {
+interface SideMenuToggleIconProps {
   openMenuBar: () => void;
 }
 
-export default function SideMenuIcon({ openMenuBar }: SideMenuIconProps) {
+export default function SideMenuToggleIcon({
+  openMenuBar,
+}: SideMenuToggleIconProps) {
   return (
     <div>
       <button

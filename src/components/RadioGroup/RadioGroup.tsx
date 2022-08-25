@@ -8,7 +8,6 @@ interface RadioGroupProps {
   value: string;
   onChange: (checked: string) => void;
   label?: string;
-  glassy?: boolean;
 }
 
 export default function RadioGroup({
@@ -16,13 +15,8 @@ export default function RadioGroup({
   value,
   onChange,
   label,
-  glassy,
 }: RadioGroupProps) {
   const chosenIndex = options.findIndex((x) => x === value);
-
-  const glassyStyles = glassy
-    ? "backdrop-blur bg-primary-100/20"
-    : "dark:bg-primary-700 outline outline-2 outline-primary-100/60";
 
   return (
     <LazyMotion features={domMax}>
@@ -32,9 +26,7 @@ export default function RadioGroup({
           onChange={onChange}
           className="flex flex-col"
         >
-          <div
-            className={`${glassyStyles} relative overflow-hidden rounded-lg`}
-          >
+          <div className="relative overflow-hidden rounded-lg glassy:backdrop-blur dark:bg-primary-700 dark:glassy:bg-primary-100/20">
             <div
               className="grid w-full"
               style={{

@@ -16,33 +16,19 @@ export default function SettingsSectionWrapper({
     section;
 
   return (
-    <div key={section.name} className="flex flex-col">
-      <div>
-        <Collapse
-          header={
-            <SettingsSectionHeader
-              {...sectionData(section)}
-              heading={
-                section.heading ? (
-                  <section.heading {...sectionProps} />
-                ) : undefined
-              }
-            />
-          }
-          body={
-            <div className="mb-4 lg:pl-4">
-              {section.customLayout ? (
-                <section.content {...sectionProps} />
-              ) : (
-                <div className="grid grid-cols-1 items-start gap-4 gap-x-4 md:grid-cols-2 xl:grid-cols-3">
-                  <section.content {...sectionProps} />
-                </div>
-              )}
+    <>
+      <Collapse header={<SettingsSectionHeader {...sectionData(section)} />}>
+        <div className="mb-4 lg:pl-4">
+          {section.hasCustomLayout ? (
+            <section.content {...sectionProps} />
+          ) : (
+            <div className="grid grid-cols-6 gap-4">
+              <section.content {...sectionProps} />
             </div>
-          }
-        />
-      </div>
+          )}
+        </div>
+      </Collapse>
       <HorizontalRule />
-    </div>
+    </>
   );
 }

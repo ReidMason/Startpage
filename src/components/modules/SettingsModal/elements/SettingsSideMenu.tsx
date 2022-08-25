@@ -1,20 +1,19 @@
-import { Config } from "../../../backend/routers/config/schemas";
-import useConfig from "../../../hooks/useConfig";
-import Button from "../../button/Button";
-import Input from "../../input/Input";
-import { SettingsSection } from "./types";
+import useConfig from "../../../../hooks/useConfig";
+import Button from "../../../button/Button";
+import Input from "../../../input/Input";
+import { SettingsSection } from "../types";
 
-interface SideMenuProps {
+interface SettingsSideMenuProps {
   scrolledSectionName: string;
   closeMenuBar: () => void;
   settingsSections: Array<SettingsSection>;
 }
 
-export default function SideMenu({
+export default function SettingsSideMenu({
   scrolledSectionName,
   closeMenuBar,
   settingsSections,
-}: SideMenuProps) {
+}: SettingsSideMenuProps) {
   const { config } = useConfig();
   const scrollToSection = (section: SettingsSection) => {
     const current = section.ref?.current;
@@ -25,14 +24,8 @@ export default function SideMenu({
     }
   };
 
-  const glassyStyles = config.data?.appearance.glassy
-    ? "backdrop-blur-3xl dark:bg-primary-900/50"
-    : "dark:bg-primary-900";
-
   return (
-    <div
-      className={`${glassyStyles} sticky top-24 flex h-full w-64 flex-col p-6 pt-12 text-primary-50`}
-    >
+    <div className="sticky top-24 flex h-full w-64 flex-col p-6 pt-12 text-primary-50 glassy:backdrop-blur-3xl dark:bg-primary-900 dark:glassy:bg-primary-900/50">
       <h1 className="mb-4 text-center text-2xl">Settings</h1>
       <Input
         placeholder="Search..."
