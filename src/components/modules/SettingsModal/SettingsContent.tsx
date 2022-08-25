@@ -36,14 +36,9 @@ export default function SettingsContent({
   const scrollContainer = useRef<HTMLDivElement>(null);
   const { config, configMutation } = useConfig();
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    reset,
-    watch,
-    formState: { errors },
-  } = useForm<Config>({ defaultValues: config.data });
+  const { register, handleSubmit, control, reset } = useForm<Config>({
+    defaultValues: config.data,
+  });
   const trpcUtils = trpc.useContext();
 
   const [modifiedConfig, setModifiedConfig] = useState<Config>();
@@ -66,7 +61,10 @@ export default function SettingsContent({
     [config, configMutation]
   );
 
-  const appearance = useWatch({ name: "appearance", control });
+  const appearance = useWatch({
+    name: "appearance",
+    control,
+  });
 
   useEffect(() => {
     if (
@@ -74,11 +72,9 @@ export default function SettingsContent({
       appearance !== undefined &&
       JSON.stringify(appearance) !== JSON.stringify(modifiedConfig.appearance)
     ) {
-      // TODO: Stop this from saving to file, instead this should just update the preview config
       const newConfig = { ...modifiedConfig, appearance };
       setModifiedConfig(newConfig);
       updateDarkMode(newConfig);
-      // saveConfig(newConfig);
     }
   }, [appearance, modifiedConfig]);
 
