@@ -9,7 +9,7 @@ export default function AppsBinDroppable() {
   return (
     <div
       ref={setNodeRef}
-      className={`z-10 flex h-12 w-64 items-center justify-center rounded-full border ${
+      className={`z-10 flex h-12 w-64 items-center justify-center rounded-full border bg-primary-100 dark:bg-primary-700/70 ${
         isOver ? "border-red-500/80" : "border-red-500/50"
       }`}
     >
