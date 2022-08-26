@@ -107,7 +107,6 @@ export default function SettingsContent({
             key={section.name}
             id={section.name}
             ref={section.ref}
-            className="last:pb-4"
             style={
               index == settingsSections.length - 1
                 ? { height: scrollContainer.current?.clientHeight }

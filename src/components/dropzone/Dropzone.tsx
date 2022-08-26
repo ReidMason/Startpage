@@ -67,7 +67,7 @@ export default function Dropzone({
         {({ getRootProps, getInputProps }) => (
           <div
             className={`cursor-default overflow-hidden rounded-lg bg-primary-100/40 ${loadingStyles} ${
-              draggedOver && "text-green-300"
+              draggedOver ? "text-green-300" : ""
             }`}
             {...getRootProps()}
           >
