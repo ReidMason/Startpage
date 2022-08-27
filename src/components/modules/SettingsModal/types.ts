@@ -1,11 +1,12 @@
 import { RefObject, SVGProps } from "react";
 import { Control, UseFormRegister } from "react-hook-form";
-import { Config } from "../../../backend/routers/config/schemas";
+import { Config, PartialConfig } from "../../../backend/routers/config/schemas";
 
 export interface SettingsSectionProps {
   register: UseFormRegister<Config>;
   control: Control<Config, any>;
   config: Config;
+  saveConfig: (newConfig: PartialConfig) => Promise<void>;
 }
 
 export interface SettingsSection {

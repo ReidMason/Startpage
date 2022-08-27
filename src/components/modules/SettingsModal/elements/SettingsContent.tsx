@@ -26,6 +26,7 @@ interface SettingsContentProps {
   settingsSections: Array<SettingsSection>;
   openMenuBar: () => void;
   isMobile: boolean;
+  menuVisible: boolean;
 }
 
 export default function SettingsContent({
@@ -34,6 +35,7 @@ export default function SettingsContent({
   onScroll,
   settingsSections,
   openMenuBar,
+  menuVisible,
   isMobile,
 }: SettingsContentProps) {
   const scrollContainer = useRef<HTMLDivElement>(null);
@@ -56,8 +58,9 @@ export default function SettingsContent({
   const saveConfig = useCallback(
     async (newConfig: PartialConfig) => {
       await configMutation.mutateAsync(newConfig, {
-        onSuccess: () => {
+        onSuccess: (data) => {
           trpcUtils.invalidateQueries(["config.get"]);
+          setModifiedConfig(data);
         },
       });
     },
@@ -92,13 +95,15 @@ export default function SettingsContent({
 
   return (
     <form
-      className="z-10 flex w-full flex-col justify-between pt-4 shadow-xl glassy:backdrop-blur-3xl dark:bg-primary-800 dark:text-primary-50 dark:glassy:bg-primary-800/30"
+      className={`${
+        menuVisible ? "whitespace-nowrap" : ""
+      } z-10 flex w-full flex-col justify-between pt-4 shadow-xl glassy:backdrop-blur-3xl dark:bg-primary-800 dark:text-primary-50 dark:glassy:bg-primary-800/30`}
       onSubmit={handleSubmit(saveSettings)}
       onClick={onClick}
     >
       <m.div
         layoutScroll
-        className="mt-4 flex h-screen flex-col gap-3 self-stretch overflow-y-auto scroll-smooth px-4"
+        className="mt-4 grid h-screen grid-cols-1 gap-3 self-stretch overflow-y-auto scroll-smooth px-4"
         onScroll={onScroll}
         ref={scrollContainer}
       >
@@ -116,7 +121,12 @@ export default function SettingsContent({
             {modifiedConfig && (
               <SettingsSectionWrapper
                 section={section}
-                sectionProps={{ control, register, config: modifiedConfig }}
+                sectionProps={{
+                  control,
+                  register,
+                  config: modifiedConfig,
+                  saveConfig,
+                }}
               />
             )}
           </div>
