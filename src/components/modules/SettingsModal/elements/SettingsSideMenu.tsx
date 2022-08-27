@@ -1,4 +1,3 @@
-import useConfig from "../../../../hooks/useConfig";
 import Button from "../../../button/Button";
 import Input from "../../../input/Input";
 import { SettingsSection } from "../types";
@@ -14,7 +13,6 @@ export default function SettingsSideMenu({
   closeMenuBar,
   settingsSections,
 }: SettingsSideMenuProps) {
-  const { config } = useConfig();
   const scrollToSection = (section: SettingsSection) => {
     const current = section.ref?.current;
     if (!current) return;

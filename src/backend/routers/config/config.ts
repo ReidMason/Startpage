@@ -38,7 +38,6 @@ const configRouter = trpc
   .mutation("save", {
     input: configSchema.deepPartial(),
     async resolve({ input }) {
-      console.log("Saving configuration");
       const currentConfig = await getConfig();
       const newConfig: Config = {
         ...currentConfig,
@@ -47,8 +46,7 @@ const configRouter = trpc
       newConfig.general.cacheKey = Math.random();
 
       await saveConfig(newConfig);
-      console.log("Saving config!");
-      return { message: "Config saved" };
+      return newConfig;
     },
   });
 export default configRouter;

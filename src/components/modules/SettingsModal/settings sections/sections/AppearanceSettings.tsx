@@ -14,18 +14,9 @@ import { trpc } from "../../../../../utils/trpc";
 export default function AppearanceSettings({
   control,
   config,
+  saveConfig,
 }: SettingsSectionProps) {
   const [fileUploading, setFileUploading] = useState(false);
-  const configMutation = trpc.useMutation(["config.save"]);
-  const trpcUtils = trpc.useContext();
-
-  const saveConfig = async (newConfig: PartialConfig) => {
-    await configMutation.mutateAsync(newConfig, {
-      onSuccess: () => {
-        trpcUtils.invalidateQueries(["config.get"]);
-      },
-    });
-  };
 
   const onFileUpload = async (files: Array<File>) => {
     if (files.length === 0) return;
@@ -61,7 +52,7 @@ export default function AppearanceSettings({
           name="appearance.glassy"
           render={({ field: { ref, ...field } }) => (
             <div className="flex items-end">
-              <Switch label="Glassy theme" {...field} />
+              <Switch label="Transparency" {...field} />
               <small className="mb-1 hidden opacity-70 firefox:block">
                 Partially supported on{" "}
                 <a

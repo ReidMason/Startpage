@@ -9,30 +9,41 @@ export default function WeatherSettings({
 }: SettingsSectionProps) {
   return (
     <>
-      <Controller
-        control={control}
-        name="weather.enabled"
-        render={({ field: { ref, ...field } }) => (
-          <Switch label="Weather display enabled" {...field} />
-        )}
-      />
-      <Input
-        label="Api key"
-        placeholder="Api key"
-        register={register("weather.apiKey")}
-      />
-      <Input
-        label="Location"
-        placeholder="Location"
-        register={register("weather.location")}
-      />
-      <Controller
-        control={control}
-        name="weather.detailed"
-        render={({ field: { ref, ...field } }) => (
-          <Switch label="Detailed weather display" {...field} />
-        )}
-      />
+      <div className="col-span-full">
+        <Controller
+          control={control}
+          name="weather.enabled"
+          render={({ field: { ref, ...field } }) => (
+            <Switch label="Weather display enabled" {...field} />
+          )}
+        />
+      </div>
+
+      <div className="col-span-full">
+        <Input
+          label="Api key"
+          placeholder="Api key"
+          register={register("weather.apiKey")}
+        />
+      </div>
+
+      <div className="col-span-full">
+        <Input
+          label="Location"
+          placeholder="Location"
+          register={register("weather.location")}
+        />
+      </div>
+
+      <div className="col-span-full">
+        <Controller
+          control={control}
+          name="weather.detailed"
+          render={({ field: { ref, ...field } }) => (
+            <Switch label="Detailed weather display" {...field} />
+          )}
+        />
+      </div>
     </>
   );
 }

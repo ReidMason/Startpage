@@ -128,6 +128,7 @@ export default function SettingsModal({ open, setOpen }: SettingsModalProps) {
         closeModal={closeWithoutSaving}
         onScroll={handleScroll}
         openMenuBar={openMenuBar}
+        menuVisible={menuVisible}
         isMobile={isMobile(width)}
       />
     </Modal>
