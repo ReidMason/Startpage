@@ -99,7 +99,6 @@ export default function Searchbar({ setAppFilter }: SearchBarProps) {
   const updateSearchTerm = (event: React.ChangeEvent<HTMLInputElement>) => {
     const input = event.target.value.trim();
     setSearchTerm(input);
-
     updateAppFilter(input);
   };
 
