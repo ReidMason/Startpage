@@ -21,7 +21,11 @@ interface SettingsModalProps {
   setOpen: StateSetter<boolean>;
 }
 
+console.log("Importing");
+
 export default function SettingsModal({ open, setOpen }: SettingsModalProps) {
+  console.log("Rendering");
+
   const elementsRef: MutableRefObject<Array<RefObject<HTMLDivElement>>> =
     useRef(defaultSettingsSections.map(() => createRef()));
   const trpcUtils = trpc.useContext();

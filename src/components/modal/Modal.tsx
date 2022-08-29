@@ -1,5 +1,5 @@
 import { Dialog } from "@headlessui/react";
-import { Dispatch, ReactNode, SetStateAction, useEffect } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 import { m, AnimatePresence } from "framer-motion";
 
 type StateSetter<T> = Dispatch<SetStateAction<T>>;

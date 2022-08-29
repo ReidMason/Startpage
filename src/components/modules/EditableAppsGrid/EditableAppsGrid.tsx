@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
-import {
+import type {
   App as AppInterface,
   PartialConfig,
 } from "../../../backend/routers/config/schemas";
 import { DragOverlay } from "@dnd-kit/core";
 import App from "../../elements/app/App";
-import AppEditModal from "./AppEditModal";
 import SortableApps from "../DragAndDrop/SortableApps";
 import { createPortal } from "react-dom";
 import useConfig from "../../../hooks/useConfig";
 import EditableAppsGridDndContext from "../../elements/editableAppsGridDndContext/EditableAppsGridDndContext";
+import dynamic from "next/dynamic";
+
+const DynamicAppEditModal = dynamic(() => import("./AppEditModal"));
 
 export default function EditableAppsGrid() {
   const { config, configMutation } = useConfig();
@@ -57,7 +59,7 @@ export default function EditableAppsGrid() {
       )}
 
       {appBeingEdited && (
-        <AppEditModal
+        <DynamicAppEditModal
           open={editModalOpen}
           setOpen={setEditModalOpen}
           app={appBeingEdited}
