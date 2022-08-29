@@ -11,6 +11,14 @@ const appSchema = z.object({
   enabled: z.boolean().optional(),
 });
 
+const providerSchema = z.object({
+  id: z.string(),
+  baseUrl: z.string(),
+  name: z.string(),
+  prefix: z.string(),
+  searchUrl: z.string(),
+});
+
 export const configSchema = z.object({
   version: z.number().default(1),
   general: z
@@ -24,17 +32,7 @@ export const configSchema = z.object({
     })
     .default({}),
   apps: z.array(appSchema).default([]),
-  providers: z
-    .array(
-      z.object({
-        id: z.string(),
-        baseUrl: z.string(),
-        name: z.string(),
-        prefix: z.string(),
-        searchUrl: z.string(),
-      })
-    )
-    .default([]),
+  providers: z.array(providerSchema).default([]),
   weather: z
     .object({
       enabled: z.boolean().default(false),
@@ -57,3 +55,4 @@ export type Config = z.infer<typeof configSchema>;
 const deepPartialConfig = configSchema.deepPartial();
 export type PartialConfig = z.infer<typeof deepPartialConfig>;
 export type App = z.infer<typeof appSchema>;
+export type Provider = z.infer<typeof providerSchema>;

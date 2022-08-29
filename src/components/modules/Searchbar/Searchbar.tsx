@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
-import { StateSetter } from "../../../../types/common";
+import { useState } from "react";
+import type { StateSetter } from "../../../../types/common";
+import type { Config, Provider } from "../../../backend/routers/config/schemas";
 import useConfig from "../../../hooks/useConfig";
 
 interface SearchBarProps {
@@ -7,80 +8,82 @@ interface SearchBarProps {
 }
 
 export default function Searchbar({ setAppFilter }: SearchBarProps) {
-  const { config } = useConfig();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchRequested, setSearchRequested] = useState(false);
 
-  const tryProviderSearch = useCallback(
-    (searchTerm: string) => {
-      // Don't check if there aren't any providers yet or the search term doesn't start with a slash
-      if (!config.data?.providers || !searchTerm.startsWith("/")) return false;
+  const checkSearchRequested = (data: Config) => {
+    if (searchRequested) search(data);
+  };
 
-      // Search for words starting with a slash until a space or end of string
-      const prefixMatches = searchTerm.match(/\/([^\s]+)/gm);
-      if (prefixMatches === null || prefixMatches.length === 0) return false;
+  const { config } = useConfig(checkSearchRequested);
 
-      // Extract prefix and search text
-      const prefix = prefixMatches[0].replace("/", "").trim();
-      const searchText = searchTerm.replace(prefixMatches[0], "").trim();
+  const tryProviderSearch = (
+    providers: Array<Provider>,
+    searchTerm: string
+  ) => {
+    // Don't check if there aren't any providers yet or the search term doesn't start with a slash
+    if (!providers || !searchTerm.startsWith("/")) return false;
 
-      // Now we are going to run the command
-      for (const provider of config.data?.providers || []) {
-        if (provider.prefix.toLowerCase() === prefix.toLowerCase()) {
-          // If there is search text we need to use it
-          if (searchText.length > 0)
-            window.location.href = provider.searchUrl + searchText;
-          // If there isn't go to the base url
-          else window.location.href = provider.baseUrl;
+    // Search for words starting with a slash until a space or end of string
+    const prefixMatches = searchTerm.match(/\/([^\s]+)/gm);
+    if (prefixMatches === null || prefixMatches.length === 0) return false;
 
-          return true;
-        }
+    // Extract prefix and search text
+    const prefix = prefixMatches[0].replace("/", "").trim();
+    const searchText = searchTerm.replace(prefixMatches[0], "").trim();
+
+    // Now we are going to run the command
+    for (const provider of providers || []) {
+      if (provider.prefix.toLowerCase() === prefix.toLowerCase()) {
+        // If there is search text we need to use it
+        if (searchText.length > 0)
+          window.location.href = provider.searchUrl + searchText;
+        // If there isn't go to the base url
+        else window.location.href = provider.baseUrl;
+
+        return true;
       }
-    },
-    [config.data]
-  );
+    }
+  };
 
-  const performWebSearch = useCallback(
-    (searchTerm: string) => {
-      // Check if search term was url, if so just go straight to the page
-      try {
-        new URL(searchTerm);
-        window.location.href = searchTerm;
-        return;
-      } catch {}
+  const performWebSearch = (configData: Config, searchTerm: string) => {
+    // Check if search term was url, if so just go straight to the page
+    try {
+      new URL(searchTerm);
+      window.location.href = searchTerm;
+      return;
+    } catch {}
 
-      const chosenSearchUrl = config.data!.general.customSearchEnabled
-        ? config.data!.general.customSearchUrl
-        : config.data!.general.searchUrl;
-      window.location.href = chosenSearchUrl + encodeURIComponent(searchTerm);
-    },
-    [config.data]
-  );
+    const chosenSearchUrl = configData.general.customSearchEnabled
+      ? configData.general.customSearchUrl
+      : configData.general.searchUrl;
+    window.location.href = chosenSearchUrl + encodeURIComponent(searchTerm);
+  };
 
-  const search = useCallback(() => {
+  const search = (data?: Config) => {
     // Ignore blank search terms
     if (searchTerm === "") return;
 
+    const configData = data ?? config.data;
+    console.log("Config data", !configData);
+
     // If the config hasn't been loaded yet we queue up the search
-    if (config.isLoading) {
+    if (data === undefined && (config.isLoading || config.isIdle)) {
       setSearchRequested(true);
       return;
     }
 
-    if (config.data)
-      if (searchTerm[0] === "/") {
-        // Not a command so just search the text
-        if (tryProviderSearch(searchTerm)) return;
-      }
+    if (!configData) {
+      console.error("Config data is missing");
+      return;
+    }
+
+    if (searchTerm[0] === "/")
+      if (tryProviderSearch(configData.providers, searchTerm)) return;
 
     // Fallback action is to perform a normal web search
-    performWebSearch(searchTerm);
-  }, [searchTerm, tryProviderSearch, performWebSearch, config]);
-
-  useEffect(() => {
-    // If we have a queued search execute it immediately
-    if (searchRequested && !config.isLoading) search();
-  }, [config.isLoading, search, searchRequested]);
+    performWebSearch(configData, searchTerm);
+  };
 
   const updateAppFilter = (searchTerm: string) => {
     // Apps search is either empty or invalid
