@@ -1,8 +1,12 @@
+import { LazyMotion } from "framer-motion";
 import useConfig from "../../hooks/useConfig";
 
 interface MainLayoutProps {
   children: React.ReactNode;
 }
+
+const loadFramerFeatures = () =>
+  import("../../../framer-features").then((res) => res.default);
 
 export default function MainLayout({ children }: MainLayoutProps) {
   const { config } = useConfig();
@@ -17,7 +21,9 @@ export default function MainLayout({ children }: MainLayoutProps) {
             : undefined,
       }}
     >
-      {children}
+      <LazyMotion features={loadFramerFeatures} strict>
+        {children}
+      </LazyMotion>
     </div>
   );
 }
