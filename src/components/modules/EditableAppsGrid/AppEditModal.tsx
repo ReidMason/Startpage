@@ -1,7 +1,7 @@
-import { FormEvent, useEffect } from "react";
+import type { FormEvent } from "react";
 import { useForm } from "react-hook-form";
-import { App as AppInterface } from "../../../backend/routers/config/schemas";
-import { StateSetter } from "../../../../types/common";
+import type { App as AppInterface } from "../../../backend/routers/config/schemas";
+import type { StateSetter } from "../../../../types/common";
 import App from "../../elements/app/App";
 import Input from "../../input/Input";
 import Modal from "../../modal/Modal";
@@ -17,25 +17,14 @@ export default function AppEditModal({
   open,
   setOpen,
 }: AppEditModalProps) {
-  const {
-    register,
-    getValues,
-    reset,
-    watch,
-    formState: { errors },
-  } = useForm<AppInterface>({ defaultValues: app });
+  const { register, getValues } = useForm<AppInterface>({ defaultValues: app });
 
-  watch();
   const modifiedApp = getValues();
 
   const saveApp = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.warn("Save new app");
   };
-
-  useEffect(() => {
-    reset(app);
-  }, [app, reset]);
 
   return (
     <Modal open={open} setOpen={setOpen}>

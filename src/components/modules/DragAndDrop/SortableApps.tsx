@@ -3,7 +3,7 @@ import { PlusCircleIcon } from "@heroicons/react/solid";
 import { AnimatePresence, domMax, LazyMotion, m } from "framer-motion";
 import { createPortal } from "react-dom";
 import { softSpringTransition } from "../../../../common";
-import { StateSetter } from "../../../../types/common";
+import type { StateSetter } from "../../../../types/common";
 import { generateUuid } from "../../../../utils";
 import { App as AppInterface } from "../../../backend/routers/config/schemas";
 import AppsBinDroppable from "./AppsBinDroppable";
