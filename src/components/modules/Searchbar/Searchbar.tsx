@@ -1,21 +1,14 @@
 import { useState } from "react";
 import type { StateSetter } from "../../../../types/common";
 import type { Config, Provider } from "../../../backend/routers/config/schemas";
-import useConfig from "../../../hooks/useConfig";
 
 interface SearchBarProps {
   setAppFilter: StateSetter<string>;
+  config: Config;
 }
 
-export default function Searchbar({ setAppFilter }: SearchBarProps) {
+export default function Searchbar({ setAppFilter, config }: SearchBarProps) {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [searchRequested, setSearchRequested] = useState(false);
-
-  const checkSearchRequested = (data: Config) => {
-    if (searchRequested) search(data);
-  };
-
-  const { config } = useConfig(checkSearchRequested);
 
   const tryProviderSearch = (
     providers: Array<Provider>,
@@ -46,7 +39,7 @@ export default function Searchbar({ setAppFilter }: SearchBarProps) {
     }
   };
 
-  const performWebSearch = (configData: Config, searchTerm: string) => {
+  const performWebSearch = (searchTerm: string) => {
     // Check if search term was url, if so just go straight to the page
     try {
       new URL(searchTerm);
@@ -54,34 +47,21 @@ export default function Searchbar({ setAppFilter }: SearchBarProps) {
       return;
     } catch {}
 
-    const chosenSearchUrl = configData.general.customSearchEnabled
-      ? configData.general.customSearchUrl
-      : configData.general.searchUrl;
+    const chosenSearchUrl = config.general.customSearchEnabled
+      ? config.general.customSearchUrl
+      : config.general.searchUrl;
     window.location.href = chosenSearchUrl + encodeURIComponent(searchTerm);
   };
 
-  const search = (data?: Config) => {
+  const search = () => {
     // Ignore blank search terms
     if (searchTerm === "") return;
 
-    const configData = data ?? config.data;
-
-    // If the config hasn't been loaded yet we queue up the search
-    if (data === undefined && (config.isLoading || config.isIdle)) {
-      setSearchRequested(true);
-      return;
-    }
-
-    if (!configData) {
-      console.error("Config data is missing");
-      return;
-    }
-
     if (searchTerm[0] === "/")
-      if (tryProviderSearch(configData.providers, searchTerm)) return;
+      if (tryProviderSearch(config.providers, searchTerm)) return;
 
     // Fallback action is to perform a normal web search
-    performWebSearch(configData, searchTerm);
+    performWebSearch(searchTerm);
   };
 
   const updateAppFilter = (searchTerm: string) => {
@@ -110,7 +90,7 @@ export default function Searchbar({ setAppFilter }: SearchBarProps) {
       autoFocus
       spellCheck="false"
       className="h-10 w-full border-b-2 border-primary-200/40 bg-transparent py-2 text-3xl outline-none placeholder:text-primary-50/80"
-      placeholder={config.data?.general.searchPlaceholder ?? ""}
+      placeholder={config.general.searchPlaceholder ?? ""}
       onChange={updateSearchTerm}
       onKeyDown={handleKeyDown}
       aria-label="searchbar"

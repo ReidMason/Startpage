@@ -1,7 +1,9 @@
 import dynamic from "next/dynamic";
+import { config } from "process";
 import React, { useState } from "react";
-import { StateSetter } from "../../../../types/common";
-import { Extension } from "../../extensions/types";
+import type { StateSetter } from "../../../../types/common";
+import type { Config } from "../../../backend/routers/config/schemas";
+import type { Extension } from "../../extensions/types";
 import SettingsButtons from "../../SettingsButtons";
 
 interface SettingsFeaturesProps {
@@ -9,6 +11,8 @@ interface SettingsFeaturesProps {
   setEditMode: StateSetter<boolean>;
   extensions: Array<Extension>;
   setExtensions: StateSetter<Array<Extension>>;
+  config: Config;
+  setConfig: StateSetter<Config>;
 }
 
 const DynamicSettingsModal = dynamic(
@@ -23,6 +27,8 @@ export default function SettingsFeatures(props: SettingsFeaturesProps) {
       <SettingsButtons {...props} {...{ setSettingsModalOpen }} />
 
       <DynamicSettingsModal
+        config={props.config}
+        setConfig={props.setConfig}
         open={settingsModalOpen}
         setOpen={setSettingsModalOpen}
       />

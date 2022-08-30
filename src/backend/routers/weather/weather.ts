@@ -4,7 +4,7 @@ import { cacheWeatherData, getCacheData } from "../../cache/cache";
 import { BasicWeatherData, Weather, WeatherDataResponse } from "./schemas";
 import { getUnixTime } from "../../../../utils";
 
-async function getWeatherData(
+export async function getWeatherData(
   location: string,
   apiKey: string
 ): Promise<Weather | null> {

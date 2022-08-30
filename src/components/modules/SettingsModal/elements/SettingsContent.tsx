@@ -17,7 +17,7 @@ import { m } from "framer-motion";
 import SideMenuToggleIcon from "./SideMenuToggleIcon";
 import useConfig from "../../../../hooks/useConfig";
 import { trpc } from "../../../../utils/trpc";
-import { updateGlobalClasses } from "../../../../../utils";
+import { StateSetter } from "../../../../../types/common";
 
 interface SettingsContentProps {
   closeModal: () => void;
@@ -27,6 +27,8 @@ interface SettingsContentProps {
   openMenuBar: () => void;
   isMobile: boolean;
   menuVisible: boolean;
+  config: Config;
+  setConfig: StateSetter<Config>;
 }
 
 export default function SettingsContent({
@@ -37,23 +39,18 @@ export default function SettingsContent({
   openMenuBar,
   menuVisible,
   isMobile,
+  config,
+  setConfig,
 }: SettingsContentProps) {
   const scrollContainer = useRef<HTMLDivElement>(null);
-  const { config, configMutation } = useConfig();
+  const { configMutation } = useConfig();
 
   const { register, handleSubmit, control, reset } = useForm<Config>({
-    defaultValues: config.data,
+    defaultValues: config,
   });
   const trpcUtils = trpc.useContext();
 
   const [modifiedConfig, setModifiedConfig] = useState<Config>();
-
-  useEffect(() => {
-    if (!config.isLoading && modifiedConfig === undefined) {
-      setModifiedConfig(config.data);
-      reset(config.data);
-    }
-  }, [config.isLoading, setModifiedConfig, config.data, modifiedConfig, reset]);
 
   const saveConfig = useCallback(
     async (newConfig: PartialConfig) => {
@@ -61,6 +58,7 @@ export default function SettingsContent({
         onSuccess: (data) => {
           trpcUtils.invalidateQueries(["config.get"]);
           setModifiedConfig(data);
+          setConfig(data);
         },
       });
     },
@@ -80,12 +78,8 @@ export default function SettingsContent({
     ) {
       const newConfig = { ...modifiedConfig, appearance };
       setModifiedConfig(newConfig);
-      updateGlobalClasses(newConfig);
     }
   }, [appearance, modifiedConfig]);
-
-  // TODO: Add a better loading state
-  if (config.isLoading || config.isIdle) return <div>Loading...</div>;
 
   const saveSettings = async (data: Config) => {
     saveConfig(data);
@@ -118,17 +112,15 @@ export default function SettingsContent({
                 : undefined
             }
           >
-            {modifiedConfig && (
-              <SettingsSectionWrapper
-                section={section}
-                sectionProps={{
-                  control,
-                  register,
-                  config: modifiedConfig,
-                  saveConfig,
-                }}
-              />
-            )}
+            <SettingsSectionWrapper
+              section={section}
+              sectionProps={{
+                control,
+                register,
+                config: config,
+                saveConfig,
+              }}
+            />
           </div>
         ))}
       </m.div>

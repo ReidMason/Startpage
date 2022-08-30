@@ -24,7 +24,7 @@
     "framer-motion": "^6.3.3",
     "imagemin": "^8.0.1",
     "lodash-es": "^4.17.21",
-    "next": "12.1.6",
+    "next": "12.2.5",
     "react": "18.1.0",
     "react-dnd": "^16.0.1",
     "react-dom": "18.1.0",
