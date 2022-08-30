@@ -65,7 +65,6 @@ export default function Searchbar({ setAppFilter }: SearchBarProps) {
     if (searchTerm === "") return;
 
     const configData = data ?? config.data;
-    console.log("Config data", !configData);
 
     // If the config hasn't been loaded yet we queue up the search
     if (data === undefined && (config.isLoading || config.isIdle)) {
