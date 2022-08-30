@@ -32,7 +32,7 @@ const Home: NextPage = () => {
 
   return (
     <MainLayout>
-      <div className="glasy:sm:rounded-2xl container mx-auto gap-8 p-8 text-primary-300 transition glassy:bg-primary-900/30 glassy:backdrop-blur-xl dark:text-primary-100 sm:p-16">
+      <div className="container mx-auto gap-8 p-8 text-primary-300 transition glassy:bg-primary-900/30 glassy:backdrop-blur-xl dark:text-primary-100 sm:p-16 sm:glassy:rounded-2xl">
         <div className="col-span-full mb-4">
           <Searchbar setAppFilter={setAppFilter} />
         </div>
