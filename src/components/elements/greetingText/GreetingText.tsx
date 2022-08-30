@@ -25,23 +25,26 @@ const greetings: { [key: number]: string } = {
 
 export default function GreetingText() {
   const { config } = useConfig();
-  const [date, setDate] = useState<Date>(new Date());
-
-  const greeting: string = greetings[Math.floor(date.getHours() / 6)];
-
-  const dayOfWeek = `${date.toLocaleString("default", {
-    weekday: "long",
-  })}, ${date.getDate()}`;
-
-  const dateOrdinal = getDateOrdinal(date);
-
-  const monthAndYear = date.toLocaleString("default", {
-    month: "long",
-    year: "numeric",
-  });
+  const [greeting, setGreeting] = useState<string>();
+  const [dayOfWeek, setDayOfWeek] = useState<string>();
+  const [dateOrdinal, setDateOrdinal] = useState<string>();
+  const [monthAndYear, setMonthAndYear] = useState<string>();
 
   useEffect(() => {
-    setDate(new Date());
+    const date = new Date();
+    setGreeting(greetings[Math.floor(date.getHours() / 6)]);
+    setDayOfWeek(
+      `${date.toLocaleString("default", {
+        weekday: "long",
+      })}, ${date.getDate()}`
+    );
+    setDateOrdinal(getDateOrdinal(date));
+    setMonthAndYear(
+      date.toLocaleString("default", {
+        month: "long",
+        year: "numeric",
+      })
+    );
   }, []);
 
   return (
