@@ -1,13 +1,23 @@
+import type { Config } from "../../../backend/routers/config/schemas";
+import type { Weather } from "../../../backend/routers/weather/schemas";
 import GreetingText from "../../elements/greetingText/GreetingText";
 import WeatherDisplay from "../../elements/weatherDisplay/WeatherDisplay";
 
-export default function Greeting() {
+interface GreetingProps {
+  weather: Weather;
+  config: Config;
+}
+
+export default function Greeting({ weather, config }: GreetingProps) {
   return (
     <div className="flex flex-col">
       <div className="sm:flex">
         <GreetingText />
         <div className="ml-auto">
-          <WeatherDisplay />
+          <WeatherDisplay
+            weather={weather}
+            detailed={config.weather.detailed}
+          />
         </div>
       </div>
     </div>

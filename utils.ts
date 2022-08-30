@@ -20,19 +20,19 @@ export function getHost(): string {
   return host.endsWith("/") ? host.slice(0, -1) : host;
 }
 
-export const updateGlobalClasses = (config: Config) => {
+export const getGlobalClasses = (config?: Config): string => {
+  if (!config) return "";
+
+  var globalClasses = "";
+
   if (config.appearance.appearance === "system") {
-    const useDarkmode = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-    if (useDarkmode) document.documentElement.classList.add("dark");
-    else document.documentElement.classList.remove("dark");
+    const useDarkmode = true;
+    if (useDarkmode) globalClasses += "dark";
   } else if (config.appearance.appearance === "dark") {
-    document.documentElement.classList.add("dark");
-  } else {
-    document.documentElement.classList.remove("dark");
+    globalClasses += "dark";
   }
 
-  if (config.appearance.glassy) document.body.classList.add("glassy");
-  else document.body.classList.remove("glassy");
+  if (config.appearance.glassy) globalClasses += " glassy";
+
+  return globalClasses;
 };

@@ -32,7 +32,7 @@ const configRouter = trpc
   .query("get", {
     async resolve() {
       // await new Promise((r) => setTimeout(r, 5000));
-      return await getConfig();
+      //return await getConfig();
     },
   })
   .mutation("save", {

@@ -1,14 +1,19 @@
-import { Html, Head, Main, NextScript } from "next/document";
+import Document, { Html, Head, Main, NextScript } from "next/document";
+import { getGlobalClasses } from "../../utils";
 
-export default function Document() {
-  return (
-    <Html lang="en" className="dark">
-      <Head id="testing" />
-      <meta name="description" content="Startpage" />
-      <body id="Here" className="bg-primary-50/90 dark:bg-primary-900/90">
-        <Main />
-        <NextScript />
-      </body>
-    </Html>
-  );
+export default class MyDocument extends Document {
+  render() {
+    const pageProps = this.props?.__NEXT_DATA__?.props?.pageProps;
+
+    return (
+      <Html lang="en" className={getGlobalClasses(pageProps.config)}>
+        <Head />
+        <meta name="description" content="Startpage" />
+        <body className="bg-primary-50/90 dark:bg-primary-900/90">
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    );
+  }
 }

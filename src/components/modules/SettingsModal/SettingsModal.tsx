@@ -15,13 +15,21 @@ import {
 } from "react";
 import { settingsSections as defaultSettingsSections } from "./settingsSections";
 import { trpc } from "../../../utils/trpc";
+import { Config } from "../../../backend/routers/config/schemas";
 
 interface SettingsModalProps {
   open: boolean;
   setOpen: StateSetter<boolean>;
+  config: Config;
+  setConfig: StateSetter<Config>;
 }
 
-export default function SettingsModal({ open, setOpen }: SettingsModalProps) {
+export default function SettingsModal({
+  open,
+  setOpen,
+  config,
+  setConfig,
+}: SettingsModalProps) {
   const elementsRef: MutableRefObject<Array<RefObject<HTMLDivElement>>> =
     useRef(defaultSettingsSections.map(() => createRef()));
   const trpcUtils = trpc.useContext();
@@ -123,6 +131,8 @@ export default function SettingsModal({ open, setOpen }: SettingsModalProps) {
       </AnimatePresence>
 
       <SettingsContent
+        config={config}
+        setConfig={setConfig}
         settingsSections={settingsSections}
         onClick={handleSettingsContentClicked}
         closeModal={closeWithoutSaving}
