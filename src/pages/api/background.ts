@@ -37,10 +37,8 @@ export default async function background(
     if (file) {
       /* Move uploaded files to directory */
       const tempPath = file.filepath;
-      // await promises.rename(tempPath, BG_PATH);
 
-      console.log(BG_PATH);
-      const image = await sharp(tempPath)
+      await sharp(tempPath)
         .resize(1920, 1080)
         .jpeg({
           quality: 80,
