@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import useConfig from "../../../hooks/useConfig";
 
 function getDateOrdinal(date: Date) {
@@ -24,7 +25,7 @@ const greetings: { [key: number]: string } = {
 
 export default function GreetingText() {
   const { config } = useConfig();
-  const date: Date = new Date();
+  const [date, setDate] = useState<Date>(new Date());
 
   const greeting: string = greetings[Math.floor(date.getHours() / 6)];
 
@@ -38,6 +39,10 @@ export default function GreetingText() {
     month: "long",
     year: "numeric",
   });
+
+  useEffect(() => {
+    setDate(new Date());
+  }, []);
 
   return (
     <div aria-label="greeting-section">
