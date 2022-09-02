@@ -6,17 +6,11 @@ type StateSetter<T> = Dispatch<SetStateAction<T>>;
 
 export interface ModalProps {
   open: boolean;
-  setOpen: StateSetter<boolean>;
   children?: ReactNode;
   onClose: () => void;
 }
 
-export default function Modal({
-  open,
-  setOpen,
-  children,
-  onClose,
-}: ModalProps) {
+export default function Modal({ open, children, onClose }: ModalProps) {
   return (
     <AnimatePresence>
       {open && (

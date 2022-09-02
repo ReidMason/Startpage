@@ -101,11 +101,11 @@ export default function SettingsModal({
 
   const closeWithoutSaving = (saved?: boolean) => {
     setOpen(false);
-    if (!saved && savedConfig.data) setConfig(savedConfig.data);
+    if (!saved && savedConfig.data) setConfig(savedConfig.data, false, false);
   };
 
   return (
-    <Modal open={open} setOpen={setOpen} onClose={closeWithoutSaving}>
+    <Modal open={open} onClose={closeWithoutSaving}>
       <AnimatePresence initial={false}>
         {menuVisible && (
           <m.div
