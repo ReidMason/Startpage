@@ -11,6 +11,7 @@ import SettingsFeatures from "../components/modules/SettingsFeatures/SettingsFea
 import { getConfig } from "../backend/routers/config/config";
 import { Weather } from "../backend/routers/weather/schemas";
 import { getWeatherData } from "../backend/routers/weather/weather";
+import { updateGlobalClasses } from "../../utils";
 
 const DynamicExtensionsDisplay = dynamic(
   () => import("../components/extensions/ExtensionsDisplay")
@@ -29,6 +30,11 @@ const Home: NextPage<HomePageProps> = ({
   const [editMode, setEditMode] = useState(false);
   const [appFilter, setAppFilter] = useState("");
   const [extensions, setExtensions] = useState<Array<Extension>>([]);
+
+  const updateConfig = (newConfig: Config) => {
+    setConfig(newConfig);
+    updateGlobalClasses(newConfig);
+  };
 
   return (
     <MainLayout config={config}>
@@ -67,7 +73,7 @@ const Home: NextPage<HomePageProps> = ({
           extensions,
           setExtensions,
           config,
-          setConfig,
+          setConfig: updateConfig,
         }}
       />
     </MainLayout>

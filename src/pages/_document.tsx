@@ -6,10 +6,14 @@ export default class MyDocument extends Document {
     const pageProps = this.props?.__NEXT_DATA__?.props?.pageProps;
 
     return (
-      <Html lang="en" className={getGlobalClasses(pageProps.config)}>
+      <Html lang="en">
         <Head />
         <meta name="description" content="Startpage" />
-        <body className="bg-primary-50/90 dark:bg-primary-900/90">
+        <body
+          className={`bg-primary-50/90 dark:bg-primary-900/90 ${getGlobalClasses(
+            pageProps.config
+          )}`}
+        >
           <Main />
           <NextScript />
         </body>

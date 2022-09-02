@@ -1,5 +1,4 @@
 import dynamic from "next/dynamic";
-import { config } from "process";
 import React, { useState } from "react";
 import type { StateSetter } from "../../../../types/common";
 import type { Config } from "../../../backend/routers/config/schemas";
@@ -12,7 +11,7 @@ interface SettingsFeaturesProps {
   extensions: Array<Extension>;
   setExtensions: StateSetter<Array<Extension>>;
   config: Config;
-  setConfig: StateSetter<Config>;
+  setConfig: (newConfig: Config) => void;
 }
 
 const DynamicSettingsModal = dynamic(
