@@ -13,7 +13,7 @@ import App from "../../elements/app/App";
 
 interface SortableAppsProps {
   modifiedApps: Array<AppInterface>;
-  setModifiedApps: StateSetter<Array<AppInterface> | undefined>;
+  setModifiedApps: StateSetter<Array<AppInterface>>;
   editApp: (app: AppInterface) => void;
 }
 

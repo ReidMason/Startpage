@@ -1,19 +1,19 @@
 import { Icon } from "@iconify/react";
 import Image from "next/image";
+import { Config } from "../../../backend/routers/config/schemas";
 import { Weather } from "../../../backend/routers/weather/schemas";
-import useConfig from "../../../hooks/useConfig";
 
 interface WeatherDisplayProps {
   weather: Weather;
   detailed: boolean;
+  config: Config;
 }
 
 export default function WeatherDisplay({
   weather,
   detailed,
+  config,
 }: WeatherDisplayProps) {
-  const { config } = useConfig();
-
   return (
     <div className="flex">
       <Image
@@ -27,7 +27,7 @@ export default function WeatherDisplay({
         <p className="mb-2 hidden capitalize md:block">{weather.description}</p>
         <div className="flex items-center justify-between gap-4 md:items-end">
           <p className="text-4xl">{Math.round(weather.temperature)}°C</p>
-          {config.data?.weather.detailed && (
+          {config.weather.detailed && (
             <div className="mb-1 flex items-center gap-1 text-lg">
               <Icon icon="bi:cloud-rain-heavy-fill" />
               <span>{Math.round(weather.rainChance * 100)}%</span>

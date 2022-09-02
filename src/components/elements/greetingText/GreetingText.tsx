@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import useConfig from "../../../hooks/useConfig";
+import { Config } from "../../../backend/routers/config/schemas";
 
 function getDateOrdinal(date: Date) {
   const d = date.getDate();
@@ -23,8 +23,11 @@ const greetings: { [key: number]: string } = {
   3: "Good evening!",
 };
 
-export default function GreetingText() {
-  const { config } = useConfig();
+interface GreetingTextProps {
+  config: Config;
+}
+
+export default function GreetingText({ config }: GreetingTextProps) {
   const [greeting, setGreeting] = useState<string>();
   const [dayOfWeek, setDayOfWeek] = useState<string>();
   const [dateOrdinal, setDateOrdinal] = useState<string>();
@@ -52,12 +55,10 @@ export default function GreetingText() {
       <div className="mb-3" aria-label="current-date">
         <a
           className={`text-xl font-semibold ${
-            config.data?.general.calendarUrl ? "cursor-pointer" : ""
+            config.general.calendarUrl ? "cursor-pointer" : ""
           }`}
           href={
-            config.data?.general.calendarUrl
-              ? config.data.general.calendarUrl
-              : undefined
+            config.general.calendarUrl ? config.general.calendarUrl : undefined
           }
           tabIndex={-1}
         >

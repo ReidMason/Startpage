@@ -13,8 +13,8 @@ import { App } from "../../../backend/routers/config/schemas";
 interface EditableAppsGridDndContextProps {
   children: React.ReactNode;
   setActiveApp: StateSetter<App | null>;
-  modifiedApps: Array<App> | undefined;
-  setModifiedApps: StateSetter<Array<App> | undefined>;
+  modifiedApps: Array<App>;
+  setModifiedApps: StateSetter<Array<App>>;
   binHovered: boolean;
   setBinHovered: StateSetter<boolean>;
 }
@@ -38,7 +38,7 @@ export default function EditableAppsGridDndContext({
 
     // App was dragged over the bin so delete it
     if (over.id === "bin") {
-      const newApps = modifiedApps?.filter((x) => x.id != active.id);
+      const newApps = modifiedApps.filter((x) => x.id != active.id);
       setModifiedApps(newApps);
     }
   }
