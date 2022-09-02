@@ -26,8 +26,12 @@ export default function AppEditModal({
     console.warn("Save new app");
   };
 
+  const onClose = () => {
+    setOpen(false);
+  };
+
   return (
-    <Modal open={open} setOpen={setOpen}>
+    <Modal open={open} onClose={onClose}>
       <form className="flex flex-col" onSubmit={saveApp}>
         <h1>App edit modal</h1>
         <Input register={register("icon")} label="icon" />
