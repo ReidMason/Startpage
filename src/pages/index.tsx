@@ -47,8 +47,6 @@ const Home: NextPage<HomePageProps> = ({
         {
           onSuccess: (data) => {
             trpcUtils.invalidateQueries(["config.get"]);
-            console.log("Before", data.general.cacheKey);
-            console.log("After", config.general.cacheKey);
             setConfig(data);
             updateGlobalClasses(data);
           },

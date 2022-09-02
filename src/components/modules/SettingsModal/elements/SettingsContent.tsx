@@ -61,7 +61,7 @@ export default function SettingsContent({
   }, [appearance, modifiedConfig]);
 
   const saveSettings = async (data: Config) => {
-    await setConfig(data, true, true);
+    await setConfig(data, true, false);
     closeModal(true);
   };
 
