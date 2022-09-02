@@ -26,7 +26,7 @@ export default function AppsGrid({
     <>
       {editMode ? (
         <LayoutGrid>
-          <DynamicEditableAppsGrid />
+          <DynamicEditableAppsGrid config={config} />
         </LayoutGrid>
       ) : (
         <LayoutGrid>

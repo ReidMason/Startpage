@@ -1,29 +1,23 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type {
   App as AppInterface,
-  PartialConfig,
+  Config,
 } from "../../../backend/routers/config/schemas";
 import { DragOverlay } from "@dnd-kit/core";
 import App from "../../elements/app/App";
 import SortableApps from "../DragAndDrop/SortableApps";
 import { createPortal } from "react-dom";
-import useConfig from "../../../hooks/useConfig";
 import EditableAppsGridDndContext from "../../elements/editableAppsGridDndContext/EditableAppsGridDndContext";
 import dynamic from "next/dynamic";
 
 const DynamicAppEditModal = dynamic(() => import("./AppEditModal"));
 
-export default function EditableAppsGrid() {
-  const { config, configMutation } = useConfig();
-  const [modifiedApps, setModifiedApps] = useState<Array<AppInterface>>();
+interface EditableAppsGridProps {
+  config: Config;
+}
 
-  useEffect(() => {
-    // Initialise the modified and temp apps lists
-    if (config.isLoading || config.isError || config.isIdle) return;
-
-    if (modifiedApps === undefined) setModifiedApps(config.data.apps);
-  }, [config, modifiedApps]);
-
+export default function EditableAppsGrid({ config }: EditableAppsGridProps) {
+  const [modifiedApps, setModifiedApps] = useState(config.apps);
   const [activeApp, setActiveApp] = useState<AppInterface | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [appBeingEdited, setAppBeingEdit] = useState<AppInterface>();

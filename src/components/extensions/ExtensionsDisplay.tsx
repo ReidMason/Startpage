@@ -9,7 +9,6 @@ import PresenceAnimation from "../animations/PresenceAnimation";
 import LayoutGrid from "../layoutGrid/LayoutGrid";
 import { Extension } from "./types";
 import { XIcon } from "@heroicons/react/outline";
-import useConfig from "../../hooks/useConfig";
 
 interface ExtensionsDisplayProps {
   extensions: Array<Extension>;
@@ -20,7 +19,6 @@ export default function ExtensionsDisplay({
   extensions,
   setExtensions,
 }: ExtensionsDisplayProps) {
-  const { config } = useConfig();
   const removeExtension = (extensionId: string) => {
     extensions = extensions.filter((x) => x.id !== extensionId);
     setExtensions([...extensions]);
