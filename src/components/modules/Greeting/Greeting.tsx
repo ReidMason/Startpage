@@ -13,12 +13,14 @@ export default function Greeting({ weather, config }: GreetingProps) {
     <div className="flex flex-col">
       <div className="sm:flex">
         <GreetingText />
-        <div className="ml-auto">
-          <WeatherDisplay
-            weather={weather}
-            detailed={config.weather.detailed}
-          />
-        </div>
+        {config.weather.enabled && (
+          <div className="ml-auto">
+            <WeatherDisplay
+              weather={weather}
+              detailed={config.weather.detailed}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
