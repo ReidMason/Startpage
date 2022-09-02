@@ -1,10 +1,4 @@
-import {
-  UIEventHandler,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { UIEventHandler, useEffect, useRef, useState } from "react";
 import Button from "../../../button/Button";
 import { useForm, useWatch } from "react-hook-form";
 import {
@@ -15,12 +9,10 @@ import SettingsSectionWrapper from "../settings sections/SettingsSectionWrapper"
 import { SettingsSection } from "../types";
 import { m } from "framer-motion";
 import SideMenuToggleIcon from "./SideMenuToggleIcon";
-import useConfig from "../../../../hooks/useConfig";
-import { trpc } from "../../../../utils/trpc";
-import { StateSetter } from "../../../../../types/common";
+import { ConfigSetter } from "../../../../../types/common";
 
 interface SettingsContentProps {
-  closeModal: () => void;
+  closeModal: (saved?: boolean) => void;
   onClick?: () => void;
   onScroll?: UIEventHandler<HTMLDivElement>;
   settingsSections: Array<SettingsSection>;
@@ -28,7 +20,7 @@ interface SettingsContentProps {
   isMobile: boolean;
   menuVisible: boolean;
   config: Config;
-  setConfig: (newConfig: Config) => void;
+  setConfig: ConfigSetter;
 }
 
 export default function SettingsContent({
@@ -43,23 +35,16 @@ export default function SettingsContent({
   setConfig,
 }: SettingsContentProps) {
   const scrollContainer = useRef<HTMLDivElement>(null);
-  const { configMutation } = useConfig();
 
-  const { register, handleSubmit, control, reset } = useForm<Config>({
+  const { register, handleSubmit, control } = useForm<Config>({
     defaultValues: config,
   });
-  const trpcUtils = trpc.useContext();
 
   const [modifiedConfig, setModifiedConfig] = useState<Config>();
 
   const saveConfig = async (newConfig: PartialConfig) => {
-    await configMutation.mutateAsync(newConfig, {
-      onSuccess: (data) => {
-        trpcUtils.invalidateQueries(["config.get"]);
-        setModifiedConfig(data);
-        setConfig(data);
-      },
-    });
+    // setModifiedConfig(data);
+    setConfig(newConfig);
   };
 
   const appearance = useWatch({
@@ -68,6 +53,8 @@ export default function SettingsContent({
   });
 
   useEffect(() => {
+    setConfig({ ...modifiedConfig, appearance }, false, false);
+
     if (
       modifiedConfig !== undefined &&
       appearance !== undefined &&
@@ -80,7 +67,7 @@ export default function SettingsContent({
 
   const saveSettings = async (data: Config) => {
     await saveConfig(data);
-    closeModal();
+    closeModal(true);
   };
 
   return (
@@ -126,7 +113,7 @@ export default function SettingsContent({
         <Button type="submit" state="success">
           Save
         </Button>
-        <Button variant="outline" onClick={closeModal}>
+        <Button variant="outline" onClick={() => closeModal()}>
           Exit
         </Button>
       </div>

@@ -7,7 +7,7 @@ import { AppRouter } from "./api/trpc/[trpc]";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <div id="test">
+    <div>
       <Head>
         <title>Startpage</title>
       </Head>

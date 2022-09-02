@@ -11,7 +11,10 @@ import SettingsFeatures from "../components/modules/SettingsFeatures/SettingsFea
 import { getConfig } from "../backend/routers/config/config";
 import { Weather } from "../backend/routers/weather/schemas";
 import { getWeatherData } from "../backend/routers/weather/weather";
-import { updateGlobalClasses } from "../../utils";
+import { completeConfig, updateGlobalClasses } from "../../utils";
+import { trpc } from "../utils/trpc";
+import useConfig from "../hooks/useConfig";
+import { ConfigSetter } from "../../types/common";
 
 const DynamicExtensionsDisplay = dynamic(
   () => import("../components/extensions/ExtensionsDisplay")
@@ -30,10 +33,27 @@ const Home: NextPage<HomePageProps> = ({
   const [editMode, setEditMode] = useState(false);
   const [appFilter, setAppFilter] = useState("");
   const [extensions, setExtensions] = useState<Array<Extension>>([]);
+  const trpcUtils = trpc.useContext();
+  const { configMutation } = useConfig();
 
-  const updateConfig = (newConfig: Config) => {
-    setConfig(newConfig);
-    updateGlobalClasses(newConfig);
+  const updateConfig: ConfigSetter = async (
+    newConfig,
+    save = true,
+    updateCachKey = false
+  ) => {
+    if (save) {
+      await configMutation.mutateAsync(newConfig, {
+        onSuccess: (data) => {
+          trpcUtils.invalidateQueries(["config.get"]);
+          setConfig(data);
+          updateGlobalClasses(data);
+        },
+      });
+    } else {
+      const fullConfig = completeConfig(config, newConfig, updateCachKey);
+      setConfig(fullConfig);
+      updateGlobalClasses(fullConfig);
+    }
   };
 
   return (

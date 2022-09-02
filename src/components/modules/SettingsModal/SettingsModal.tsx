@@ -1,5 +1,5 @@
 import { AnimatePresence, m } from "framer-motion";
-import { StateSetter } from "../../../../types/common";
+import { ConfigSetter, StateSetter } from "../../../../types/common";
 import Modal from "../../modal/Modal";
 import SettingsContent from "./elements/SettingsContent";
 import SettingsSideMenu from "./elements/SettingsSideMenu";
@@ -15,13 +15,14 @@ import {
 } from "react";
 import { settingsSections as defaultSettingsSections } from "./settingsSections";
 import { trpc } from "../../../utils/trpc";
-import { Config } from "../../../backend/routers/config/schemas";
+import { Config, PartialConfig } from "../../../backend/routers/config/schemas";
+import useConfig from "../../../hooks/useConfig";
 
 interface SettingsModalProps {
   open: boolean;
   setOpen: StateSetter<boolean>;
   config: Config;
-  setConfig: (newConfig: Config) => void;
+  setConfig: ConfigSetter;
 }
 
 export default function SettingsModal({
@@ -32,7 +33,7 @@ export default function SettingsModal({
 }: SettingsModalProps) {
   const elementsRef: MutableRefObject<Array<RefObject<HTMLDivElement>>> =
     useRef(defaultSettingsSections.map(() => createRef()));
-  const trpcUtils = trpc.useContext();
+  const { config: savedConfig } = useConfig();
 
   // Add refs to the settings sections
   const [settingsSections] = useState(
@@ -98,13 +99,13 @@ export default function SettingsModal({
     return rect.bottom >= scrollTop;
   };
 
-  const closeWithoutSaving = () => {
-    trpcUtils.invalidateQueries(["config.get"]);
+  const closeWithoutSaving = (saved?: boolean) => {
     setOpen(false);
+    if (!saved && savedConfig.data) setConfig(savedConfig.data);
   };
 
   return (
-    <Modal open={open} setOpen={setOpen}>
+    <Modal open={open} setOpen={setOpen} onClose={closeWithoutSaving}>
       <AnimatePresence initial={false}>
         {menuVisible && (
           <m.div

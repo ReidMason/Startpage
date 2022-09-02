@@ -8,13 +8,19 @@ export interface ModalProps {
   open: boolean;
   setOpen: StateSetter<boolean>;
   children?: ReactNode;
+  onClose: () => void;
 }
 
-export default function Modal({ open, setOpen, children }: ModalProps) {
+export default function Modal({
+  open,
+  setOpen,
+  children,
+  onClose,
+}: ModalProps) {
   return (
     <AnimatePresence>
       {open && (
-        <Dialog className="relative z-10" onClose={setOpen} open={open}>
+        <Dialog className="relative z-10" onClose={onClose} open={open}>
           <m.div
             key="backdrop"
             initial="collapsed"
