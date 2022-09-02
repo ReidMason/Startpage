@@ -76,6 +76,7 @@ const Home: NextPage<HomePageProps> = ({
         >
           <AppsGrid
             config={config}
+            updateConfig={updateConfig}
             appNameFilter={appFilter}
             editMode={editMode}
           />
