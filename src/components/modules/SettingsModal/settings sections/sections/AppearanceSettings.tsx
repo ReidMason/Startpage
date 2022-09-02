@@ -1,15 +1,11 @@
 import { useState } from "react";
 import { Controller } from "react-hook-form";
-import {
-  appearances,
-  PartialConfig,
-} from "../../../../../backend/routers/config/schemas";
+import { appearances } from "../../../../../backend/routers/config/schemas";
 import Dropzone from "../../../../dropzone/Dropzone";
 import RadioGroup from "../../../../RadioGroup/RadioGroup";
 import Switch from "../../../../switch/Switch";
 import { SettingsSectionProps } from "../../types";
 import { UploadIcon } from "@heroicons/react/outline";
-import { trpc } from "../../../../../utils/trpc";
 
 export default function AppearanceSettings({
   control,
@@ -30,7 +26,7 @@ export default function AppearanceSettings({
       body,
     });
 
-    if (response.ok) saveConfig({});
+    if (response.ok) saveConfig({}, true, true);
     setFileUploading(false);
   };
 

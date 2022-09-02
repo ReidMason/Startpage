@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { boolean, z } from "zod";
 
 export const appearances = ["dark", "light", "system"] as const;
 export const themes = ["default"] as const;
@@ -49,6 +49,11 @@ export const configSchema = z.object({
       glassy: z.boolean().default(false),
     })
     .default({}),
+});
+
+export const saveConfigSchema = z.object({
+  config: configSchema.deepPartial(),
+  updateCacheKey: z.boolean().default(false),
 });
 
 export type Config = z.infer<typeof configSchema>;

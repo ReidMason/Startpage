@@ -1,7 +1,7 @@
 import * as trpc from "@trpc/server";
 import { merge } from "lodash-es";
 import fs from "fs";
-import { Config, configSchema } from "./schemas";
+import { Config, configSchema, saveConfigSchema } from "./schemas";
 import { completeConfig } from "../../../../utils";
 
 const CONFIG_PATH = `${process.cwd()}/data/config.json`;
@@ -37,10 +37,15 @@ const configRouter = trpc
     },
   })
   .mutation("save", {
-    input: configSchema.deepPartial(),
+    input: saveConfigSchema,
     async resolve({ input }) {
       const currentConfig = await getConfig();
-      const newConfig = completeConfig(currentConfig, input, false);
+      console.log("Updating cache key", input.updateCacheKey);
+      const newConfig = completeConfig(
+        currentConfig,
+        input.config,
+        input.updateCacheKey
+      );
       await saveConfig(newConfig);
       return newConfig;
     },
