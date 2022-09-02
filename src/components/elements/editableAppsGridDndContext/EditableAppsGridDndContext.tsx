@@ -16,7 +16,7 @@ interface EditableAppsGridDndContextProps {
   binHovered: boolean;
   setBinHovered: StateSetter<boolean>;
   modifiedApps: Array<App>;
-  setModifiedApps: StateSetter<Array<App>>;
+  setModifiedApps: (newApps: Array<App>) => void;
   tempApps: Array<App>;
   setTempApps: StateSetter<Array<App>>;
 }
