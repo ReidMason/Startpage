@@ -38,19 +38,24 @@ const Home: NextPage<HomePageProps> = ({
 
   const updateConfig: ConfigSetter = async (
     newConfig,
-    save = true,
-    updateCachKey = false
+    save,
+    updateCacheKey
   ) => {
     if (save) {
-      await configMutation.mutateAsync(newConfig, {
-        onSuccess: (data) => {
-          trpcUtils.invalidateQueries(["config.get"]);
-          setConfig(data);
-          updateGlobalClasses(data);
-        },
-      });
+      await configMutation.mutateAsync(
+        { config: newConfig, updateCacheKey },
+        {
+          onSuccess: (data) => {
+            trpcUtils.invalidateQueries(["config.get"]);
+            console.log("Before", data.general.cacheKey);
+            console.log("After", config.general.cacheKey);
+            setConfig(data);
+            updateGlobalClasses(data);
+          },
+        }
+      );
     } else {
-      const fullConfig = completeConfig(config, newConfig, updateCachKey);
+      const fullConfig = completeConfig(config, newConfig, updateCacheKey);
       setConfig(fullConfig);
       updateGlobalClasses(fullConfig);
     }

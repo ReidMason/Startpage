@@ -58,12 +58,13 @@ export const getGlobalClasses = (config?: Config): string => {
 export function completeConfig(
   completeConfig: Config,
   partialConfig: PartialConfig,
-  updateCacheKey: boolean = true
+  updateCacheKey: boolean = false
 ): Config {
   const newConfig: Config = {
     ...completeConfig,
     ...partialConfig,
   };
   if (updateCacheKey) newConfig.general.cacheKey = Math.random();
+
   return newConfig;
 }

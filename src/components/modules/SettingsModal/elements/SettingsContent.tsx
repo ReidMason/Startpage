@@ -42,11 +42,6 @@ export default function SettingsContent({
 
   const [modifiedConfig, setModifiedConfig] = useState<Config>();
 
-  const saveConfig = async (newConfig: PartialConfig) => {
-    // setModifiedConfig(data);
-    setConfig(newConfig);
-  };
-
   const appearance = useWatch({
     name: "appearance",
     control,
@@ -66,7 +61,7 @@ export default function SettingsContent({
   }, [appearance, modifiedConfig]);
 
   const saveSettings = async (data: Config) => {
-    await saveConfig(data);
+    await setConfig(data, true, true);
     closeModal(true);
   };
 
@@ -101,7 +96,7 @@ export default function SettingsContent({
                 control,
                 register,
                 config: config,
-                saveConfig,
+                saveConfig: setConfig,
               }}
             />
           </div>
