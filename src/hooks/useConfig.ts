@@ -5,7 +5,7 @@ async function revalidate() {
   await fetch("http://localhost:3000/api/revalidate");
 }
 
-export default (onSuccess?: (config: Config) => void) => {
+export default function useConfig(onSuccess?: (config: Config) => void) {
   return {
     config: trpc.useQuery(["config.get"], { onSuccess }),
     configMutation: trpc.useMutation(["config.save"], {
@@ -14,4 +14,4 @@ export default (onSuccess?: (config: Config) => void) => {
       },
     }),
   };
-};
+}

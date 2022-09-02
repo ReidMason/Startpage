@@ -1,10 +1,7 @@
 import { UIEventHandler, useEffect, useRef, useState } from "react";
 import Button from "../../../button/Button";
 import { useForm, useWatch } from "react-hook-form";
-import {
-  Config,
-  PartialConfig,
-} from "../../../../backend/routers/config/schemas";
+import { Config } from "../../../../backend/routers/config/schemas";
 import SettingsSectionWrapper from "../settings sections/SettingsSectionWrapper";
 import { SettingsSection } from "../types";
 import { m } from "framer-motion";
@@ -58,7 +55,7 @@ export default function SettingsContent({
       const newConfig = { ...modifiedConfig, appearance };
       setModifiedConfig(newConfig);
     }
-  }, [appearance, modifiedConfig]);
+  }, [appearance, modifiedConfig, setConfig]);
 
   const saveSettings = async (data: Config) => {
     await setConfig(data, true, false);

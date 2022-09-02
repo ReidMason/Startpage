@@ -1,7 +1,7 @@
 import { Config } from "../backend/routers/config/schemas";
 import { trpc } from "../utils/trpc";
 
-export default (config?: Config) => {
+export default function useWeather(config?: Config) {
   return {
     weather: trpc.useQuery(
       [
@@ -16,4 +16,4 @@ export default (config?: Config) => {
       }
     ),
   };
-};
+}
