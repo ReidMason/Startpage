@@ -28,7 +28,7 @@ interface SettingsContentProps {
   isMobile: boolean;
   menuVisible: boolean;
   config: Config;
-  setConfig: StateSetter<Config>;
+  setConfig: (newConfig: Config) => void;
 }
 
 export default function SettingsContent({
@@ -52,18 +52,15 @@ export default function SettingsContent({
 
   const [modifiedConfig, setModifiedConfig] = useState<Config>();
 
-  const saveConfig = useCallback(
-    async (newConfig: PartialConfig) => {
-      await configMutation.mutateAsync(newConfig, {
-        onSuccess: (data) => {
-          trpcUtils.invalidateQueries(["config.get"]);
-          setModifiedConfig(data);
-          setConfig(data);
-        },
-      });
-    },
-    [configMutation, trpcUtils]
-  );
+  const saveConfig = async (newConfig: PartialConfig) => {
+    await configMutation.mutateAsync(newConfig, {
+      onSuccess: (data) => {
+        trpcUtils.invalidateQueries(["config.get"]);
+        setModifiedConfig(data);
+        setConfig(data);
+      },
+    });
+  };
 
   const appearance = useWatch({
     name: "appearance",
@@ -82,7 +79,6 @@ export default function SettingsContent({
   }, [appearance, modifiedConfig]);
 
   const saveSettings = async (data: Config) => {
-    saveConfig(data);
     await saveConfig(data);
     closeModal();
   };

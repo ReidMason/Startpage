@@ -21,7 +21,7 @@ interface SettingsModalProps {
   open: boolean;
   setOpen: StateSetter<boolean>;
   config: Config;
-  setConfig: StateSetter<Config>;
+  setConfig: (newConfig: Config) => void;
 }
 
 export default function SettingsModal({
