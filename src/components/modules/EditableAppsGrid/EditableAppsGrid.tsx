@@ -4,13 +4,14 @@ import type {
   Config,
 } from "../../../backend/routers/config/schemas";
 import { DragOverlay } from "@dnd-kit/core";
-import App from "../../elements/app/App";
 import SortableApps from "../DragAndDrop/SortableApps";
 import { createPortal } from "react-dom";
 import EditableAppsGridDndContext from "../../elements/editableAppsGridDndContext/EditableAppsGridDndContext";
 import dynamic from "next/dynamic";
 import { generateUuid } from "../../../../utils";
 import { ConfigSetter } from "../../../../types/common";
+import LayoutGrid from "../../layoutGrid/LayoutGrid";
+import App from "../../elements/app/App";
 
 const DynamicAppEditModal = dynamic(() => import("./AppEditModal"));
 
@@ -23,7 +24,11 @@ export default function EditableAppsGrid({
   config,
   updateConfig,
 }: EditableAppsGridProps) {
-  const [modifiedApps, setModifiedApps] = useState(config.apps);
+  // const [modifiedApps, setModifiedApps] = useState(config.apps);
+  const modifiedApps = config.apps;
+  const setModifiedApps = (newApps: Array<AppInterface>) => {
+    updateConfig({ apps: newApps }, true, false);
+  };
   const [tempApps, setTempApps] = useState(modifiedApps);
 
   const [activeApp, setActiveApp] = useState<AppInterface | null>(null);
@@ -50,47 +55,49 @@ export default function EditableAppsGrid({
   };
 
   return (
-    <EditableAppsGridDndContext
-      binHovered={binHovered}
-      setBinHovered={setBinHovered}
-      setActiveApp={setActiveApp}
-      tempApps={tempApps}
-      setTempApps={setTempApps}
-      modifiedApps={modifiedApps}
-      setModifiedApps={setModifiedApps}
-    >
-      {modifiedApps && (
-        <SortableApps
-          modifiedApps={tempApps}
-          createNewApp={createNewApp}
-          editApp={editApp}
-        />
-      )}
+    <LayoutGrid>
+      <EditableAppsGridDndContext
+        binHovered={binHovered}
+        setBinHovered={setBinHovered}
+        setActiveApp={setActiveApp}
+        tempApps={tempApps}
+        setTempApps={setTempApps}
+        modifiedApps={modifiedApps}
+        setModifiedApps={setModifiedApps}
+      >
+        {modifiedApps && (
+          <SortableApps
+            modifiedApps={tempApps}
+            createNewApp={createNewApp}
+            editApp={editApp}
+          />
+        )}
 
-      {appBeingEdited && (
-        <DynamicAppEditModal
-          open={editModalOpen}
-          setOpen={setEditModalOpen}
-          app={appBeingEdited}
-        />
-      )}
+        {appBeingEdited && (
+          <DynamicAppEditModal
+            open={editModalOpen}
+            setOpen={setEditModalOpen}
+            app={appBeingEdited}
+          />
+        )}
 
-      {createPortal(
-        <DragOverlay>
-          {activeApp && (
-            <div
-              className={`cursor-grabbing rounded outline transition-opacity ${
-                binHovered
-                  ? "opacity-20 outline-red-500"
-                  : "outline-primary-200"
-              }`}
-            >
-              <App app={activeApp} preview />
-            </div>
-          )}
-        </DragOverlay>,
-        document.body
-      )}
-    </EditableAppsGridDndContext>
+        {createPortal(
+          <DragOverlay>
+            {activeApp && (
+              <div
+                className={`cursor-grabbing rounded outline transition-opacity ${
+                  binHovered
+                    ? "opacity-20 outline-red-500"
+                    : "outline-primary-200"
+                }`}
+              >
+                <App app={activeApp} preview />
+              </div>
+            )}
+          </DragOverlay>,
+          document.body
+        )}
+      </EditableAppsGridDndContext>
+    </LayoutGrid>
   );
 }

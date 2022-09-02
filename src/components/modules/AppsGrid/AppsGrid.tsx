@@ -28,12 +28,7 @@ export default function AppsGrid({
   return (
     <>
       {editMode ? (
-        <LayoutGrid>
-          <DynamicEditableAppsGrid
-            config={config}
-            updateConfig={updateConfig}
-          />
-        </LayoutGrid>
+        <DynamicEditableAppsGrid config={config} updateConfig={updateConfig} />
       ) : (
         <LayoutGrid>
           {filteredApps?.map((app) => (
