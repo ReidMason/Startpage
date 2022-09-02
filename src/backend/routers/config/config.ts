@@ -40,7 +40,6 @@ const configRouter = trpc
     input: saveConfigSchema,
     async resolve({ input }) {
       const currentConfig = await getConfig();
-      console.log("Updating cache key", input.updateCacheKey);
       const newConfig = completeConfig(
         currentConfig,
         input.config,
