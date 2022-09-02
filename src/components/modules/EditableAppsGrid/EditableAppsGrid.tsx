@@ -24,14 +24,6 @@ export default function EditableAppsGrid() {
     if (modifiedApps === undefined) setModifiedApps(config.data.apps);
   }, [config, modifiedApps]);
 
-  const saveConfig = async (newConfig: PartialConfig) => {
-    await configMutation.mutateAsync(newConfig, {
-      onSuccess: () => {
-        config.refetch();
-      },
-    });
-  };
-
   const [activeApp, setActiveApp] = useState<AppInterface | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [appBeingEdited, setAppBeingEdit] = useState<AppInterface>();
