@@ -14,7 +14,7 @@ export default function SortableItem({ children, id }: SortableItemProps) {
   return (
     <div
       className={`cursor-grab active:cursor-grabbing ${
-        isDragging && "invisible"
+        isDragging ? "invisible" : ""
       }`}
       ref={setNodeRef}
       {...attributes}

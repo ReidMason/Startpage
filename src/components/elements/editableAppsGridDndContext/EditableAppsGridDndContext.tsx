@@ -13,38 +13,44 @@ import { App } from "../../../backend/routers/config/schemas";
 interface EditableAppsGridDndContextProps {
   children: React.ReactNode;
   setActiveApp: StateSetter<App | null>;
-  modifiedApps: Array<App>;
-  setModifiedApps: StateSetter<Array<App>>;
   binHovered: boolean;
   setBinHovered: StateSetter<boolean>;
+  modifiedApps: Array<App>;
+  setModifiedApps: StateSetter<Array<App>>;
+  tempApps: Array<App>;
+  setTempApps: StateSetter<Array<App>>;
 }
 
 export default function EditableAppsGridDndContext({
   children,
   setActiveApp,
+  tempApps,
+  setTempApps,
   modifiedApps,
   setModifiedApps,
-  binHovered: hoveredBin,
-  setBinHovered: setHoveredBin,
+  binHovered,
+  setBinHovered,
 }: EditableAppsGridDndContextProps) {
   function handleDragEnd({ active, over }: DragEndEvent) {
     setActiveApp(null);
-
     // Didn't drag over anything so put the item back where it was
     if (!over) {
       ensureAppEnabled(active.id);
+      setTempApps(modifiedApps);
       return;
     }
-
     // App was dragged over the bin so delete it
     if (over.id === "bin") {
-      const newApps = modifiedApps.filter((x) => x.id != active.id);
+      const newApps = tempApps.filter((x) => x.id != active.id);
+      setTempApps(newApps);
       setModifiedApps(newApps);
+      return;
     }
+    setModifiedApps(tempApps);
   }
 
   const handleDragStart = ({ active }: DragStartEvent) => {
-    setActiveApp(modifiedApps?.find((x) => x.id == active.id) || null);
+    setActiveApp(tempApps.find((x) => x.id == active.id) || null);
   };
 
   const handleDragOver = ({ active, over }: DragOverEvent) => {
@@ -53,17 +59,24 @@ export default function EditableAppsGridDndContext({
     repositionElements(active, over);
   };
 
+  const updateActiveElementState = (active: Active, over: Over | null) => {
+    // Item is dragged outside of droppable area so we want to hide it from the list
+    if (over === null)
+      setTempApps((prev) =>
+        prev!.map((x) => (x.id === active.id ? { ...x, enabled: false } : x))
+      );
+    // Item is back within droppable area so make sure it's active
+    else if (over.id !== "bin") ensureAppEnabled(active.id);
+  };
+
   const updateHoveredBinState = (overId: string | undefined) => {
-    if (!hoveredBin && overId === "bin") {
-      setHoveredBin(true);
-    } else if (hoveredBin) {
-      setHoveredBin(false);
-    }
+    if (!binHovered && overId === "bin") setBinHovered(true);
+    else if (binHovered) setBinHovered(false);
   };
 
   const repositionElements = (active: Active, over: Over | null) => {
     if (over && over.id !== "bin") {
-      setModifiedApps((apps) => {
+      setTempApps((apps) => {
         const oldIndex = apps!.map((x) => x.id).indexOf(active.id);
         const newIndex = apps!.map((x) => x.id).indexOf(over.id);
 
@@ -72,18 +85,8 @@ export default function EditableAppsGridDndContext({
     }
   };
 
-  const updateActiveElementState = (active: Active, over: Over | null) => {
-    // Item is dragged outside of droppable area so we want to hide it from the list
-    if (over === null)
-      setModifiedApps((prev) =>
-        prev!.map((x) => (x.id === active.id ? { ...x, enabled: false } : x))
-      );
-    // Item is back within droppable area so make sure it's active
-    else if (over.id !== "bin") ensureAppEnabled(active.id);
-  };
-
   const ensureAppEnabled = (appId: string) => {
-    setModifiedApps((prev) =>
+    setTempApps((prev) =>
       prev!.map((x) => (x.id === appId ? { ...x, enabled: true } : x))
     );
   };

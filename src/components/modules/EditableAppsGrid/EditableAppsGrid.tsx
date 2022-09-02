@@ -9,15 +9,23 @@ import SortableApps from "../DragAndDrop/SortableApps";
 import { createPortal } from "react-dom";
 import EditableAppsGridDndContext from "../../elements/editableAppsGridDndContext/EditableAppsGridDndContext";
 import dynamic from "next/dynamic";
+import { generateUuid } from "../../../../utils";
+import { ConfigSetter } from "../../../../types/common";
 
 const DynamicAppEditModal = dynamic(() => import("./AppEditModal"));
 
 interface EditableAppsGridProps {
   config: Config;
+  updateConfig: ConfigSetter;
 }
 
-export default function EditableAppsGrid({ config }: EditableAppsGridProps) {
+export default function EditableAppsGrid({
+  config,
+  updateConfig,
+}: EditableAppsGridProps) {
   const [modifiedApps, setModifiedApps] = useState(config.apps);
+  const [tempApps, setTempApps] = useState(modifiedApps);
+
   const [activeApp, setActiveApp] = useState<AppInterface | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [appBeingEdited, setAppBeingEdit] = useState<AppInterface>();
@@ -28,18 +36,33 @@ export default function EditableAppsGrid({ config }: EditableAppsGridProps) {
     setEditModalOpen(true);
   };
 
+  const createNewApp = () => {
+    const newApp = {
+      icon: "mdi:square-edit-outline",
+      name: "New app",
+      url: "app.example.com",
+      id: generateUuid(),
+    };
+
+    const newApps = [...modifiedApps, newApp];
+    setTempApps(newApps);
+    setModifiedApps(newApps);
+  };
+
   return (
     <EditableAppsGridDndContext
       binHovered={binHovered}
       setBinHovered={setBinHovered}
+      setActiveApp={setActiveApp}
+      tempApps={tempApps}
+      setTempApps={setTempApps}
       modifiedApps={modifiedApps}
       setModifiedApps={setModifiedApps}
-      setActiveApp={setActiveApp}
     >
       {modifiedApps && (
         <SortableApps
-          modifiedApps={modifiedApps}
-          setModifiedApps={setModifiedApps}
+          modifiedApps={tempApps}
+          createNewApp={createNewApp}
           editApp={editApp}
         />
       )}

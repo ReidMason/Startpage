@@ -2,11 +2,13 @@ import dynamic from "next/dynamic";
 import App from "../../elements/app/App";
 import LayoutGrid from "../../layoutGrid/LayoutGrid";
 import { Config } from "../../../backend/routers/config/schemas";
+import { ConfigSetter } from "../../../../types/common";
 
 interface AppsGridProps {
   appNameFilter: string;
   editMode: boolean;
   config: Config;
+  updateConfig: ConfigSetter;
 }
 
 const DynamicEditableAppsGrid = dynamic(
@@ -17,6 +19,7 @@ export default function AppsGrid({
   appNameFilter,
   editMode,
   config,
+  updateConfig,
 }: AppsGridProps) {
   const filteredApps = config.apps.filter((x) =>
     x.name.toLowerCase().includes(appNameFilter)
@@ -26,7 +29,10 @@ export default function AppsGrid({
     <>
       {editMode ? (
         <LayoutGrid>
-          <DynamicEditableAppsGrid config={config} />
+          <DynamicEditableAppsGrid
+            config={config}
+            updateConfig={updateConfig}
+          />
         </LayoutGrid>
       ) : (
         <LayoutGrid>

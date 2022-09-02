@@ -4,35 +4,21 @@ import { AnimatePresence, domMax, LazyMotion, m } from "framer-motion";
 import { createPortal } from "react-dom";
 import { softSpringTransition } from "../../../../common";
 import type { StateSetter } from "../../../../types/common";
-import { generateUuid } from "../../../../utils";
 import { App as AppInterface } from "../../../backend/routers/config/schemas";
 import AppsBinDroppable from "./AppsBinDroppable";
-import PresenceAnimation from "../../animations/PresenceAnimation";
-import SortableItem from "./SortableItem";
-import App from "../../elements/app/App";
+import DraggableApp from "./DraggableApp";
 
 interface SortableAppsProps {
   modifiedApps: Array<AppInterface>;
-  setModifiedApps: StateSetter<Array<AppInterface>>;
   editApp: (app: AppInterface) => void;
+  createNewApp: () => void;
 }
 
 export default function SortableApps({
   modifiedApps,
-  setModifiedApps,
   editApp,
+  createNewApp,
 }: SortableAppsProps) {
-  const createNewApp = () => {
-    const newApp = {
-      icon: "mdi:square-edit-outline",
-      name: "New app",
-      url: "app.example.com",
-      id: generateUuid(),
-    };
-
-    setModifiedApps([...modifiedApps, newApp]);
-  };
-
   return (
     <LazyMotion features={domMax}>
       <SortableContext
@@ -43,23 +29,7 @@ export default function SortableApps({
           {modifiedApps
             .filter((x) => x.enabled !== false)
             .map((app) => (
-              <PresenceAnimation
-                className="group relative transition"
-                key={app.id}
-              >
-                <SortableItem id={app.id}>
-                  <m.div layoutId={app.id} transition={softSpringTransition}>
-                    <App app={app} preview />
-                  </m.div>
-                </SortableItem>
-
-                <button
-                  onClick={() => editApp(app)}
-                  className="absolute top-0 right-0 hidden rounded bg-primary-400 px-4 active:scale-90 group-hover:block"
-                >
-                  Edit
-                </button>
-              </PresenceAnimation>
+              <DraggableApp key={app.id} app={app} editApp={editApp} />
             ))}
         </AnimatePresence>
 
