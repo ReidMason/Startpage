@@ -14,7 +14,7 @@ interface SettingsFeaturesProps {
   extensions: Array<Extension>;
   setExtensions: StateSetter<Array<Extension>>;
   config: Config;
-  setConfig: ConfigSetter;
+  updateConfig: ConfigSetter;
 }
 
 const DynamicSettingsModal = dynamic(
@@ -28,12 +28,14 @@ export default function SettingsFeatures(props: SettingsFeaturesProps) {
     <>
       <SettingsButtons {...props} {...{ setSettingsModalOpen }} />
 
-      <DynamicSettingsModal
-        config={props.config}
-        setConfig={props.setConfig}
-        open={settingsModalOpen}
-        setOpen={setSettingsModalOpen}
-      />
+      {settingsModalOpen && (
+        <DynamicSettingsModal
+          config={props.config}
+          updateConfig={props.updateConfig}
+          open={settingsModalOpen}
+          setOpen={setSettingsModalOpen}
+        />
+      )}
     </>
   );
 }
