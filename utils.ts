@@ -64,6 +64,10 @@ export function completeConfig(
     ...completeConfig,
     ...partialConfig,
   };
+
+  // Don't overwrite the cacheKey unless we're explictly updating it
+  newConfig.general.cacheKey = completeConfig.general.cacheKey;
+
   if (updateCacheKey) newConfig.general.cacheKey = Math.random();
 
   return newConfig;
