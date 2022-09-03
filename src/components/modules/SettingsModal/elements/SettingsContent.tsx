@@ -17,7 +17,7 @@ interface SettingsContentProps {
   isMobile: boolean;
   menuVisible: boolean;
   config: Config;
-  setConfig: ConfigSetter;
+  updateConfig: ConfigSetter;
 }
 
 export default function SettingsContent({
@@ -29,7 +29,7 @@ export default function SettingsContent({
   menuVisible,
   isMobile,
   config,
-  setConfig,
+  updateConfig,
 }: SettingsContentProps) {
   const scrollContainer = useRef<HTMLDivElement>(null);
 
@@ -45,7 +45,7 @@ export default function SettingsContent({
   });
 
   useEffect(() => {
-    setConfig({ ...modifiedConfig, appearance }, false, false);
+    updateConfig({ ...modifiedConfig, appearance }, false, false);
 
     if (
       modifiedConfig !== undefined &&
@@ -55,10 +55,10 @@ export default function SettingsContent({
       const newConfig = { ...modifiedConfig, appearance };
       setModifiedConfig(newConfig);
     }
-  }, [appearance, modifiedConfig, setConfig]);
+  }, [appearance, modifiedConfig]);
 
   const saveSettings = async (data: Config) => {
-    await setConfig(data, true, false);
+    await updateConfig(data, true, false);
     closeModal(true);
   };
 
@@ -93,7 +93,7 @@ export default function SettingsContent({
                 control,
                 register,
                 config: config,
-                saveConfig: setConfig,
+                saveConfig: updateConfig,
               }}
             />
           </div>

@@ -14,22 +14,21 @@ import {
   useState,
 } from "react";
 import { settingsSections as defaultSettingsSections } from "./settingsSections";
-import { trpc } from "../../../utils/trpc";
-import { Config, PartialConfig } from "../../../backend/routers/config/schemas";
+import { Config } from "../../../backend/routers/config/schemas";
 import useConfig from "../../../hooks/useConfig";
 
 interface SettingsModalProps {
   open: boolean;
   setOpen: StateSetter<boolean>;
   config: Config;
-  setConfig: ConfigSetter;
+  updateConfig: ConfigSetter;
 }
 
 export default function SettingsModal({
   open,
   setOpen,
   config,
-  setConfig,
+  updateConfig,
 }: SettingsModalProps) {
   const elementsRef: MutableRefObject<Array<RefObject<HTMLDivElement>>> =
     useRef(defaultSettingsSections.map(() => createRef()));
@@ -101,7 +100,8 @@ export default function SettingsModal({
 
   const closeWithoutSaving = (saved?: boolean) => {
     setOpen(false);
-    if (!saved && savedConfig.data) setConfig(savedConfig.data, false, false);
+    if (!saved && savedConfig.data)
+      updateConfig(savedConfig.data, false, false);
   };
 
   return (
@@ -133,7 +133,7 @@ export default function SettingsModal({
 
       <SettingsContent
         config={config}
-        setConfig={setConfig}
+        updateConfig={updateConfig}
         settingsSections={settingsSections}
         onClick={handleSettingsContentClicked}
         closeModal={closeWithoutSaving}

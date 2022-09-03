@@ -97,7 +97,7 @@ const Home: NextPage<HomePageProps> = ({
           extensions,
           setExtensions,
           config,
-          setConfig: updateConfig,
+          updateConfig,
         }}
       />
     </MainLayout>
