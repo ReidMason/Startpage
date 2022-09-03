@@ -1,7 +1,10 @@
 import { UIEventHandler, useEffect, useRef, useState } from "react";
 import Button from "../../../button/Button";
 import { useForm, useWatch } from "react-hook-form";
-import { Config } from "../../../../backend/routers/config/schemas";
+import {
+  appearances,
+  Config,
+} from "../../../../backend/routers/config/schemas";
 import SettingsSectionWrapper from "../settings sections/SettingsSectionWrapper";
 import { SettingsSection } from "../types";
 import { m } from "framer-motion";
@@ -31,13 +34,11 @@ export default function SettingsContent({
   config,
   updateConfig,
 }: SettingsContentProps) {
+  const [modifiedConfig, setModifiedConfig] = useState<Config>(config);
   const scrollContainer = useRef<HTMLDivElement>(null);
-
   const { register, handleSubmit, control } = useForm<Config>({
     defaultValues: config,
   });
-
-  const [modifiedConfig, setModifiedConfig] = useState<Config>();
 
   const appearance = useWatch({
     name: "appearance",
@@ -45,17 +46,15 @@ export default function SettingsContent({
   });
 
   useEffect(() => {
-    updateConfig({ ...modifiedConfig, appearance }, false, false);
-
-    if (
-      modifiedConfig !== undefined &&
-      appearance !== undefined &&
-      JSON.stringify(appearance) !== JSON.stringify(modifiedConfig.appearance)
-    ) {
+    const appearanceIsOutdated =
+      JSON.stringify(appearance) !== JSON.stringify(modifiedConfig.appearance);
+    if (appearanceIsOutdated) {
       const newConfig = { ...modifiedConfig, appearance };
+
+      updateConfig(newConfig, false, false);
       setModifiedConfig(newConfig);
     }
-  }, [appearance, modifiedConfig]);
+  }, [appearance, modifiedConfig, updateConfig]);
 
   const saveSettings = async (data: Config) => {
     await updateConfig(data, true, false);

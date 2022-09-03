@@ -36,6 +36,8 @@ const Home: NextPage<HomePageProps> = ({
   const trpcUtils = trpc.useContext();
   const { configMutation } = useConfig();
 
+  console.log("Re-rendering!");
+
   const updateConfig: ConfigSetter = async (
     newConfig,
     save,
