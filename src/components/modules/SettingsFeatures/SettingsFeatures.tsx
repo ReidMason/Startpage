@@ -28,14 +28,12 @@ export default function SettingsFeatures(props: SettingsFeaturesProps) {
     <>
       <SettingsButtons {...props} {...{ setSettingsModalOpen }} />
 
-      {settingsModalOpen && (
-        <DynamicSettingsModal
-          config={props.config}
-          updateConfig={props.updateConfig}
-          open={settingsModalOpen}
-          setOpen={setSettingsModalOpen}
-        />
-      )}
+      <DynamicSettingsModal
+        config={props.config}
+        updateConfig={props.updateConfig}
+        open={settingsModalOpen}
+        setOpen={setSettingsModalOpen}
+      />
     </>
   );
 }
