@@ -1,4 +1,4 @@
-import type { NextPage } from "next";
+import type { GetStaticProps, NextPage } from "next";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { Extension } from "../components/extensions/types";
@@ -104,7 +104,7 @@ const Home: NextPage<HomePageProps> = ({
   );
 };
 
-export async function getStaticProps() {
+export const getStaticProps: GetStaticProps = async () => {
   const config = await getConfig();
   const weather = await getWeatherData(
     config.weather.location,
@@ -117,6 +117,6 @@ export async function getStaticProps() {
       weather,
     },
   };
-}
+};
 
 export default Home;
