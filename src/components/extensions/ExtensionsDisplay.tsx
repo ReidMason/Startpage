@@ -8,7 +8,7 @@ import {
 import PresenceAnimation from "../animations/PresenceAnimation";
 import LayoutGrid from "../layoutGrid/LayoutGrid";
 import { Extension } from "./types";
-import { XIcon } from "@heroicons/react/outline";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 interface ExtensionsDisplayProps {
   extensions: Array<Extension>;
@@ -43,7 +43,7 @@ export default function ExtensionsDisplay({
                   className="absolute top-0 right-0 rounded-bl-md bg-red-400/80 p-0.5 text-white opacity-0 shadow-sm transition-all hover:-translate-x-0.5 hover:translate-y-0.5 hover:scale-125 group-hover:opacity-100 dark:bg-red-400/70 dark:text-primary-100 hover:dark:bg-red-400/90"
                   onClick={() => removeExtension(extension.id)}
                 >
-                  <XIcon className="h-4 w-4" />
+                  <XMarkIcon className="h-4 w-4" />
                 </button>
                 <extension.element />
               </PresenceAnimation>

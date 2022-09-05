@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { UploadIcon } from "@heroicons/react/outline";
+import { ArrowUpTrayIcon } from "@heroicons/react/24/outline";
 import Dropzone from "../../../../../dropzone/Dropzone";
 import { SettingsElementComponent } from "../types";
 
@@ -28,7 +28,7 @@ const BackgroundImageUpload: SettingsElementComponent = ({
   return (
     <Dropzone
       onFileUpload={onFileUpload}
-      icon={UploadIcon}
+      icon={ArrowUpTrayIcon}
       loading={fileUploading}
       mainText="Drag an image file here or click to select a file"
       mainTextMobile="Tap here to upload an image"

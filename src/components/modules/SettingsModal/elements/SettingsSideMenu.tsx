@@ -34,6 +34,7 @@ export default function SettingsSideMenu({
         placeholder="Search..."
         value={settingsSearch}
         onChange={setSettingsSearch}
+        clearable
       />
       <div className="flex flex-col gap-2">
         {settingsSections.map((section, index) => (

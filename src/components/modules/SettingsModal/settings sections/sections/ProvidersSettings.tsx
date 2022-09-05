@@ -4,7 +4,7 @@ import Button from "../../../../button/Button";
 import OldFormElementWrapper from "../../../../FormElementWrapper/OldFormElementWrapper";
 import OldInput from "../../../../input/OldInput";
 import { SettingsSectionProps } from "../../types";
-import { TrashIcon } from "@heroicons/react/outline";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
 export default function ProvidersSettings({
   control,

@@ -7,6 +7,7 @@ import { SettingsSection } from "../types";
 import { m } from "framer-motion";
 import SideMenuToggleIcon from "./SideMenuToggleIcon";
 import type { ConfigSetter } from "../../../../../types/common";
+import { FaceFrownIcon } from "@heroicons/react/24/outline";
 
 interface SettingsContentProps {
   settingsSearch: string;
@@ -65,6 +66,9 @@ export default function SettingsContent({
   const settingsElements = settingsSections
     .map((x) => x.settingsElements)
     .flat(1);
+  const searchResults = settingsElements.filter((x) =>
+    x.name.toLowerCase().includes(settingsSearch.toLowerCase())
+  );
 
   return (
     <form
@@ -75,12 +79,9 @@ export default function SettingsContent({
       onClick={onClick}
     >
       {settingsSearch ? (
-        <div>
-          {settingsElements
-            .filter((x) =>
-              x.name.toLowerCase().includes(settingsSearch.toLowerCase())
-            )
-            .map((SettingsElement) => (
+        <div className="mt-4 flex h-screen flex-col gap-4 overflow-y-auto scroll-smooth px-4">
+          {searchResults.length ? (
+            searchResults.map((SettingsElement) => (
               <SettingsElement
                 {...{
                   control,
@@ -90,7 +91,13 @@ export default function SettingsContent({
                 }}
                 key={SettingsElement.name}
               />
-            ))}
+            ))
+          ) : (
+            <div className="flex flex-col items-center text-center text-xl">
+              <p>No results found</p>
+              <FaceFrownIcon className="h-12 w-12" />
+            </div>
+          )}
         </div>
       ) : (
         <m.div

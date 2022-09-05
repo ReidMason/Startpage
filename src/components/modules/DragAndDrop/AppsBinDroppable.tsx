@@ -1,5 +1,5 @@
 import { useDroppable } from "@dnd-kit/core";
-import { TrashIcon } from "@heroicons/react/solid";
+import { TrashIcon } from "@heroicons/react/24/solid";
 
 export default function AppsBinDroppable() {
   const { isOver, setNodeRef } = useDroppable({
