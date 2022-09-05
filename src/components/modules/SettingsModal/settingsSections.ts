@@ -1,9 +1,9 @@
 import {
-  AdjustmentsIcon,
+  AdjustmentsVerticalIcon,
   CloudIcon,
-  SearchIcon,
-  PhotographIcon,
-} from "@heroicons/react/solid";
+  MagnifyingGlassIcon,
+  PhotoIcon,
+} from "@heroicons/react/24/solid";
 import CalendarUrl from "./settings sections/settings elements/General/CalendarUrl";
 import { SettingsSection } from "./types";
 import BackgroundImage from "./settings sections/settings elements/Appearance/BackgroundImage";
@@ -22,13 +22,13 @@ import BackgroundBlur from "./settings sections/settings elements/Appearance/Bac
 export const settingsSections: Array<SettingsSection> = [
   {
     name: "General",
-    icon: AdjustmentsIcon,
+    icon: AdjustmentsVerticalIcon,
     iconBg: "bg-violet-400",
     settingsElements: [SearchPlaceholder, CalendarUrl, SearchUrl, CustomSearch],
   },
   {
     name: "Appearance",
-    icon: PhotographIcon,
+    icon: PhotoIcon,
     iconBg: "bg-rose-600",
     settingsElements: [
       Theme,

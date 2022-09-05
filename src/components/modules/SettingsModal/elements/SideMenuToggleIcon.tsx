@@ -1,4 +1,4 @@
-import { MenuIcon } from "@heroicons/react/outline";
+import { Bars3Icon } from "@heroicons/react/24/outline";
 
 interface SideMenuToggleIconProps {
   openMenuBar: () => void;
@@ -14,7 +14,7 @@ export default function SideMenuToggleIcon({
         onClick={openMenuBar}
         type="button"
       >
-        <MenuIcon className="h-8 w-8" />
+        <Bars3Icon className="h-8 w-8" />
       </button>
     </div>
   );

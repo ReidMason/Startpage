@@ -1,5 +1,5 @@
 import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
-import { PlusCircleIcon } from "@heroicons/react/solid";
+import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import { AnimatePresence, domMax, LazyMotion, m } from "framer-motion";
 import { createPortal } from "react-dom";
 import { softSpringTransition } from "../../../../common";
