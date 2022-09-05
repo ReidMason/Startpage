@@ -1,10 +1,10 @@
 import type { FormEvent } from "react";
 import { useForm } from "react-hook-form";
-import type { App as AppInterface } from "../../../backend/routers/config/schemas";
-import type { StateSetter } from "../../../../types/common";
-import App from "../../elements/app/App";
-import Input from "../../input/Input";
-import Modal from "../../modal/Modal";
+import type { App as AppInterface } from "../../backend/routers/config/schemas";
+import type { StateSetter } from "../../../types/common";
+import App from "../elements/app/App";
+import OldInput from "../input/OldInput";
+import Modal from "../modal/Modal";
 
 interface AppEditModalProps {
   app: AppInterface;
@@ -34,9 +34,9 @@ export default function AppEditModal({
     <Modal open={open} onClose={onClose}>
       <form className="flex flex-col" onSubmit={saveApp}>
         <h1>App edit modal</h1>
-        <Input register={register("icon")} label="icon" />
-        <Input register={register("name")} label="name" />
-        <Input register={register("url")} label="url" />
+        <OldInput register={register("icon")} label="icon" />
+        <OldInput register={register("name")} label="name" />
+        <OldInput register={register("url")} label="url" />
       </form>
       <div className="w-72 cursor-default">
         <App app={modifiedApp} preview />

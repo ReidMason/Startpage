@@ -33,27 +33,28 @@ export const updateGlobalClasses = (config: Config) => {
     document.documentElement.classList.remove("dark");
   }
 
-  if (config.appearance.glassy)
-    document.documentElement.classList.add("glassy");
-  else document.documentElement.classList.remove("glassy");
+  if (config.appearance.glassy) document.body.classList.add("glassy");
+  else document.body.classList.remove("glassy");
 };
 
-export const getGlobalClasses = (config?: Config): string => {
+export const getDocumentClasses = (config?: Config): string => {
   if (!config) return "";
-
-  var globalClasses = "";
 
   if (config.appearance.appearance === "system") {
     const useDarkmode = true;
-    if (useDarkmode) globalClasses += "dark";
+    if (useDarkmode) return "dark";
   } else if (config.appearance.appearance === "dark") {
-    globalClasses += "dark";
+    return "dark";
   }
 
-  if (config.appearance.glassy) globalClasses += " glassy";
-
-  return globalClasses;
+  return "";
 };
+
+export function getBodyClasses(config?: Config) {
+  if (!config) return "";
+
+  return config.appearance.glassy ? "glassy" : "";
+}
 
 export function completeConfig(
   completeConfig: Config,

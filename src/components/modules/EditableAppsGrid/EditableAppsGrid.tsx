@@ -13,7 +13,9 @@ import { ConfigSetter } from "../../../../types/common";
 import LayoutGrid from "../../layoutGrid/LayoutGrid";
 import App from "../../elements/app/App";
 
-const DynamicAppEditModal = dynamic(() => import("./AppEditModal"));
+const DynamicAppEditModal = dynamic(
+  () => import("../../appEditModal/AppEditModal")
+);
 
 interface EditableAppsGridProps {
   config: Config;

@@ -44,6 +44,7 @@ export const configSchema = z.object({
   appearance: z
     .object({
       backgroundEnabled: z.boolean().default(false),
+      backgroundBlur: z.boolean().default(false),
       theme: z.enum(themes).default("default"),
       appearance: z.enum(appearances).default("system"),
       glassy: z.boolean().default(false),

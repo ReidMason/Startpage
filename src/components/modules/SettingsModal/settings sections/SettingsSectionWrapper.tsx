@@ -1,4 +1,3 @@
-import Collapse from "../../../collapse/Collapse";
 import HorizontalRule from "../../../horizontal rule/HorizontalRule";
 import { SettingsSection, SettingsSectionProps } from "../types";
 import SettingsSectionHeader from "./SettingsSectionHeader";
@@ -16,19 +15,19 @@ export default function SettingsSectionWrapper({
     section;
 
   return (
-    <>
-      <Collapse header={<SettingsSectionHeader {...sectionData(section)} />}>
-        <div className="mb-4 lg:pl-4">
-          {section.hasCustomLayout ? (
-            <section.content {...sectionProps} />
-          ) : (
-            <div className="grid grid-cols-6 gap-4">
-              <section.content {...sectionProps} />
-            </div>
-          )}
-        </div>
-      </Collapse>
-      <HorizontalRule />
-    </>
+    <div className="rounded-xl bg-primary-800/50 p-4 shadow">
+      <SettingsSectionHeader {...sectionData(section)} />
+      <div className="mt-4 grid grid-cols-1 gap-4">
+        {section.settingsElements.map((SettingsElementComponent) => (
+          <div
+            className="flex flex-col gap-4"
+            key={SettingsElementComponent.name}
+          >
+            <SettingsElementComponent {...sectionProps} />
+            <HorizontalRule />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

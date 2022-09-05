@@ -33,6 +33,7 @@ export default function SettingsModal({
   const elementsRef: MutableRefObject<Array<RefObject<HTMLDivElement>>> =
     useRef(defaultSettingsSections.map(() => createRef()));
   const { config: savedConfig } = useConfig();
+  const [settingsSearch, setSettingsSearch] = useState("");
 
   // Add refs to the settings sections
   const [settingsSections] = useState(
@@ -64,6 +65,10 @@ export default function SettingsModal({
     window.addEventListener("resize", handleWidthChange);
     handleWidthChange();
   }, [handleWidthChange]);
+
+  useEffect(() => {
+    handleWidthChange();
+  }, []);
 
   const closeMenuBar = () => {
     setMenuVisible(false);
@@ -114,8 +119,8 @@ export default function SettingsModal({
             animate="open"
             exit="collapsed"
             variants={{
-              open: { width: "auto" },
-              collapsed: { width: 0 },
+              open: { width: "auto", opacity: 1 },
+              collapsed: { width: 0, opacity: 0 },
             }}
             transition={{
               duration: 0.4,
@@ -123,6 +128,8 @@ export default function SettingsModal({
             }}
           >
             <SettingsSideMenu
+              settingsSearch={settingsSearch}
+              setSettingsSearch={setSettingsSearch}
               settingsSections={settingsSections}
               scrolledSectionName={scrolledSectionName}
               closeMenuBar={closeMenuBar}
@@ -132,6 +139,7 @@ export default function SettingsModal({
       </AnimatePresence>
 
       <SettingsContent
+        settingsSearch={settingsSearch}
         config={config}
         updateConfig={updateConfig}
         settingsSections={settingsSections}

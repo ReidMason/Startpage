@@ -1,17 +1,15 @@
-import { UIEventHandler, useEffect, useRef, useState } from "react";
+import { UIEventHandler, useEffect, useState } from "react";
 import Button from "../../../button/Button";
 import { useForm, useWatch } from "react-hook-form";
-import {
-  appearances,
-  Config,
-} from "../../../../backend/routers/config/schemas";
+import { Config } from "../../../../backend/routers/config/schemas";
 import SettingsSectionWrapper from "../settings sections/SettingsSectionWrapper";
 import { SettingsSection } from "../types";
 import { m } from "framer-motion";
 import SideMenuToggleIcon from "./SideMenuToggleIcon";
-import { ConfigSetter } from "../../../../../types/common";
+import type { ConfigSetter } from "../../../../../types/common";
 
 interface SettingsContentProps {
+  settingsSearch: string;
   closeModal: (saved?: boolean) => void;
   onClick?: () => void;
   onScroll?: UIEventHandler<HTMLDivElement>;
@@ -33,9 +31,11 @@ export default function SettingsContent({
   isMobile,
   config,
   updateConfig,
+  settingsSearch,
 }: SettingsContentProps) {
   const [modifiedConfig, setModifiedConfig] = useState<Config>(config);
-  const scrollContainer = useRef<HTMLDivElement>(null);
+  const [scrollContainer, setScrollContainer] =
+    useState<HTMLDivElement | null>();
   const { register, handleSubmit, control } = useForm<Config>({
     defaultValues: config,
   });
@@ -61,43 +61,72 @@ export default function SettingsContent({
     closeModal(true);
   };
 
+  const scrollContainerHeight = scrollContainer?.clientHeight ?? 0;
+  const settingsElements = settingsSections
+    .map((x) => x.settingsElements)
+    .flat(1);
+
   return (
     <form
       className={`${
         menuVisible ? "whitespace-nowrap" : ""
-      } z-10 flex w-full flex-col justify-between pt-4 shadow-xl glassy:backdrop-blur-3xl dark:bg-primary-800 dark:text-primary-50 dark:glassy:bg-primary-800/30`}
+      } z-10 flex w-[45rem] flex-col justify-between pt-4 shadow-xl glassy:backdrop-blur-3xl dark:bg-primary-800 dark:text-primary-50 dark:glassy:bg-primary-800/30`}
       onSubmit={handleSubmit(saveSettings)}
       onClick={onClick}
     >
-      <m.div
-        layoutScroll
-        className="mt-4 grid h-screen grid-cols-1 gap-3 self-stretch overflow-y-auto scroll-smooth px-4"
-        onScroll={onScroll}
-        ref={scrollContainer}
-      >
-        {settingsSections.map((section, index) => (
-          <div
-            key={section.name}
-            id={section.name}
-            ref={section.ref}
-            style={
-              index == settingsSections.length - 1
-                ? { height: scrollContainer.current?.clientHeight }
-                : undefined
-            }
-          >
-            <SettingsSectionWrapper
-              section={section}
-              sectionProps={{
-                control,
-                register,
-                config: config,
-                saveConfig: updateConfig,
-              }}
-            />
-          </div>
-        ))}
-      </m.div>
+      {settingsSearch ? (
+        <div>
+          {settingsElements
+            .filter((x) =>
+              x.name.toLowerCase().includes(settingsSearch.toLowerCase())
+            )
+            .map((SettingsElement) => (
+              <SettingsElement
+                {...{
+                  control,
+                  register,
+                  config,
+                  saveConfig: updateConfig,
+                }}
+                key={SettingsElement.name}
+              />
+            ))}
+        </div>
+      ) : (
+        <m.div
+          layoutScroll
+          className="mt-4 flex h-screen flex-col gap-4 overflow-y-auto scroll-smooth px-4"
+          onScroll={onScroll}
+          ref={(newRef) => setScrollContainer(newRef)}
+        >
+          {settingsSections.map((section, index) => (
+            <div
+              key={section.name}
+              id={section.name}
+              ref={section.ref}
+              style={
+                index == settingsSections.length - 1
+                  ? {
+                      marginBottom:
+                        scrollContainerHeight -
+                        (section.ref?.current?.clientHeight ?? 0),
+                    }
+                  : undefined
+              }
+            >
+              <SettingsSectionWrapper
+                section={section}
+                sectionProps={{
+                  control,
+                  register,
+                  config,
+                  saveConfig: updateConfig,
+                }}
+              />
+            </div>
+          ))}
+        </m.div>
+      )}
 
       <div className="grid grid-cols-3 gap-4 bg-primary-200/10 p-2">
         {isMobile && <SideMenuToggleIcon openMenuBar={openMenuBar} />}
