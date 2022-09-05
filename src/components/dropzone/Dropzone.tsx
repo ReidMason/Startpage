@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ReactDropzone, { FileRejection } from "react-dropzone";
-import FormElementWrapper from "../FormElementWrapper/FormElementWrapper";
+import OldFormElementWrapper from "../FormElementWrapper/OldFormElementWrapper";
 import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
 
 interface DropzoneProps {
@@ -49,51 +49,45 @@ export default function Dropzone({
   const loadingStyles = loading ? "opacity-50" : "hover:text-green-300";
 
   return (
-    <FormElementWrapper
-      label="Upload a background image"
-      helperText={errorMessage}
-      state="danger"
+    <ReactDropzone
+      onDrop={() => setDraggedOver(false)}
+      onDragOver={() => setDraggedOver(true)}
+      onDragLeave={() => setDraggedOver(false)}
+      onDropRejected={dropRejected}
+      onDropAccepted={dropAccepted}
+      accept={{ "image/*": [".jpeg", ".png", ".gif"] }}
+      maxFiles={1}
+      disabled={loading}
     >
-      <ReactDropzone
-        onDrop={() => setDraggedOver(false)}
-        onDragOver={() => setDraggedOver(true)}
-        onDragLeave={() => setDraggedOver(false)}
-        onDropRejected={dropRejected}
-        onDropAccepted={dropAccepted}
-        accept={{ "image/*": [".jpeg", ".png", ".gif"] }}
-        maxFiles={1}
-        disabled={loading}
-      >
-        {({ getRootProps, getInputProps }) => (
+      {({ getRootProps, getInputProps }) => (
+        <div
+          className={`cursor-default overflow-hidden rounded-lg bg-primary-100/40 ${loadingStyles} ${
+            draggedOver ? "text-green-300" : ""
+          }`}
+          {...getRootProps()}
+        >
+          <input {...getInputProps()} />
           <div
-            className={`cursor-default overflow-hidden rounded-lg bg-primary-100/40 ${loadingStyles} ${
-              draggedOver ? "text-green-300" : ""
-            }`}
-            {...getRootProps()}
+            className="flex items-center justify-center gap-4 bg-black/50 bg-cover p-4 bg-blend-darken sm:p-8"
+            style={{
+              backgroundImage: backgroundUrl
+                ? `url("${backgroundUrl}")`
+                : undefined,
+            }}
           >
-            <input {...getInputProps()} />
-            <div
-              className="flex items-center justify-center gap-4 bg-black/50 bg-cover p-4 bg-blend-darken sm:p-8"
-              style={{
-                backgroundImage: backgroundUrl
-                  ? `url("${backgroundUrl}")`
-                  : undefined,
-              }}
-            >
-              <div className="w-12">
-                {loading ? <LoadingSpinner /> : <Icon />}
+            <div className="w-12">
+              {loading ? <LoadingSpinner /> : <Icon />}
+            </div>
+            <div className="flex flex-col">
+              <div className="text-md font-semibold sm:text-lg">
+                <p className="hidden sm:block">{mainText}</p>
+                <p className="block sm:hidden">{mainTextMobile}</p>
               </div>
-              <div className="flex flex-col">
-                <div className="text-md font-semibold sm:text-lg">
-                  <p className="hidden sm:block">{mainText}</p>
-                  <p className="block sm:hidden">{mainTextMobile}</p>
-                </div>
-                <small className="dark:text-primary-50/80">{smallText}</small>
-              </div>
+              <small className="dark:text-primary-50/80">{smallText}</small>
             </div>
           </div>
-        )}
-      </ReactDropzone>
-    </FormElementWrapper>
+        </div>
+      )}
+    </ReactDropzone>
   );
 }

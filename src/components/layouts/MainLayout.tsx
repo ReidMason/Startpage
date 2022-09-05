@@ -12,16 +12,22 @@ const loadFramerFeatures = () =>
 export default function MainLayout({ children, config }: MainLayoutProps) {
   return (
     <div
-      className="h-full min-h-screen bg-cover bg-fixed py-[5%]"
+      className="h-full min-h-screen bg-cover bg-fixed"
       style={{
         backgroundImage: config.appearance.backgroundEnabled
           ? `url("/static/background.png?v=${config.general.cacheKey}")`
           : undefined,
       }}
     >
-      <LazyMotion features={loadFramerFeatures} strict>
-        {children}
-      </LazyMotion>
+      <div
+        className={`h-full min-h-screen py-[5%] ${
+          config.appearance.backgroundBlur ? "backdrop-blur-xl" : ""
+        }`}
+      >
+        <LazyMotion features={loadFramerFeatures} strict>
+          {children}
+        </LazyMotion>
+      </div>
     </div>
   );
 }

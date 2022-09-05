@@ -1,8 +1,8 @@
 import { useFieldArray } from "react-hook-form";
 import { generateUuid } from "../../../../../../utils";
 import Button from "../../../../button/Button";
-import FormElementWrapper from "../../../../FormElementWrapper/FormElementWrapper";
-import Input from "../../../../input/Input";
+import OldFormElementWrapper from "../../../../FormElementWrapper/OldFormElementWrapper";
+import OldInput from "../../../../input/OldInput";
 import { SettingsSectionProps } from "../../types";
 import { TrashIcon } from "@heroicons/react/outline";
 
@@ -33,25 +33,25 @@ export default function ProvidersSettings({
           key={field.key}
           className="flex flex-col gap-4 sm:flex-row sm:items-center"
         >
-          <Input
+          <OldInput
             className="sm:w-40"
             label="Name"
             register={register(`providers.${index}.name`)}
           />
 
-          <Input
+          <OldInput
             className="sm:w-40"
             label="Prefix"
             register={register(`providers.${index}.prefix`)}
           />
-          <Input
+          <OldInput
             className="w-full"
             label="Search Url"
             register={register(`providers.${index}.searchUrl`)}
           />
 
           <div className="sm:hidden">
-            <FormElementWrapper>
+            <OldFormElementWrapper>
               <Button
                 className="flex min-w-0 justify-center px-1 sm:min-w-0"
                 state="danger"
@@ -59,11 +59,11 @@ export default function ProvidersSettings({
               >
                 <TrashIcon className="h-6 w-6" />
               </Button>
-            </FormElementWrapper>
+            </OldFormElementWrapper>
           </div>
 
           <div className="hidden sm:block">
-            <FormElementWrapper label=" ">
+            <OldFormElementWrapper label=" ">
               <Button
                 className="flex min-w-0 justify-center px-1 sm:min-w-0"
                 state="danger"
@@ -71,7 +71,7 @@ export default function ProvidersSettings({
               >
                 <TrashIcon className="h-6 w-6" />
               </Button>
-            </FormElementWrapper>
+            </OldFormElementWrapper>
           </div>
         </div>
       ))}

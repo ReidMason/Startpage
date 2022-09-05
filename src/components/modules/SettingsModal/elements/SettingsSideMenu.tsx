@@ -1,14 +1,19 @@
+import { StateSetter } from "../../../../../types/common";
 import Button from "../../../button/Button";
 import Input from "../../../input/Input";
 import { SettingsSection } from "../types";
 
 interface SettingsSideMenuProps {
+  settingsSearch: string;
+  setSettingsSearch: StateSetter<string>;
   scrolledSectionName: string;
   closeMenuBar: () => void;
   settingsSections: Array<SettingsSection>;
 }
 
 export default function SettingsSideMenu({
+  settingsSearch,
+  setSettingsSearch,
   scrolledSectionName,
   closeMenuBar,
   settingsSections,
@@ -23,17 +28,14 @@ export default function SettingsSideMenu({
   };
 
   return (
-    <div className="sticky top-24 flex h-full w-64 flex-col p-6 pt-12 text-primary-50 glassy:backdrop-blur-3xl dark:bg-primary-900 dark:glassy:bg-primary-900/50">
+    <div className="sticky top-24 flex h-full w-64 flex-col gap-4 p-6 pt-12 text-primary-50 glassy:backdrop-blur-3xl dark:bg-primary-900 dark:glassy:bg-primary-900/40">
       <h1 className="mb-4 text-center text-2xl">Settings</h1>
       <Input
         placeholder="Search..."
-        pilled
-        state="dark"
-        noLabel
-        noHelperText
-        className="mb-8"
+        value={settingsSearch}
+        onChange={setSettingsSearch}
       />
-      <div className="ml-2 flex flex-col gap-2">
+      <div className="flex flex-col gap-2">
         {settingsSections.map((section, index) => (
           <Button
             className={`text-left 
@@ -48,9 +50,7 @@ export default function SettingsSideMenu({
             key={section.name}
           >
             <div className="flex items-center gap-2">
-              <div className={`rounded-lg p-1 ${section.iconBg}`}>
-                {/* <section.icon /> */}
-              </div>
+              <div className={`rounded-lg p-1 ${section.iconBg}`} />
               <span>{section.name}</span>
             </div>
           </Button>
