@@ -1,4 +1,4 @@
-import { boolean, z } from "zod";
+import { z } from "zod";
 
 export const appearances = ["dark", "light", "system"] as const;
 export const themes = ["default"] as const;
@@ -14,7 +14,6 @@ const appSchema = z.object({
 const providerSchema = z.object({
   id: z.string(),
   baseUrl: z.string(),
-  name: z.string(),
   prefix: z.string(),
   searchUrl: z.string(),
 });
