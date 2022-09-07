@@ -18,7 +18,7 @@ export default function Input({
   placeholder,
   clearable,
 }: InputProps) {
-  const inputElement = useRef<HTMLInputElement>();
+  const inputElement = useRef<HTMLInputElement>(null);
 
   const lightClasses = "bg-primary-100 glassy:bg-primary-100/40";
   const darkClasses =

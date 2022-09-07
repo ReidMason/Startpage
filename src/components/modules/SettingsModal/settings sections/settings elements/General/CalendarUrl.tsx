@@ -1,3 +1,4 @@
+import { SettingsElement } from "../../../types";
 import BaseTextSetting from "../base/BaseTextSetting";
 import { SettingsElementComponent } from "../types";
 
@@ -10,4 +11,10 @@ const CalendarUrl: SettingsElementComponent = ({ register }) => {
   );
 };
 
-export default CalendarUrl;
+const settingsElement: SettingsElement = {
+  component: CalendarUrl,
+  name: "Calendar Url",
+  altNames: [],
+};
+
+export default settingsElement;

@@ -1,4 +1,5 @@
 import type { RefObject, SVGProps } from "react";
+import { ReactNode } from "react";
 import type { Control, UseFormRegister } from "react-hook-form";
 import type { ConfigSetter } from "../../../../types/common";
 import type { Config } from "../../../backend/routers/config/schemas";
@@ -17,5 +18,11 @@ export interface SettingsSection {
   iconBg: string;
   hasCustomLayout?: boolean;
   ref?: RefObject<HTMLDivElement>;
-  settingsElements: Array<SettingsElementComponent>;
+  settingsElements: Array<SettingsElement>;
+}
+
+export interface SettingsElement {
+  component: SettingsElementComponent;
+  name: string;
+  altNames: Array<string>;
 }

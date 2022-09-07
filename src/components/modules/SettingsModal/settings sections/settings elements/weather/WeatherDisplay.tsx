@@ -1,6 +1,7 @@
 import { Controller } from "react-hook-form";
 import FormElementWrapper from "../../../../../FormElementWrapper/FormElementWrapper";
 import Switch from "../../../../../switch/Switch";
+import { SettingsElement } from "../../../types";
 import { SettingsElementComponent } from "../types";
 
 const WeatherDisplay: SettingsElementComponent = ({ control }) => {
@@ -17,4 +18,10 @@ const WeatherDisplay: SettingsElementComponent = ({ control }) => {
   );
 };
 
-export default WeatherDisplay;
+const settingsElement: SettingsElement = {
+  component: WeatherDisplay,
+  name: "Weather Display",
+  altNames: [],
+};
+
+export default settingsElement;

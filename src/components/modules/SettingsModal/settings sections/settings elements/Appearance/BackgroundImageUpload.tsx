@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ArrowUpTrayIcon } from "@heroicons/react/24/outline";
 import Dropzone from "../../../../../dropzone/Dropzone";
 import { SettingsElementComponent } from "../types";
+import { SettingsElement } from "../../../types";
 
 const BackgroundImageUpload: SettingsElementComponent = ({
   saveConfig,
@@ -38,4 +39,10 @@ const BackgroundImageUpload: SettingsElementComponent = ({
   );
 };
 
-export default BackgroundImageUpload;
+const settingsElement: SettingsElement = {
+  component: BackgroundImageUpload,
+  name: "Background Image Upload",
+  altNames: ["background", "image", "upload"],
+};
+
+export default settingsElement;

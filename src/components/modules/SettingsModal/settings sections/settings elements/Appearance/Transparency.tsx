@@ -2,6 +2,7 @@ import React from "react";
 import { Controller } from "react-hook-form";
 import FormElementWrapper from "../../../../../FormElementWrapper/FormElementWrapper";
 import Switch from "../../../../../switch/Switch";
+import { SettingsElement } from "../../../types";
 import { SettingsElementComponent } from "../types";
 
 const Transparency: SettingsElementComponent = ({ control }) => {
@@ -18,4 +19,10 @@ const Transparency: SettingsElementComponent = ({ control }) => {
   );
 };
 
-export default Transparency;
+const settingsElement: SettingsElement = {
+  component: Transparency,
+  name: "Transparency",
+  altNames: [],
+};
+
+export default settingsElement;
