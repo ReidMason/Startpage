@@ -1,3 +1,4 @@
+import { SettingsElement } from "../../../types";
 import BaseTextSetting from "../base/BaseTextSetting";
 import { SettingsElementComponent } from "../types";
 
@@ -10,4 +11,10 @@ const SearchPlaceholder: SettingsElementComponent = ({ register }) => {
   );
 };
 
-export default SearchPlaceholder;
+const settingsElement: SettingsElement = {
+  component: SearchPlaceholder,
+  name: "Search Placeholder",
+  altNames: [],
+};
+
+export default settingsElement;

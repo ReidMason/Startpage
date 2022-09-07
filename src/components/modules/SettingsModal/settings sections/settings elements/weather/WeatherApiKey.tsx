@@ -1,3 +1,4 @@
+import { SettingsElement } from "../../../types";
 import BaseTextSetting from "../base/BaseTextSetting";
 import { SettingsElementComponent } from "../types";
 
@@ -10,4 +11,10 @@ const WeatherApiKey: SettingsElementComponent = ({ register }) => {
   );
 };
 
-export default WeatherApiKey;
+const settingsElement: SettingsElement = {
+  component: WeatherApiKey,
+  name: "Weather API Key",
+  altNames: [],
+};
+
+export default settingsElement;

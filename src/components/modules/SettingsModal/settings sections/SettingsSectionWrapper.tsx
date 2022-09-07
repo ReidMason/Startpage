@@ -18,12 +18,9 @@ export default function SettingsSectionWrapper({
     <div className="rounded-xl bg-primary-800/50 p-4 shadow">
       <SettingsSectionHeader {...sectionData(section)} />
       <div className="mt-4 grid grid-cols-1 gap-4">
-        {section.settingsElements.map((SettingsElementComponent) => (
-          <div
-            className="flex flex-col gap-4"
-            key={SettingsElementComponent.name}
-          >
-            <SettingsElementComponent {...sectionProps} />
+        {section.settingsElements.map((settingsElement) => (
+          <div className="flex flex-col gap-4" key={settingsElement.name}>
+            <settingsElement.component {...sectionProps} />
             <HorizontalRule />
           </div>
         ))}

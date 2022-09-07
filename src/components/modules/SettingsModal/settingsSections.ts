@@ -18,6 +18,7 @@ import Theme from "./settings sections/settings elements/Appearance/Theme";
 import Transparency from "./settings sections/settings elements/Appearance/Transparency";
 import BackgroundImageUpload from "./settings sections/settings elements/Appearance/BackgroundImageUpload";
 import BackgroundBlur from "./settings sections/settings elements/Appearance/BackgroundBlur";
+import Providers from "./settings sections/settings elements/Providers/Providers";
 
 export const settingsSections: Array<SettingsSection> = [
   {
@@ -49,11 +50,10 @@ export const settingsSections: Array<SettingsSection> = [
       DetailedWeatherDisplay,
     ],
   },
-  // {
-  //   name: "Providers",
-  //   icon: SearchIcon,
-  //   iconBg: "bg-sky-400",
-  //   content: ProvidersSettings,
-  //   hasCustomLayout: true,
-  // },
+  {
+    name: "Providers",
+    icon: MagnifyingGlassIcon,
+    iconBg: "bg-sky-400",
+    settingsElements: [Providers],
+  },
 ];

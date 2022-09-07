@@ -2,6 +2,7 @@ import React from "react";
 import { Controller } from "react-hook-form";
 import FormElementWrapper from "../../../../../FormElementWrapper/FormElementWrapper";
 import Switch from "../../../../../switch/Switch";
+import { SettingsElement } from "../../../types";
 import { SettingsElementComponent } from "../types";
 
 const BackgroundBlur: SettingsElementComponent = ({ control }) => {
@@ -18,4 +19,10 @@ const BackgroundBlur: SettingsElementComponent = ({ control }) => {
   );
 };
 
-export default BackgroundBlur;
+const settingsElement: SettingsElement = {
+  component: BackgroundBlur,
+  name: "Background Blur",
+  altNames: ["blur", "background"],
+};
+
+export default settingsElement;
