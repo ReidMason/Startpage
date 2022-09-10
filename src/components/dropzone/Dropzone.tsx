@@ -1,6 +1,5 @@
 import { useState } from "react";
 import ReactDropzone, { FileRejection } from "react-dropzone";
-import OldFormElementWrapper from "../FormElementWrapper/OldFormElementWrapper";
 import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
 
 interface DropzoneProps {

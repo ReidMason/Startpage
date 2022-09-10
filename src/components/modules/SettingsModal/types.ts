@@ -1,5 +1,4 @@
 import type { RefObject, SVGProps } from "react";
-import { ReactNode } from "react";
 import type { Control, UseFormRegister } from "react-hook-form";
 import type { ConfigSetter } from "../../../../types/common";
 import type { Config } from "../../../backend/routers/config/schemas";
