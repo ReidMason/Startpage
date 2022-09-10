@@ -116,6 +116,7 @@ export const getStaticProps: GetStaticProps = async () => {
       config,
       weather,
     },
+    revalidate: 3600,
   };
 };
 
