@@ -4,7 +4,7 @@ import { m, AnimatePresence } from "framer-motion";
 
 type StateSetter<T> = Dispatch<SetStateAction<T>>;
 
-export interface ModalProps {
+interface ModalProps {
   open: boolean;
   children?: ReactNode;
   onClose: () => void;
@@ -47,16 +47,18 @@ export default function Modal({
             }}
             transition={{ duration: 0.2 }}
           >
-            <div className="flex h-full items-center justify-center p-2 sm:p-4">
+            <div
+              className={`flex items-center justify-center p-2 sm:p-4 ${
+                fullWidth ? "h-full" : ""
+              }`}
+            >
               <Dialog.Panel
-                className={`h-full max-w-7xl transform overflow-hidden rounded-lg text-left align-middle shadow-xl transition-all md:h-5/6 ${
+                className={`max-w-7xl transform overflow-hidden rounded-lg text-left align-middle shadow-xl transition-all md:h-5/6 ${
                   fullWidth ? "w-full" : ""
                 }`}
               >
-                <div className="flex h-full flex-col">
-                  <div className="flex h-full glassy:backdrop-blur-3xl dark:bg-primary-800 dark:text-primary-50 dark:glassy:bg-primary-800/30">
-                    {children}
-                  </div>
+                <div className="flex h-full glassy:backdrop-blur-3xl dark:bg-primary-800 dark:text-primary-50 dark:glassy:bg-primary-800/30">
+                  {children}
                 </div>
               </Dialog.Panel>
             </div>

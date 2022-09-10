@@ -69,10 +69,6 @@ export default function SettingsModal({
     handleWidthChange();
   }, [handleWidthChange]);
 
-  useEffect(() => {
-    handleWidthChange();
-  }, []);
-
   const closeMenuBar = () => {
     setMenuVisible(false);
   };
