@@ -9,12 +9,11 @@ import type { Config } from "../backend/routers/config/schemas";
 import MainLayout from "../components/layouts/MainLayout";
 import SettingsFeatures from "../components/modules/SettingsFeatures/SettingsFeatures";
 import { getConfig } from "../backend/routers/config/config";
-import { Weather } from "../backend/routers/weather/schemas";
-import { getWeatherData } from "../backend/routers/weather/weather";
 import { completeConfig, updateGlobalClasses } from "../../utils";
 import { trpc } from "../utils/trpc";
 import useConfig from "../hooks/useConfig";
 import { ConfigSetter } from "../../types/common";
+import useWeather from "../hooks/useWeather";
 
 const DynamicExtensionsDisplay = dynamic(
   () => import("../components/extensions/ExtensionsDisplay")
@@ -22,12 +21,10 @@ const DynamicExtensionsDisplay = dynamic(
 
 interface HomePageProps {
   config: Config;
-  weather: Weather;
 }
 
 const Home: NextPage<HomePageProps> = ({
   config: configData,
-  weather,
 }: HomePageProps) => {
   const [config, setConfig] = useState(configData);
   const [editMode, setEditMode] = useState(false);
@@ -35,6 +32,7 @@ const Home: NextPage<HomePageProps> = ({
   const [extensions, setExtensions] = useState<Array<Extension>>([]);
   const trpcUtils = trpc.useContext();
   const { configMutation } = useConfig();
+  const { weather } = useWeather(config);
 
   const updateConfig: ConfigSetter = async (
     newConfig,
@@ -66,7 +64,7 @@ const Home: NextPage<HomePageProps> = ({
           <Searchbar setAppFilter={setAppFilter} config={config} />
         </div>
         <div className="col-span-full mb-2 md:mb-12">
-          <Greeting weather={weather} config={config} />
+          <Greeting weather={weather.data} config={config} />
         </div>
 
         <div
@@ -104,19 +102,13 @@ const Home: NextPage<HomePageProps> = ({
   );
 };
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
   const config = await getConfig();
-  const weather = await getWeatherData(
-    config.weather.location,
-    config.weather.apiKey
-  );
 
   return {
     props: {
       config,
-      weather,
     },
-    revalidate: 3600,
   };
 };
 

@@ -4,7 +4,7 @@ import GreetingText from "../../elements/greetingText/GreetingText";
 import WeatherDisplay from "../../elements/weatherDisplay/WeatherDisplay";
 
 interface GreetingProps {
-  weather: Weather;
+  weather?: Weather | null;
   config: Config;
 }
 

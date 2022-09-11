@@ -3,9 +3,13 @@ import { getUnixTime } from "../../../utils";
 import { Weather } from "../routers/weather/schemas";
 import Cache from "./types";
 
+var cache: Cache;
+
 export async function getCacheData(): Promise<Cache> {
   await ensureCacheFileExists();
-  return JSON.parse(await fs.readFile("./data/cache.json", "utf8"));
+  if (!cache)
+    cache = JSON.parse(await fs.readFile("./data/cache.json", "utf8"));
+  return cache;
 }
 
 async function ensureCacheFileExists() {
@@ -17,6 +21,11 @@ async function ensureCacheFileExists() {
     await fs.writeFile("./data/cache.json", JSON.stringify({}));
   }
 }
+
+const saveCacheData = (cacheData: Cache) => {
+  cache = cacheData;
+  fs.writeFile("./data/cache.json", JSON.stringify(cacheData));
+};
 
 export async function cacheWeatherData(
   newWeatherdata: Weather,
@@ -38,5 +47,5 @@ export async function cacheWeatherData(
     weatherData: newWeatherdata,
   });
 
-  await fs.writeFile("./data/cache.json", JSON.stringify(cacheData));
+  saveCacheData(cacheData);
 }
