@@ -1,5 +1,5 @@
-import {
-  DndContext,
+import { DndContext } from "@dnd-kit/core";
+import type {
   DragStartEvent,
   DragOverEvent,
   DragEndEvent,
@@ -10,6 +10,7 @@ import { arrayMove } from "@dnd-kit/sortable";
 import { StateSetter } from "../../../../types/common";
 import { App } from "../../../backend/routers/config/schemas";
 
+// 30.1k 10.1k
 interface EditableAppsGridDndContextProps {
   children: React.ReactNode;
   setActiveApp: StateSetter<App | null>;

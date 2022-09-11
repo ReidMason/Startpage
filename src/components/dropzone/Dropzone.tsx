@@ -1,5 +1,6 @@
 import { useState } from "react";
-import ReactDropzone, { FileRejection } from "react-dropzone";
+import ReactDropzone from "react-dropzone";
+import type { FileRejection } from "react-dropzone";
 import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
 
 interface DropzoneProps {
