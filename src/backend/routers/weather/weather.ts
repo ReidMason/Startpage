@@ -43,6 +43,7 @@ function weatherDataResponseToWeatherData(
   weatherDataResponse: WeatherDataResponse
 ): Weather {
   return {
+    time: weatherDataResponse.current.dt,
     temperature: weatherDataResponse.current.temp,
     feelsLike: weatherDataResponse.current.feels_like,
     icon: weatherDataResponse.current.weather[0].icon,

@@ -6,6 +6,7 @@ export type WeatherDataResponse = z.infer<typeof weatherDataResponseSchema>;
 export type BasicWeatherData = z.infer<typeof basicWeatherDataSchema>;
 
 export const weatherSchema = z.object({
+  time: z.number(),
   temperature: z.number(),
   description: z.string(),
   icon: z.string(),
