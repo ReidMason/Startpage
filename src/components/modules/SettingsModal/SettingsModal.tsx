@@ -16,9 +16,8 @@ import {
 import { settingsSections as defaultSettingsSections } from "./settingsSections";
 import { Config } from "../../../backend/routers/config/schemas";
 import useConfig from "../../../hooks/useConfig";
-import SideMenuToggleIcon from "./elements/SideMenuToggleIcon";
-import Button from "../../button/Button";
 import { useForm } from "react-hook-form";
+import SettingsFooter from "./elements/SettingsFooter";
 
 interface SettingsModalProps {
   open: boolean;
@@ -83,7 +82,7 @@ export default function SettingsModal({
     closeMenuBar();
   };
 
-  const handleScroll = (e: UIEvent<HTMLDivElement>) => {
+  const handleScroll = (e: UIEvent<HTMLFormElement>) => {
     const scrollTop = e.currentTarget.getBoundingClientRect().top;
 
     for (let i = 0; i < settingsSections.length; i++) {
@@ -122,15 +121,12 @@ export default function SettingsModal({
 
   return (
     <Modal open={open} onClose={closeWithoutSaving}>
-      <form
-        className="flex flex-col"
-        onSubmit={handleSubmit(saveSettings)}
-        onClick={handleSettingsContentClicked}
-      >
-        <div className="flex max-h-full overflow-hidden">
+      <div className="flex overflow-y-scroll">
+        <div className="overflow-y-scroll scroll-smooth">
           <AnimatePresence initial={false}>
             {menuVisible && (
               <m.div
+                className="h-full"
                 key="menu-sidebar"
                 initial="collapsed"
                 animate="open"
@@ -154,34 +150,33 @@ export default function SettingsModal({
               </m.div>
             )}
           </AnimatePresence>
+        </div>
+
+        <form
+          className="flex overflow-y-scroll scroll-smooth"
+          onSubmit={handleSubmit(saveSettings)}
+          onClick={handleSettingsContentClicked}
+          onScroll={handleScroll}
+        >
           <SettingsContent
             settingsSearch={settingsSearch}
             config={config}
             updateConfig={updateConfig}
             settingsSections={settingsSections}
-            onScroll={handleScroll}
             control={control}
             register={register}
             menuVisible={menuVisible}
           />
-        </div>
+        </form>
+      </div>
 
-        <div className="flex w-full justify-start gap-4 bg-primary-900/40 p-2">
-          {isMobileView && (
-            <div className="place-self-start">
-              <SideMenuToggleIcon openMenuBar={openMenuBar} />
-            </div>
-          )}
-          <div className="ml-auto flex gap-4">
-            <Button type="submit" state="success">
-              Save
-            </Button>
-            <Button variant="outline" onClick={() => closeWithoutSaving()}>
-              Exit
-            </Button>
-          </div>
-        </div>
-      </form>
+      <div>
+        <SettingsFooter
+          isMobileView={isMobileView}
+          closeWithoutSaving={closeWithoutSaving}
+          openMenuBar={openMenuBar}
+        />
+      </div>
     </Modal>
   );
 }

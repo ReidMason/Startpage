@@ -1,6 +1,6 @@
 import { ChangeEvent, ChangeEventHandler, useRef } from "react";
 import type { UseFormRegisterReturn } from "react-hook-form";
-import { StateSetter } from "../../../types/common";
+import type { StateSetter } from "../../../types/common";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 interface InputProps {
@@ -9,6 +9,7 @@ interface InputProps {
   register?: UseFormRegisterReturn;
   placeholder?: string;
   clearable?: boolean;
+  autocomplete?: Boolean;
 }
 
 export default function Input({
@@ -17,6 +18,7 @@ export default function Input({
   register,
   placeholder,
   clearable,
+  autocomplete,
 }: InputProps) {
   const inputElement = useRef<HTMLInputElement>(null);
 
@@ -37,6 +39,8 @@ export default function Input({
     inputElement.current?.focus();
   };
 
+  const inputAutocomplete = autocomplete ? "on" : "off";
+
   return (
     <div
       className={`flex w-full rounded-lg py-1.5 px-3 transition duration-75 ${lightClasses} ${darkClasses}`}
@@ -48,6 +52,7 @@ export default function Input({
         placeholder={placeholder}
         onChange={handleChange}
         value={value}
+        autoComplete={inputAutocomplete}
         {...register}
       />
 
