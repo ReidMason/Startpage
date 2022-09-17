@@ -59,7 +59,7 @@ const Home: NextPage<HomePageProps> = ({
 
   return (
     <MainLayout config={config}>
-      <div className="container mx-auto gap-8 p-8 text-primary-300 transition glassy:bg-primary-900/30 glassy:backdrop-blur-xl dark:text-primary-100 sm:p-16 sm:glassy:rounded-2xl">
+      <div className="container mx-auto mb-20 gap-8 p-8 text-primary-300 transition glassy:bg-primary-900/30 glassy:backdrop-blur-xl dark:text-primary-100 sm:p-16 sm:glassy:rounded-2xl">
         <div className="col-span-full mb-4">
           <Searchbar setAppFilter={setAppFilter} config={config} />
         </div>
