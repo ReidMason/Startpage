@@ -10,7 +10,6 @@ import { FaceFrownIcon } from "@heroicons/react/24/outline";
 
 interface SettingsContentProps {
   settingsSearch: string;
-  onScroll?: UIEventHandler<HTMLDivElement>;
   settingsSections: Array<SettingsSection>;
   config: Config;
   updateConfig: ConfigSetter;
@@ -20,7 +19,6 @@ interface SettingsContentProps {
 }
 
 export default function SettingsContent({
-  onScroll,
   settingsSections,
   config,
   updateConfig,
@@ -32,6 +30,7 @@ export default function SettingsContent({
   const [modifiedConfig, setModifiedConfig] = useState<Config>(config);
   const [scrollContainer, setScrollContainer] =
     useState<HTMLDivElement | null>();
+  const [scrollContainerHeight, setScrollContainerHeight] = useState(0);
 
   const appearance = useWatch({
     name: "appearance",
@@ -49,7 +48,9 @@ export default function SettingsContent({
     }
   }, [appearance, modifiedConfig, updateConfig]);
 
-  const scrollContainerHeight = scrollContainer?.clientHeight ?? 0;
+  useEffect(() => {
+    setScrollContainerHeight(scrollContainer?.clientHeight ?? 0);
+  }, [scrollContainer]);
 
   const matchElement = (
     searchTerm: string,
@@ -90,8 +91,7 @@ export default function SettingsContent({
       layoutScroll
       className={`${
         menuVisible ? "whitespace-nowrap" : ""
-      } flex h-full flex-col gap-4 overflow-y-auto scroll-smooth transition sm:mt-4 sm:px-4`}
-      onScroll={onScroll}
+      } ml-4 flex h-full flex-col gap-4 overflow-y-scroll scroll-smooth transition sm:px-4`}
       ref={(newRef) => setScrollContainer(newRef)}
     >
       {filteredSections.length ? (

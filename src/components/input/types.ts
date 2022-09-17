@@ -7,5 +7,3 @@ export declare type State =
   | "dark";
 
 export declare type Variant = "default" | "outline" | "ghost";
-
-export declare type Autocomplete = "on" | "off";

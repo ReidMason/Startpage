@@ -1,21 +1,19 @@
 import { Dialog } from "@headlessui/react";
-import { Dispatch, ReactNode, SetStateAction } from "react";
+import type { ReactNode, UIEvent } from "react";
 import { m, AnimatePresence } from "framer-motion";
-
-type StateSetter<T> = Dispatch<SetStateAction<T>>;
 
 interface ModalProps {
   open: boolean;
-  children?: ReactNode;
+  children: ReactNode;
   onClose: () => void;
-  fullWidth?: boolean;
+  onScroll?: (e: UIEvent<HTMLDivElement>) => void;
 }
 
 export default function Modal({
   open,
   children,
   onClose,
-  fullWidth,
+  onScroll,
 }: ModalProps) {
   return (
     <AnimatePresence>
@@ -36,7 +34,7 @@ export default function Modal({
           </m.div>
 
           <m.div
-            className="fixed inset-0 overflow-y-auto"
+            className="fixed inset-0 m-4 flex items-center justify-center"
             key="panel"
             initial="collapsed"
             animate="open"
@@ -47,21 +45,12 @@ export default function Modal({
             }}
             transition={{ duration: 0.2 }}
           >
-            <div
-              className={`flex items-center justify-center p-2 sm:p-4 ${
-                fullWidth ? "h-full" : ""
-              }`}
+            <Dialog.Panel
+              className="flex max-h-full max-w-full flex-col overflow-y-scroll rounded-lg p-4 shadow-xl glassy:backdrop-blur-3xl dark:bg-primary-800 dark:text-primary-50 dark:glassy:bg-primary-800/30"
+              onScroll={onScroll}
             >
-              <Dialog.Panel
-                className={`max-w-7xl transform overflow-hidden rounded-lg text-left align-middle shadow-xl transition-all md:h-5/6 ${
-                  fullWidth ? "w-full" : ""
-                }`}
-              >
-                <div className="flex h-full glassy:backdrop-blur-3xl dark:bg-primary-800 dark:text-primary-50 dark:glassy:bg-primary-800/30">
-                  {children}
-                </div>
-              </Dialog.Panel>
-            </div>
+              {children}
+            </Dialog.Panel>
           </m.div>
         </Dialog>
       )}
