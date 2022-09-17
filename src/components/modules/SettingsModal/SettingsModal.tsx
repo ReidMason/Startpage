@@ -82,7 +82,7 @@ export default function SettingsModal({
     closeMenuBar();
   };
 
-  const handleScroll = (e: UIEvent<HTMLFormElement>) => {
+  const handleScroll = (e: UIEvent<HTMLDivElement>) => {
     const scrollTop = e.currentTarget.getBoundingClientRect().top;
 
     for (let i = 0; i < settingsSections.length; i++) {
@@ -121,12 +121,17 @@ export default function SettingsModal({
 
   return (
     <Modal open={open} onClose={closeWithoutSaving}>
-      <div className="flex overflow-y-scroll">
-        <div className="overflow-y-scroll scroll-smooth">
+      <div
+        className={`flex overflow-x-hidden overflow-y-scroll ${
+          menuVisible ? "gap-4" : ""
+        }`}
+        onScroll={handleScroll}
+      >
+        <div>
           <AnimatePresence initial={false}>
             {menuVisible && (
               <m.div
-                className="h-full"
+                className="h-full w-full"
                 key="menu-sidebar"
                 initial="collapsed"
                 animate="open"
@@ -153,10 +158,9 @@ export default function SettingsModal({
         </div>
 
         <form
-          className="flex overflow-y-scroll scroll-smooth"
+          className="flex scroll-smooth"
           onSubmit={handleSubmit(saveSettings)}
           onClick={handleSettingsContentClicked}
-          onScroll={handleScroll}
         >
           <SettingsContent
             settingsSearch={settingsSearch}
@@ -166,17 +170,17 @@ export default function SettingsModal({
             control={control}
             register={register}
             menuVisible={menuVisible}
+            onScroll={handleScroll}
           />
         </form>
       </div>
 
-      <div>
-        <SettingsFooter
-          isMobileView={isMobileView}
-          closeWithoutSaving={closeWithoutSaving}
-          openMenuBar={openMenuBar}
-        />
-      </div>
+      <SettingsFooter
+        isMobileView={isMobileView}
+        closeWithoutSaving={closeWithoutSaving}
+        setMenuVisible={setMenuVisible}
+        menuVisible={menuVisible}
+      />
     </Modal>
   );
 }

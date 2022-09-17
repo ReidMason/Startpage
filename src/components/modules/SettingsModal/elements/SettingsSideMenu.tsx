@@ -28,36 +28,34 @@ export default function SettingsSideMenu({
   };
 
   return (
-    <div className="h-full w-64 scroll-smooth">
-      <div className="sticky top-0 flex h-full flex-col gap-4 overflow-hidden rounded-xl p-6 pt-12 text-primary-50 glassy:backdrop-blur-3xl dark:bg-primary-900 dark:glassy:bg-primary-900/40">
-        <h1 className="mb-4 text-center text-2xl">Settings</h1>
-        <Input
-          placeholder="Search..."
-          value={settingsSearch}
-          onChange={setSettingsSearch}
-          clearable
-        />
-        <div className="flex flex-col gap-2">
-          {settingsSections.map((section, index) => (
-            <Button
-              className={`text-left 
+    <div className="flex h-full w-64 flex-col gap-4 rounded-xl p-6 pt-12 text-primary-50 glassy:backdrop-blur-3xl dark:bg-primary-900 dark:glassy:bg-primary-900/40">
+      <h1 className="mb-4 text-center text-2xl">Settings</h1>
+      <Input
+        placeholder="Search..."
+        value={settingsSearch}
+        onChange={setSettingsSearch}
+        clearable
+      />
+      <div className="flex flex-col gap-2">
+        {settingsSections.map((section, index) => (
+          <Button
+            className={`text-left 
               ${
                 scrolledSectionName === section.name
                   ? "bg-primary-200 dark:bg-primary-500"
                   : ""
               }
             `}
-              variant="ghost"
-              onClick={() => scrollToSection(section)}
-              key={section.name}
-            >
-              <div className="flex items-center gap-2">
-                <div className={`rounded-lg p-1 ${section.iconBg}`} />
-                <span>{section.name}</span>
-              </div>
-            </Button>
-          ))}
-        </div>
+            variant="ghost"
+            onClick={() => scrollToSection(section)}
+            key={section.name}
+          >
+            <div className="flex items-center gap-2">
+              <div className={`rounded-lg p-1 ${section.iconBg}`} />
+              <span>{section.name}</span>
+            </div>
+          </Button>
+        ))}
       </div>
     </div>
   );

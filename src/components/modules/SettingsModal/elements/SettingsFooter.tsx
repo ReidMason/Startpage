@@ -1,23 +1,30 @@
 import React from "react";
+import { StateSetter } from "../../../../../types/common";
 import Button from "../../../button/Button";
 import SideMenuToggleIcon from "./SideMenuToggleIcon";
 
 interface SettingsFooterProps {
   isMobileView: boolean;
-  openMenuBar: () => void;
   closeWithoutSaving: (saved?: boolean) => void;
+  setMenuVisible: StateSetter<boolean>;
+  menuVisible: boolean;
 }
 
 export default function SettingsFooter({
   isMobileView,
-  openMenuBar,
+  menuVisible,
+  setMenuVisible,
   closeWithoutSaving,
 }: SettingsFooterProps) {
+  const toggleMenuBar = () => {
+    setMenuVisible(!menuVisible);
+  };
+
   return (
     <div className="flex w-full justify-start gap-4 bg-primary-900/40 p-2">
       {isMobileView && (
         <div className="place-self-start">
-          <SideMenuToggleIcon openMenuBar={openMenuBar} />
+          <SideMenuToggleIcon toggleMenuBar={toggleMenuBar} />
         </div>
       )}
       <div className="ml-auto flex gap-4">
