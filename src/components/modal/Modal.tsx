@@ -34,7 +34,7 @@ export default function Modal({
           </m.div>
 
           <m.div
-            className="fixed inset-0 m-4 flex items-center justify-center"
+            className="fixed inset-0 flex items-center justify-center md:m-4"
             key="panel"
             initial="collapsed"
             animate="open"

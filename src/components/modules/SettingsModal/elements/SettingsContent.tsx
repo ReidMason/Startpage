@@ -1,12 +1,13 @@
-import { UIEventHandler, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useWatch } from "react-hook-form";
-import type { Control, UseFormRegister } from "react-hook-form";
 import { Config } from "../../../../backend/routers/config/schemas";
 import SettingsSectionWrapper from "../settings sections/SettingsSectionWrapper";
 import { SettingsElement, SettingsSection } from "../types";
 import { m } from "framer-motion";
-import type { ConfigSetter } from "../../../../../types/common";
 import { FaceFrownIcon } from "@heroicons/react/24/outline";
+import type { UIEvent } from "react";
+import type { Control, UseFormRegister } from "react-hook-form";
+import type { ConfigSetter } from "../../../../../types/common";
 
 interface SettingsContentProps {
   settingsSearch: string;
@@ -16,6 +17,7 @@ interface SettingsContentProps {
   register: UseFormRegister<Config>;
   control: Control<Config, any>;
   menuVisible: boolean;
+  onScroll?: (e: UIEvent<HTMLDivElement>) => void;
 }
 
 export default function SettingsContent({
@@ -26,6 +28,7 @@ export default function SettingsContent({
   control,
   register,
   menuVisible,
+  onScroll,
 }: SettingsContentProps) {
   const [modifiedConfig, setModifiedConfig] = useState<Config>(config);
   const [scrollContainer, setScrollContainer] =
@@ -91,8 +94,9 @@ export default function SettingsContent({
       layoutScroll
       className={`${
         menuVisible ? "whitespace-nowrap" : ""
-      } ml-4 flex h-full flex-col gap-4 overflow-y-scroll scroll-smooth transition sm:px-4`}
+      } flex h-full flex-col gap-4 overflow-y-scroll scroll-smooth transition md:w-[45rem] lg:px-4`}
       ref={(newRef) => setScrollContainer(newRef)}
+      onScroll={onScroll}
     >
       {filteredSections.length ? (
         filteredSections.map((section, index) => (
