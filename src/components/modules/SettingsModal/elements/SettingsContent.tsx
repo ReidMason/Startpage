@@ -86,9 +86,6 @@ export default function SettingsContent({
     })
     .filter((x) => x.settingsElements.length);
 
-  // className={`${
-  //   menuVisible ? "whitespace-nowrap" : ""
-  // } z-10 flex w-[45rem] flex-col justify-between shadow-xl glassy:backdrop-blur-3xl dark:bg-primary-800 dark:text-primary-50 dark:glassy:bg-primary-800/30`}
   return (
     <m.div
       layoutScroll

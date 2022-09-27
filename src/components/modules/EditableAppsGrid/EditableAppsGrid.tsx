@@ -26,11 +26,13 @@ export default function EditableAppsGrid({
   config,
   updateConfig,
 }: EditableAppsGridProps) {
-  // const [modifiedApps, setModifiedApps] = useState(config.apps);
+  // Modified apps are the current saved apps
   const modifiedApps = config.apps;
   const setModifiedApps = (newApps: Array<AppInterface>) => {
     updateConfig({ apps: newApps }, true, false);
   };
+
+  // Temp apps are the unsaved apps if the user has dragged the apps around etc
   const [tempApps, setTempApps] = useState(modifiedApps);
 
   const [activeApp, setActiveApp] = useState<AppInterface | null>(null);
@@ -43,6 +45,18 @@ export default function EditableAppsGrid({
     setEditModalOpen(true);
   };
 
+  const saveApp = (newApp: AppInterface) => {
+    var newApps = [...modifiedApps];
+
+    // Replace existing app or add new one
+    const existingIndex = newApps.findIndex((x) => x.id === newApp.id);
+    if (existingIndex > -1) newApps[existingIndex] = newApp;
+    else newApps = [...modifiedApps, newApp];
+
+    setTempApps(newApps);
+    setModifiedApps(newApps);
+  };
+
   const createNewApp = () => {
     const newApp = {
       icon: "mdi:square-edit-outline",
@@ -51,9 +65,7 @@ export default function EditableAppsGrid({
       id: generateUuid(),
     };
 
-    const newApps = [...modifiedApps, newApp];
-    setTempApps(newApps);
-    setModifiedApps(newApps);
+    saveApp(newApp);
   };
 
   return (
@@ -80,6 +92,7 @@ export default function EditableAppsGrid({
             open={editModalOpen}
             setOpen={setEditModalOpen}
             app={appBeingEdited}
+            saveApp={saveApp}
           />
         )}
 

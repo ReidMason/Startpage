@@ -1,45 +1,57 @@
-import type { FormEvent } from "react";
 import { useForm } from "react-hook-form";
-import type { App as AppInterface } from "../../backend/routers/config/schemas";
-import type { StateSetter } from "../../../types/common";
 import App from "../elements/app/App";
 import Modal from "../modal/Modal";
 import Input from "../input/Input";
 import FormElementWrapper from "../FormElementWrapper/FormElementWrapper";
+import type { StateSetter } from "../../../types/common";
+import type { App as AppInterface } from "../../backend/routers/config/schemas";
+import { FormEvent, useEffect } from "react";
+import HorizontalRule from "../horizontal rule/HorizontalRule";
+import Button from "../button/Button";
 
 interface AppEditModalProps {
   app: AppInterface;
   open: boolean;
   setOpen: StateSetter<boolean>;
+  saveApp: (app: AppInterface) => void;
 }
 
 export default function AppEditModal({
   app,
   open,
   setOpen,
+  saveApp,
 }: AppEditModalProps) {
-  const { register, getValues } = useForm<AppInterface>({ defaultValues: app });
+  const { register, watch, reset } = useForm<AppInterface>({
+    defaultValues: app,
+  });
 
-  const modifiedApp = getValues();
+  const modifiedApp = watch();
 
-  const saveApp = (e: FormEvent<HTMLFormElement>) => {
+  const submitForm = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.warn("Save new app");
+    saveApp(modifiedApp);
+    closeModal();
   };
 
-  const onClose = () => {
+  const closeModal = () => {
+    reset();
     setOpen(false);
   };
 
+  useEffect(() => {
+    reset(app);
+  }, [app]);
+
   return (
-    <Modal open={open} onClose={onClose}>
-      <form
-        className="flex flex-col gap-4 bg-primary-900/40 p-8"
-        onSubmit={saveApp}
-      >
-        <h3 className="text-2xl">App edit modal</h3>
-        <div className="w-72 cursor-default">
-          <App app={modifiedApp} preview />
+    <Modal open={open} onClose={closeModal}>
+      <form className="flex flex-col gap-4 p-4" onSubmit={submitForm}>
+        <h3 className="text-2xl">Edit app</h3>
+        <HorizontalRule />
+        <div className="flex justify-center">
+          <div className="w-72 cursor-default">
+            <App app={modifiedApp} preview />
+          </div>
         </div>
         <div className="flex flex-col gap-2">
           <FormElementWrapper label="Icon">
@@ -52,6 +64,13 @@ export default function AppEditModal({
           <FormElementWrapper label="URL">
             <Input register={register("url")} />
           </FormElementWrapper>
+        </div>
+
+        <div className="mt-4 flex justify-between">
+          <Button type="submit" state="success">
+            Save
+          </Button>
+          <Button onClick={closeModal}>Exit</Button>
         </div>
       </form>
     </Modal>
