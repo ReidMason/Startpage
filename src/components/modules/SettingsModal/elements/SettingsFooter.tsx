@@ -28,7 +28,7 @@ export default function SettingsFooter({
         </div>
       )}
       <div className="ml-auto flex gap-4">
-        <Button type="submit" state="success">
+        <Button type="submit" form="settings-form" state="success">
           Save
         </Button>
         <Button variant="outline" onClick={() => closeWithoutSaving()}>

@@ -161,6 +161,7 @@ export default function SettingsModal({
           className="flex scroll-smooth"
           onSubmit={handleSubmit(saveSettings)}
           onClick={handleSettingsContentClicked}
+          id="settings-form"
         >
           <SettingsContent
             settingsSearch={settingsSearch}
