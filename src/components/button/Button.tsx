@@ -45,6 +45,7 @@ interface ButtonInputProps {
   variant?: Variant;
   pilled?: boolean;
   disabled?: boolean;
+  form?: string;
 }
 
 export default function Button({
@@ -56,6 +57,7 @@ export default function Button({
   variant,
   pilled,
   disabled,
+  form,
 }: ButtonInputProps) {
   const buttonType: Type = type ?? "button";
 
@@ -70,6 +72,7 @@ export default function Button({
       className={`${dynamicStyles} cursor-pointer border-2 border-transparent p-1 px-4 transition duration-300 focus-visible:outline-2 focus-visible:outline-primary-50 sm:min-w-[8rem] ${className}`}
       type={buttonType}
       disabled={disabled}
+      form={form}
     >
       {children}
     </button>
