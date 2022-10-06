@@ -13,12 +13,14 @@ const loadFramerFeatures = () =>
 export default function MainLayout({ children, config }: MainLayoutProps) {
   return (
     <div className="h-full min-h-screen">
-      <Image
-        className="object-cover"
-        alt="background image"
-        src={`/static/background.png?v=${config.general.cacheKey}`}
-        fill
-      />
+      <div className="fixed h-full w-full">
+        <Image
+          className="fixed object-cover"
+          alt="background image"
+          src={`/static/background.png?v=${config.general.cacheKey}`}
+          fill
+        />
+      </div>
       <div
         className={`h-full min-h-screen py-[5%] ${
           config.appearance.backgroundBlur ? "backdrop-blur-xl" : ""
