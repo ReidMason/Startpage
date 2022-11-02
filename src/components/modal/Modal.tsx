@@ -46,7 +46,7 @@ export default function Modal({
             transition={{ duration: 0.2 }}
           >
             <Dialog.Panel
-              className="flex max-h-full max-w-full flex-col overflow-y-scroll rounded-lg p-4 shadow-xl glassy:backdrop-blur-3xl dark:bg-primary-800 dark:text-primary-50 dark:glassy:bg-primary-800/30"
+              className="flex max-h-full max-w-full flex-col overflow-y-hidden rounded-lg p-4 shadow-xl glassy:backdrop-blur-3xl dark:bg-primary-800 dark:text-primary-50 dark:glassy:bg-primary-800/30"
               onScroll={onScroll}
             >
               {children}

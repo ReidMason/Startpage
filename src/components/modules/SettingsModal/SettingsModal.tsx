@@ -122,7 +122,7 @@ export default function SettingsModal({
   return (
     <Modal open={open} onClose={closeWithoutSaving}>
       <div
-        className={`flex overflow-x-hidden overflow-y-scroll ${
+        className={`flex overflow-x-hidden overflow-y-hidden ${
           menuVisible ? "gap-4" : ""
         }`}
         onScroll={handleScroll}
