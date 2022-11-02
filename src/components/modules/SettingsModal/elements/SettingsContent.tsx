@@ -53,7 +53,7 @@ export default function SettingsContent({
 
   useEffect(() => {
     setScrollContainerHeight(scrollContainer?.clientHeight ?? 0);
-  }, [scrollContainer]);
+  }, [scrollContainer?.clientHeight]);
 
   const matchElement = (
     searchTerm: string,
@@ -91,7 +91,7 @@ export default function SettingsContent({
       layoutScroll
       className={`${
         menuVisible ? "whitespace-nowrap" : ""
-      } flex h-full flex-col gap-4 overflow-y-scroll scroll-smooth transition md:w-[45rem] lg:px-4`}
+      } flex h-full flex-col gap-4 overflow-y-auto scroll-smooth transition md:w-[45rem] lg:px-4`}
       ref={(newRef) => setScrollContainer(newRef)}
       onScroll={onScroll}
     >
