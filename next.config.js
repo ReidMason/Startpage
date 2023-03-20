@@ -1,9 +1,8 @@
-module.exports = {
-  reactStrictMode: true,
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   experimental: {
-    outputStandalone: true,
-  },
-  images: {
-    domains: ['openweathermap.org'],
+    appDir: true,
   },
 }
+
+module.exports = nextConfig
