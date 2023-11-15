@@ -1,14 +1,17 @@
 import { api } from "~/trpc/server";
-import App from "~/app/_components/App/App";
+import { StyleController } from "./_components/StyleController/StyleController";
+import { MainContent } from "./_components/MainContent/MainContent";
 
 export default async function Home() {
-  const config = await api.config.getConfig.query();
+  const config = await api.config.get.query();
 
   return (
     <main>
-      {config.apps.map((app) => (
-        <App app={app} />
-      ))}
+      {
+        <StyleController config={config}>
+          <MainContent config={config} />
+        </StyleController>
+      }
     </main>
   );
 }
