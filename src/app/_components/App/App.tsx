@@ -1,5 +1,5 @@
 import React from "react";
-import type { App as AppInterface } from "~/server/services/config/config";
+import type { App as AppInterface } from "~/server/services/config/schemas";
 import Icon from "~/app/_components/Icon/Icon";
 
 interface AppProps {
