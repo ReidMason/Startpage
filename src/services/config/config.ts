@@ -1,5 +1,6 @@
 "use server";
 
+import { merge } from "lodash-es";
 import { Config, configSchema } from "./schemas";
 import fs from "fs";
 
@@ -8,10 +9,15 @@ const defaultConfig = configSchema.parse({});
 
 export async function getConfig(): Promise<Config> {
   ensureConfigExists();
-  // TODO: Parse with zod
-  const config: Config = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8"));
 
-  return config;
+  const rawConfig = fs.readFileSync(CONFIG_PATH, "utf8");
+
+  let config = JSON.parse(rawConfig);
+  const newConfig = merge(defaultConfig, config);
+  if (JSON.stringify(config) != JSON.stringify(newConfig))
+    saveConfig(newConfig);
+
+  return newConfig;
 }
 
 function ensureConfigExists() {
