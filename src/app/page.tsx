@@ -1,3 +1,4 @@
+import AppsGrid from "@/components/AppsGrid";
 import { getConfig } from "@/services/config/config";
 
 export default async function Home() {
@@ -5,7 +6,7 @@ export default async function Home() {
 
   return (
     <main>
-      <div>Version: {config.version}</div>
+      <AppsGrid config={config} />
     </main>
   );
 }
