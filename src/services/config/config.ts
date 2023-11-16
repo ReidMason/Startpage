@@ -9,10 +9,13 @@ const defaultConfig = configSchema.parse({});
 
 export async function getConfig(): Promise<Config> {
   ensureConfigExists();
-
   const rawConfig = fs.readFileSync(CONFIG_PATH, "utf8");
+  const config = JSON.parse(rawConfig);
 
-  let config = JSON.parse(rawConfig);
+  return validateConfig(config);
+}
+
+function validateConfig(config: Config): Config {
   const newConfig = merge(defaultConfig, config);
   if (JSON.stringify(config) != JSON.stringify(newConfig))
     saveConfig(newConfig);
@@ -21,7 +24,6 @@ export async function getConfig(): Promise<Config> {
 }
 
 function ensureConfigExists() {
-  // Try getting stats for the cache file, if it errors the file doesn't exist so we need to create it
   try {
     fs.statSync(CONFIG_PATH);
   } catch (ex) {
