@@ -1,4 +1,4 @@
-import AppsGrid from "@/components/AppsGrid";
+import AppsGrid from "@/components/Apps/AppsGrid";
 import { getConfig } from "@/services/config/config";
 
 export default async function Home() {
