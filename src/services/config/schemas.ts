@@ -1,7 +1,11 @@
 import { z } from "zod";
 
 const appSchema = z.object({
+  id: z.string(),
   name: z.string(),
+  url: z.string(),
+  icon: z.string(),
+  enabled: z.boolean().default(true),
 });
 
 export const configSchema = z.object({
@@ -15,7 +19,15 @@ export const configSchema = z.object({
       searchPlaceholder: z.string().default("Search..."),
     })
     .default({}),
-  apps: z.array(appSchema).default([{ name: "YouTube" }]),
+  apps: z.array(appSchema).default([
+    {
+      id: "1",
+      name: "YouTube",
+      url: "https://www.youtube.com/",
+      icon: "",
+      enabled: true,
+    },
+  ]),
 });
 
 export type Config = z.infer<typeof configSchema>;
