@@ -20,6 +20,13 @@ const appearanceSchema = z.object({
   glassy: z.boolean().default(true),
 });
 
+const providerSchema = z.object({
+  id: z.string(),
+  baseUrl: z.string(),
+  prefix: z.string(),
+  searchUrl: z.string(),
+});
+
 export const configSchema = z.object({
   version: z.number().default(2),
   general: z
@@ -40,8 +47,10 @@ export const configSchema = z.object({
       enabled: true,
     },
   ]),
+  providers: z.array(providerSchema).default([]),
   appearance: appearanceSchema.default({}),
 });
 
 export type Config = z.infer<typeof configSchema>;
 export type App = z.infer<typeof appSchema>;
+export type Provider = z.infer<typeof providerSchema>;
