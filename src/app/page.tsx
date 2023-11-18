@@ -1,4 +1,5 @@
-import AppsGrid from "@/components/Apps/AppsGrid";
+import MainDisplay from "@/components/MainDisplay/MainDisplay";
+import StyleHandler from "@/components/StyleHandler/StyleHandler";
 import { getConfig } from "@/services/config/config";
 
 export default async function Home() {
@@ -6,7 +7,9 @@ export default async function Home() {
 
   return (
     <main>
-      <AppsGrid config={config} />
+      <StyleHandler config={config}>
+        <MainDisplay config={config} />
+      </StyleHandler>
     </main>
   );
 }

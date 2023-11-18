@@ -1,11 +1,23 @@
 import { z } from "zod";
 
+enum Theme {
+  "default",
+}
+
 const appSchema = z.object({
   id: z.string(),
   name: z.string(),
   url: z.string(),
   icon: z.string(),
   enabled: z.boolean().default(true),
+});
+
+const appearanceSchema = z.object({
+  backgroundEnabled: z.boolean().default(false),
+  backgroundBlur: z.boolean().default(false),
+  theme: z.nativeEnum(Theme).default(Theme.default),
+  opacity: z.number().default(10),
+  glassy: z.boolean().default(true),
 });
 
 export const configSchema = z.object({
@@ -28,6 +40,7 @@ export const configSchema = z.object({
       enabled: true,
     },
   ]),
+  appearance: appearanceSchema.default({}),
 });
 
 export type Config = z.infer<typeof configSchema>;

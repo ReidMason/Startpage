@@ -22,6 +22,18 @@ const config: Config = {
           800: "rgb(var(--colour-primary-800) / <alpha-value>)",
           900: "rgb(var(--colour-primary-900) / <alpha-value>)",
         },
+        "primary-transparent": {
+          50: "rgb(var(--colour-primary-50) / var(--transparency-level))",
+          100: "rgb(var(--colour-primary-100) / var(--transparency-level))",
+          200: "rgb(var(--colour-primary-200) / var(--transparency-level))",
+          300: "rgb(var(--colour-primary-300) / var(--transparency-level))",
+          400: "rgb(var(--colour-primary-400) / var(--transparency-level))",
+          500: "rgb(var(--colour-primary-500) / var(--transparency-level))",
+          600: "rgb(var(--colour-primary-600) / var(--transparency-level))",
+          700: "rgb(var(--colour-primary-700) / var(--transparency-level))",
+          800: "rgb(var(--colour-primary-800) / var(--transparency-level))",
+          900: "rgb(var(--colour-primary-900) / var(--transparency-level))",
+        },
         green: {
           50: "rgb(var(--colour-green-50) / <alpha-value>)",
           100: "rgb(var(--colour-green-100) / <alpha-value>)",
@@ -74,7 +86,7 @@ const config: Config = {
     },
   },
   plugins: [
-    plugin(function({ addVariant }) {
+    plugin(function ({ addVariant }) {
       addVariant("glassy", ".glassy &");
     }),
   ],
