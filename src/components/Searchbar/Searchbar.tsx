@@ -1,6 +1,7 @@
 import { StateSetter } from "@/utils/common";
 import { Config, Provider } from "@/services/config/schemas";
 import { useState } from "react";
+import { isValidUrl } from "@/utils/utils";
 
 interface SearchBarProps {
   setAppFilter: StateSetter<string>;
@@ -14,7 +15,7 @@ export default function Searchbar({ setAppFilter, config }: SearchBarProps) {
     providers: Array<Provider>,
     searchTerm: string,
   ) => {
-    // Don't check if there aren't any providers yet or the search term doesn't start with a slash
+    // Don't check if there aren't any providers or the search term doesn't start with a slash
     if (!providers || !searchTerm.startsWith("/")) return false;
 
     // Search for words starting with a slash until a space or end of string
@@ -41,11 +42,10 @@ export default function Searchbar({ setAppFilter, config }: SearchBarProps) {
 
   const performWebSearch = (searchTerm: string) => {
     // Check if search term was url, if so just go straight to the page
-    try {
-      new URL(searchTerm);
+    if (isValidUrl(searchTerm)) {
       window.location.href = searchTerm;
       return;
-    } catch {}
+    }
 
     const chosenSearchUrl = config.general.customSearchEnabled
       ? config.general.customSearchUrl
