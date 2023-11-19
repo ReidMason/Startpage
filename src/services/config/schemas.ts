@@ -27,6 +27,13 @@ const providerSchema = z.object({
   searchUrl: z.string(),
 });
 
+const weatherSchema = z.object({
+  enabled: z.boolean().default(false),
+  location: z.string().default(""),
+  detailed: z.boolean().default(false),
+  apiKey: z.string().default(""),
+});
+
 export const configSchema = z.object({
   version: z.number().default(2),
   general: z
@@ -47,6 +54,7 @@ export const configSchema = z.object({
       enabled: true,
     },
   ]),
+  weather: weatherSchema.default({}),
   providers: z.array(providerSchema).default([]),
   appearance: appearanceSchema.default({}),
 });
