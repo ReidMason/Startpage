@@ -1,21 +1,65 @@
+"use client";
+
 import { Config } from "@/services/config/schemas";
-import { getWeatherData } from "@/services/weather/weather";
+import {
+  getDetailedWeatherData,
+  getWeatherData,
+} from "@/services/weather/weather";
 import Image from "next/image";
 import Icon from "../Icon/Icon";
+import { useEffect, useState } from "react";
+import { Weather } from "@/services/weather/schemas";
+import { getLocation, setLocation } from "@/services/cookies/cookies";
 
 interface WeatherDisplayProps {
   config: Config;
 }
 
-export default async function WeatherDisplay({ config }: WeatherDisplayProps) {
-  const weather = await getWeatherData(
-    config.weather.location,
-    config.weather.apiKey,
-  );
+export default function WeatherDisplay({ config }: WeatherDisplayProps) {
+  const [weather, setWeather] = useState<Weather | null>(null);
+
+  const showPosition = async (position: GeolocationPosition) => {
+    console.log("got weather");
+    setLocation({
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude,
+    });
+    updateWeather(position.coords.latitude, position.coords.longitude);
+  };
+
+  const updateWeather = async (lat: number, lon: number) => {
+    const weatherData = await getDetailedWeatherData(
+      lat,
+      lon,
+      config.weather.apiKey,
+    );
+
+    setWeather(weatherData);
+  };
+
+  const updateWeatherFromLocation = async () => {
+    const weatherData = await getWeatherData(
+      config.weather.location,
+      config.weather.apiKey,
+    );
+    setWeather(weatherData);
+  };
+
+  useEffect(() => {
+    if (config.weather.location) {
+      updateWeatherFromLocation();
+      return;
+    }
+
+    console.log("here");
+    const location = getLocation();
+    if (location) updateWeather(location.latitude, location.longitude);
+    navigator.geolocation.getCurrentPosition(showPosition);
+  }, []);
 
   return (
     <div className="text-primary-100">
-      {weather && (
+      {!!weather ? (
         <div className="flex">
           <Image
             src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
@@ -43,6 +87,16 @@ export default async function WeatherDisplay({ config }: WeatherDisplayProps) {
                 <span>Feels Like {Math.round(weather.feelsLike)}°C</span>
               </div>
             )}
+          </div>
+        </div>
+      ) : (
+        <div className="flex h-[100px] animate-pulse space-x-4">
+          <div className="flex h-full items-center">
+            <div className="h-16 w-16 rounded-full bg-primary-200 dark:bg-primary-700/40" />
+          </div>
+          <div className="flex w-36 flex-col gap-2">
+            <div className="h-6 rounded-xl bg-primary-200 dark:bg-primary-700/40" />
+            <div className="h-16 rounded-xl bg-primary-200 dark:bg-primary-700/40" />
           </div>
         </div>
       )}

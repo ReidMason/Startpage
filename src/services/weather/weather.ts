@@ -1,3 +1,5 @@
+"use server";
+
 import { BasicWeatherData, Weather, WeatherDataResponse } from "./schemas";
 import { cacheWeatherData, getCacheData } from "../cache/cache";
 import { getUnixTime } from "@/utils/utils";
@@ -16,13 +18,34 @@ async function requestWeatherData(
   location: string,
   apiKey: string,
 ): Promise<Weather | null> {
-  console.info(`Requesting weather data for: "${location}"`);
   // Get basic weather data so we have the lat/lon
   const basicWeatherData = await getBasicWeatherData(location, apiKey);
   if (basicWeatherData === null) return null;
 
-  // Request weather data
-  const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${basicWeatherData.coord.lat}&lon=${basicWeatherData.coord.lon}&exclude=minutely&units=metric&appid=${apiKey}`;
+  // Format weather data
+  const weatherData = await getDetailedWeatherData(
+    basicWeatherData.coord.lat,
+    basicWeatherData.coord.lon,
+    apiKey,
+  );
+
+  if (weatherData) cacheWeatherData(weatherData, location);
+
+  return weatherData;
+}
+
+export async function getDetailedWeatherData(
+  lat: number,
+  lon: number,
+  apiKey: string,
+): Promise<Weather | null> {
+  const cachedWeatherData = await getCachedWeatherData(`${lat},${lon}`);
+  if (cachedWeatherData) {
+    console.log("Got cached weather data detailed");
+    return cachedWeatherData;
+  }
+
+  const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely&units=metric&appid=${apiKey}`;
   const weatherResponse = await fetch(url);
   if (weatherResponse.status !== 200) return null;
 
@@ -31,9 +54,8 @@ async function requestWeatherData(
   );
 
   // Cache the weather data
-  await cacheWeatherData(weatherData, location);
+  await cacheWeatherData(weatherData, `${lat},${lon}`);
 
-  // Format weather data
   return weatherData;
 }
 
