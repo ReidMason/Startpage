@@ -53,7 +53,9 @@ export default function Searchbar({ setAppFilter, config }: SearchBarProps) {
     window.location.href = chosenSearchUrl + encodeURIComponent(searchTerm);
   };
 
-  const search = () => {
+  const search = (e: React.FormEvent) => {
+    e.preventDefault();
+
     // Ignore blank search terms
     if (searchTerm === "") return;
 
@@ -81,19 +83,16 @@ export default function Searchbar({ setAppFilter, config }: SearchBarProps) {
     updateAppFilter(input);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") search();
-  };
-
   return (
-    <input
-      autoFocus
-      spellCheck="false"
-      className="h-10 w-full border-b-2 border-primary-200/40 bg-transparent py-2 text-3xl outline-none placeholder:text-primary-50/80"
-      placeholder={config.general.searchPlaceholder ?? ""}
-      onChange={updateSearchTerm}
-      onKeyDown={handleKeyDown}
-      aria-label="searchbar"
-    />
+    <form onSubmit={search}>
+      <input
+        autoFocus
+        spellCheck="false"
+        className="h-10 w-full border-b-2 border-primary-200/40 bg-transparent py-2 text-3xl outline-none placeholder:text-primary-50/80"
+        placeholder={config.general.searchPlaceholder ?? ""}
+        onChange={updateSearchTerm}
+        aria-label="searchbar"
+      />
+    </form>
   );
 }
