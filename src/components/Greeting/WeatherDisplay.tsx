@@ -1,21 +1,21 @@
 import { Config } from "@/services/config/schemas";
-import { Icon } from "@iconify/react";
+import { getWeatherData } from "@/services/weather/weather";
 import Image from "next/image";
+import Icon from "../Icon/Icon";
 
 interface WeatherDisplayProps {
-  detailed: boolean;
   config: Config;
 }
 
-export default function WeatherDisplay({
-  detailed,
-  config,
-}: WeatherDisplayProps) {
-  const weather = await;
+export default async function WeatherDisplay({ config }: WeatherDisplayProps) {
+  const weather = await getWeatherData(
+    config.weather.location,
+    config.weather.apiKey,
+  );
 
   return (
-    <>
-      {weather ? (
+    <div className="text-primary-100">
+      {weather && (
         <div className="flex">
           <Image
             src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
@@ -38,24 +38,14 @@ export default function WeatherDisplay({
               )}
             </div>
 
-            {detailed && (
+            {config.weather.detailed && (
               <div className="flex flex-col text-lg">
                 <span>Feels Like {Math.round(weather.feelsLike)}°C</span>
               </div>
             )}
           </div>
         </div>
-      ) : (
-        <div className="flex h-[100px] animate-pulse space-x-4">
-          <div className="flex h-full items-center">
-            <div className="h-16 w-16 rounded-full bg-primary-200 dark:bg-primary-700/40"></div>
-          </div>
-          <div className="flex w-36 flex-col gap-2">
-            <div className="h-6 rounded-xl bg-primary-200 dark:bg-primary-700/40"></div>
-            <div className="h-16 rounded-xl bg-primary-200 dark:bg-primary-700/40"></div>
-          </div>
-        </div>
       )}
-    </>
+    </div>
   );
 }
