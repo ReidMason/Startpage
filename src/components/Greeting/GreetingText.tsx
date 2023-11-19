@@ -1,3 +1,5 @@
+"use client";
+
 import type { Config } from "@/services/config/schemas";
 import { useEffect, useState } from "react";
 
