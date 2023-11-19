@@ -51,7 +51,6 @@ export default function WeatherDisplay({ config }: WeatherDisplayProps) {
       return;
     }
 
-    console.log("here");
     const location = getLocation();
     if (location) updateWeather(location.latitude, location.longitude);
     navigator.geolocation.getCurrentPosition(showPosition);
