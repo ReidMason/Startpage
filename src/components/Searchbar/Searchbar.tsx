@@ -1,6 +1,6 @@
 import { StateSetter } from "@/utils/common";
 import { Config, Provider } from "@/services/config/schemas";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { isValidUrl } from "@/utils/utils";
 
 interface SearchBarProps {
@@ -10,6 +10,7 @@ interface SearchBarProps {
 
 export default function Searchbar({ setAppFilter, config }: SearchBarProps) {
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const input = useRef<HTMLInputElement>(null);
 
   const tryProviderSearch = (
     providers: Array<Provider>,
@@ -83,10 +84,30 @@ export default function Searchbar({ setAppFilter, config }: SearchBarProps) {
     updateAppFilter(input);
   };
 
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (
+        e.key == "/" &&
+        input.current &&
+        document.activeElement != input.current
+      ) {
+        input.current.focus();
+        e.preventDefault();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return function cleanup() {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
     <form onSubmit={search}>
       <input
         autoFocus
+        ref={input}
         spellCheck="false"
         className="h-10 w-full border-b-2 border-primary-200/40 bg-transparent py-2 text-3xl outline-none placeholder:text-primary-50/80"
         placeholder={config.general.searchPlaceholder ?? ""}
