@@ -5,7 +5,7 @@ export type Weather = z.infer<typeof weatherSchema>;
 export type WeatherDataResponse = z.infer<typeof weatherDataResponseSchema>;
 export type BasicWeatherData = z.infer<typeof basicWeatherDataSchema>;
 
-const weatherSchema = z.object({
+export const weatherSchema = z.object({
   time: z.number(),
   temperature: z.number(),
   description: z.string(),
