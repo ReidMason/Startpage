@@ -9,7 +9,10 @@ import Image from "next/image";
 import Icon from "../Icon/Icon";
 import { useEffect, useState } from "react";
 import { Weather } from "@/services/weather/schemas";
-import { getLocation, setLocation } from "@/services/cookies/cookies";
+import { getIpInfo } from "@/services/ipInfo/ipInfo";
+import { getIpCookie, setIpCookie } from "@/services/cookies/cookies";
+import { getCachedIpInfo, cacheIpInfo } from "@/services/ipInfo/cachedIpInfo";
+import { IpInfo } from "@/services/ipInfo/schema";
 
 interface WeatherDisplayProps {
   config: Config;
@@ -17,14 +20,28 @@ interface WeatherDisplayProps {
 
 export default function WeatherDisplay({ config }: WeatherDisplayProps) {
   const [weather, setWeather] = useState<Weather | null>(null);
+  const [ipInfo, setIpInfo] = useState<IpInfo | null>(null);
 
-  const showPosition = async (position: GeolocationPosition) => {
-    console.log("got weather");
-    setLocation({
-      latitude: position.coords.latitude,
-      longitude: position.coords.longitude,
-    });
-    updateWeather(position.coords.latitude, position.coords.longitude);
+  const getWeatherFromIp = async () => {
+    let newIpInfo: IpInfo | undefined = undefined;
+
+    const ip = getIpCookie();
+    if (ip != undefined) {
+      newIpInfo = await getCachedIpInfo(ip);
+    }
+
+    if (newIpInfo == undefined) {
+      newIpInfo = await getIpInfo();
+      if (newIpInfo != undefined) {
+        cacheIpInfo(newIpInfo.query, newIpInfo);
+        setIpCookie(newIpInfo.query);
+      }
+    }
+
+    if (newIpInfo != undefined) {
+      updateWeather(newIpInfo.lat, newIpInfo.lon);
+      setIpInfo(newIpInfo);
+    }
   };
 
   const updateWeather = async (lat: number, lon: number) => {
@@ -51,9 +68,7 @@ export default function WeatherDisplay({ config }: WeatherDisplayProps) {
       return;
     }
 
-    const location = getLocation();
-    if (location) updateWeather(location.latitude, location.longitude);
-    navigator.geolocation.getCurrentPosition(showPosition);
+    getWeatherFromIp();
   }, []);
 
   return (
@@ -86,6 +101,7 @@ export default function WeatherDisplay({ config }: WeatherDisplayProps) {
                 <span>Feels Like {Math.round(weather.feelsLike)}°C</span>
               </div>
             )}
+            {ipInfo && <p>{ipInfo.city}</p>}
           </div>
         </div>
       ) : (

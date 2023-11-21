@@ -1,13 +1,27 @@
 import { getUnixTime } from "@/utils/utils";
 import { Weather } from "../weather/schemas";
-import Cache from "./types";
+import { type Cache, cacheSchema } from "./types";
 import fs from "fs/promises";
+import { IpInfo } from "../ipInfo/schema";
+import { merge } from "lodash-es";
 
 const CACHE_PATH = "./data/cache.json";
+const WEATHER_CACHE_DURATION = 3600;
+const defaultCache = cacheSchema.parse({});
 
 export async function getCacheData(): Promise<Cache> {
   await ensureCacheFileExists();
-  return JSON.parse(await fs.readFile("./data/cache.json", "utf8"));
+  const cache = JSON.parse(await fs.readFile("./data/cache.json", "utf8"));
+
+  return validateCache(cache);
+}
+
+function validateCache(cache: Cache): Cache {
+  const newCache = merge(defaultCache, cache);
+  if (JSON.stringify(cache) != JSON.stringify(newCache))
+    saveCacheData(newCache);
+
+  return newCache;
 }
 
 async function ensureCacheFileExists() {
@@ -21,6 +35,7 @@ async function ensureCacheFileExists() {
 }
 
 const saveCacheData = (cacheData: Cache) => {
+  cacheData = pruneCachedWeatherData(cacheData);
   fs.writeFile(CACHE_PATH, JSON.stringify(cacheData));
 };
 
@@ -43,6 +58,27 @@ export async function cacheWeatherData(
     timeObtained: getUnixTime(),
     weatherData: newWeatherdata,
   });
+
+  saveCacheData(cacheData);
+}
+
+function pruneCachedWeatherData(cacheData: Cache): Cache {
+  const currentTime = getUnixTime();
+  cacheData.cachedWeatherData = cacheData.cachedWeatherData.filter(
+    (x) => currentTime - x.timeObtained <= WEATHER_CACHE_DURATION,
+  );
+
+  return cacheData;
+}
+
+export async function cacheIpInfo(ip: string, data: IpInfo) {
+  const cacheData = await getCacheData();
+  if (!cacheData.ipInfo) cacheData.ipInfo = {};
+
+  cacheData.ipInfo[ip] = {
+    timeObtained: getUnixTime(),
+    data,
+  };
 
   saveCacheData(cacheData);
 }
