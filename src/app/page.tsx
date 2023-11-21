@@ -6,7 +6,7 @@ export default async function Home() {
   const config = await getConfig();
 
   return (
-    <main>
+    <main className="py-[5%]">
       <StyleHandler config={config}>
         <MainDisplay config={config} />
       </StyleHandler>

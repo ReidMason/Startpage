@@ -75,13 +75,14 @@ export default function WeatherDisplay({ config }: WeatherDisplayProps) {
     <div className="text-primary-100">
       {!!weather ? (
         <div className="flex">
-          <Image
-            src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
-            alt="weather"
-            width={100}
-            height={100}
-          />
-
+          <div>
+            <Image
+              src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
+              alt="weather"
+              width={100}
+              height={100}
+            />
+          </div>
           <div className="flex flex-col justify-center">
             <p className="mb-2 hidden capitalize md:block">
               {weather.description}
@@ -105,7 +106,7 @@ export default function WeatherDisplay({ config }: WeatherDisplayProps) {
           </div>
         </div>
       ) : (
-        <div className="flex h-[100px] animate-pulse space-x-4">
+        <div className="flex h-[124px] animate-pulse space-x-4">
           <div className="flex h-full items-center">
             <div className="h-16 w-16 rounded-full bg-primary-200 dark:bg-primary-700/40" />
           </div>
