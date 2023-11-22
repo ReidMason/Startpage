@@ -10,7 +10,10 @@ export default async function Home() {
     <main className="py-[5%]">
       <StyleHandler config={config}>
         <MainDisplay config={config} />
-        <Button>Settings</Button>
+        <div className="flex gap-4">
+          <Button>Settings</Button>
+          <Button>Edit mode</Button>
+        </div>
       </StyleHandler>
     </main>
   );
