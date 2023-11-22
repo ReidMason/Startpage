@@ -1,3 +1,4 @@
+import { Button } from "@/components/Button/Button";
 import MainDisplay from "@/components/MainDisplay/MainDisplay";
 import StyleHandler from "@/components/StyleHandler/StyleHandler";
 import { getConfig } from "@/services/config/config";
@@ -9,6 +10,7 @@ export default async function Home() {
     <main className="py-[5%]">
       <StyleHandler config={config}>
         <MainDisplay config={config} />
+        <Button>Settings</Button>
       </StyleHandler>
     </main>
   );
