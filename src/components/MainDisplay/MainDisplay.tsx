@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import AppsGrid from "../Apps/AppsGrid";
 import Searchbar from "../Searchbar/Searchbar";
 import Greeting from "../Greeting/Greeting";
+import EditableAppsGrid from "../Apps/EditableAppsGrid";
 
 interface MainDisplayProps {
   config: Config;
@@ -19,7 +20,8 @@ export default function MainDisplay({ config }: MainDisplayProps) {
       <div>
         <Greeting config={config} />
       </div>
-      <AppsGrid config={config} appFilter={filter} />
+      {/*<AppsGrid config={config} appFilter={filter} /> */}
+      <EditableAppsGrid config={config} appFilter={filter} />
     </div>
   );
 }
