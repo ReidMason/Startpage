@@ -11,7 +11,9 @@ interface SortableItemProps {
 
 export function SortableItem({ id, children }: SortableItemProps) {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id });
+    useSortable({
+      id,
+    });
 
   const style = {
     transform: CSS.Transform.toString(transform),

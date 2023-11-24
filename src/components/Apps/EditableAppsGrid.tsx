@@ -15,6 +15,7 @@ import {
 import {
   SortableContext,
   arrayMove,
+  rectSortingStrategy,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
 import { SortableItem } from "../DragAndDrop/SortableItem";
@@ -50,17 +51,19 @@ export default function AppsGrid({ config }: AppsGridProps) {
   };
 
   return (
-    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
+    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 relative">
       <DndContext
         onDragEnd={handleDragEnd}
         sensors={sensors}
         collisionDetection={closestCenter}
       >
-        <SortableContext items={config.apps}>
+        <SortableContext items={apps} strategy={rectSortingStrategy}>
           {apps.map((app) => (
-            <SortableItem id={app.id} key={app.id}>
-              <App app={app} preview />
-            </SortableItem>
+            <div>
+              <SortableItem id={app.id} key={app.id}>
+                <App app={app} preview />
+              </SortableItem>
+            </div>
           ))}
         </SortableContext>
       </DndContext>
