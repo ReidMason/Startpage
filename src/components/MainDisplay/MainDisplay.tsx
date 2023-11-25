@@ -7,6 +7,7 @@ import Searchbar from "../Searchbar/Searchbar";
 import Greeting from "../Greeting/Greeting";
 import EditableAppsGrid from "../Apps/EditableAppsGrid";
 import { Button } from "../Button/Button";
+import SettingsSidebar from "../SettingsSidebar";
 
 interface MainDisplayProps {
   config: Config;
@@ -15,10 +16,11 @@ interface MainDisplayProps {
 export default function MainDisplay({ config }: MainDisplayProps) {
   const [filter, setFilter] = useState("");
   const [editMode, setEditMode] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <>
-      <div className="container mx-auto mb-20 flex flex-col gap-8 p-8 text-primary-300 transition bg-primary-transparent-900 glassy:backdrop-blur-xl dark:text-primary-100 sm:p-16 sm:glassy:rounded-2xl">
+    <SettingsSidebar open={sidebarOpen} setOpen={setSidebarOpen}>
+      <div className="container mx-auto flex flex-col gap-8 p-8 text-primary-300 transition bg-primary-transparent-900 glassy:backdrop-blur-xl dark:text-primary-100 sm:p-16 sm:glassy:rounded-2xl">
         <Searchbar config={config} setAppFilter={setFilter} />
         <Greeting config={config} />
         {editMode ? (
@@ -29,11 +31,11 @@ export default function MainDisplay({ config }: MainDisplayProps) {
       </div>
 
       <div className="flex gap-4">
-        <Button>Settings</Button>
+        <Button onClick={() => setSidebarOpen(true)}>Settings</Button>
         <Button onClick={() => setEditMode(!editMode)}>
           {editMode ? "View mode" : "Edit mode"}
         </Button>
       </div>
-    </>
+    </SettingsSidebar>
   );
 }
