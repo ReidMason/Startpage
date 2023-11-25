@@ -1,20 +1,31 @@
-import React from "react";
+import type { HTMLAttributes } from "react";
 import type { App as AppInterface } from "@/services/config/schemas";
 import Icon from "@/components/Icon/Icon";
 
-interface AppProps {
+// interface ButtonProps
+//   extends DetailedHTMLProps<
+//       React.ButtonHTMLAttributes<HTMLButtonElement>,
+//       HTMLButtonElement
+//     >,
+//     React.AriaAttributes {}
+
+interface AppProps extends HTMLAttributes<HTMLDivElement> {
   app: AppInterface;
   preview?: boolean;
+  clasName?: string;
 }
 
-export default function App({ app, preview }: AppProps) {
+export default function App({ app, preview, ...props }: AppProps) {
   // Remove http, https and trailing slashes
   const displayUrl = app.url.replace(/^https?:\/\//gi, "").split("/", 1)[0];
 
-  const nonPreviewStyling = preview ? "" : "hover:scale-105";
+  const nonPreviewStyling = preview ? "" : " hover:scale-105";
+  props.className = (
+    props.className + ` transition duration-200${nonPreviewStyling}`
+  ).trim();
 
   return (
-    <div className={`${nonPreviewStyling} transition duration-200`}>
+    <div {...props}>
       <a
         className="flex rounded-lg p-2 transition duration-200 hover:bg-primary-100 hover:shadow-lg focus:bg-primary-100 focus:shadow-lg focus:outline-none dark:text-primary-100 hover:dark:bg-primary-100/30 focus:dark:bg-primary-100/30"
         {...(preview ? {} : { href: app.url })}
