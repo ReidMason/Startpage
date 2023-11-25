@@ -19,6 +19,8 @@ import {
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
 import { SortableItem } from "../DragAndDrop/SortableItem";
+import { PlusIcon } from "@heroicons/react/20/solid";
+import { generateUuid } from "@/utils/utils";
 
 interface AppsGridProps {
   config: Config;
@@ -50,6 +52,19 @@ export default function AppsGrid({ config }: AppsGridProps) {
     }
   };
 
+  const createNewApp = () => {
+    setApps((oldApps) => [
+      ...oldApps,
+      {
+        id: generateUuid(),
+        url: "",
+        icon: "",
+        name: "",
+        enabled: true,
+      },
+    ]);
+  };
+
   return (
     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 relative">
       <DndContext
@@ -63,6 +78,12 @@ export default function AppsGrid({ config }: AppsGridProps) {
               <App app={app} preview />
             </SortableItem>
           ))}
+          <button
+            className="rounded-lg border border-primary-400/80 flex items-center justify-center"
+            onClick={createNewApp}
+          >
+            <PlusIcon className="w-12 h-12" />
+          </button>
         </SortableContext>
       </DndContext>
     </div>
