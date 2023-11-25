@@ -12,15 +12,13 @@ import type { Props as DndContextProps } from "@dnd-kit/core/dist/components/Dnd
 
 interface DndWrapperProps extends DndContextProps { }
 
-export const DndWrapper = ({ sensors, ...props }: DndWrapperProps) => {
-  if (sensors === undefined) {
-    sensors = useSensors(
-      useSensor(PointerSensor),
-      useSensor(KeyboardSensor, {
-        coordinateGetter: sortableKeyboardCoordinates,
-      }),
-    );
-  }
+export const DndWrapper = ({ sensors: _, ...props }: DndWrapperProps) => {
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
 
   return (
     <DndContext {...props} sensors={sensors}>
