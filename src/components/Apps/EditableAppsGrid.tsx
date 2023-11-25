@@ -48,7 +48,7 @@ export default function AppsGrid({ config }: AppsGridProps) {
   };
 
   return (
-    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 relative">
+    <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 relative">
       <DndWrapper onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
         <SortableWrapper items={apps}>
           {apps.map((app) => (
@@ -56,14 +56,13 @@ export default function AppsGrid({ config }: AppsGridProps) {
               <App app={app} preview />
             </SortableItem>
           ))}
-          <button
-            className="rounded-lg border-2 border-dashed border-primary-400/80 hover:border-primary-400 flex items-center justify-center p-1 hover:opacity-100 transition-all"
-            onClick={createNewApp}
-          >
-            <PlusIcon className="w-10 h-10" />
-          </button>
+          <li className="rounded-lg border-2 border-dashed border-primary-400/80 hover:border-primary-400 flex items-center justify-center p-1 hover:opacity-100 transition-all">
+            <button onClick={createNewApp}>
+              <PlusIcon className="w-10 h-10" />
+            </button>
+          </li>
         </SortableWrapper>
       </DndWrapper>
-    </div>
+    </ul>
   );
 }

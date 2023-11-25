@@ -12,16 +12,18 @@ interface AppsGridProps {
 export default function AppsGrid({ config, appFilter }: AppsGridProps) {
   const filteredApps = !!appFilter.trim()
     ? config.apps.filter((x) => {
-        const filter = appFilter.toLowerCase().trim();
-        return x.name.toLowerCase().trim().includes(filter);
-      })
+      const filter = appFilter.toLowerCase().trim();
+      return x.name.toLowerCase().trim().includes(filter);
+    })
     : config.apps;
 
   return (
-    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
+    <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
       {filteredApps.map((app) => (
-        <App key={app.id} app={app} />
+        <li key={app.id}>
+          <App app={app} />
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
