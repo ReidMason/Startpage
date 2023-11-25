@@ -2,13 +2,6 @@ import type { HTMLAttributes } from "react";
 import type { App as AppInterface } from "@/services/config/schemas";
 import Icon from "@/components/Icon/Icon";
 
-// interface ButtonProps
-//   extends DetailedHTMLProps<
-//       React.ButtonHTMLAttributes<HTMLButtonElement>,
-//       HTMLButtonElement
-//     >,
-//     React.AriaAttributes {}
-
 interface AppProps extends HTMLAttributes<HTMLDivElement> {
   app: AppInterface;
   preview?: boolean;
