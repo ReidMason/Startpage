@@ -56,8 +56,11 @@ export default function AppsGrid({ config }: AppsGridProps) {
               <App app={app} preview />
             </SortableItem>
           ))}
-          <li className="rounded-lg border-2 border-dashed border-primary-400/80 hover:border-primary-400 flex items-center justify-center p-1 hover:opacity-100 transition-all">
-            <button onClick={createNewApp}>
+          <li className="rounded-lg border-2 border-dashed border-primary-400/80 hover:border-primary-400 hover:opacity-100 transition-all">
+            <button
+              onClick={createNewApp}
+              className="flex items-center w-full justify-center p-1"
+            >
               <PlusIcon className="w-10 h-10" />
             </button>
           </li>
