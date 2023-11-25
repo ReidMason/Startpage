@@ -59,11 +59,9 @@ export default function AppsGrid({ config }: AppsGridProps) {
       >
         <SortableContext items={apps} strategy={rectSortingStrategy}>
           {apps.map((app) => (
-            <div>
-              <SortableItem id={app.id} key={app.id}>
-                <App app={app} preview />
-              </SortableItem>
-            </div>
+            <SortableItem id={app.id} key={app.id}>
+              <App app={app} preview />
+            </SortableItem>
           ))}
         </SortableContext>
       </DndContext>
