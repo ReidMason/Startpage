@@ -3,24 +3,13 @@
 import React, { useState } from "react";
 import type { Config } from "@/services/config/schemas";
 import App from "./App";
-import {
-  DndContext,
-  DragEndEvent,
-  KeyboardSensor,
-  PointerSensor,
-  closestCenter,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  arrayMove,
-  rectSortingStrategy,
-  sortableKeyboardCoordinates,
-} from "@dnd-kit/sortable";
+import { DragEndEvent, closestCenter } from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
 import { SortableItem } from "../DragAndDrop/SortableItem";
 import { PlusIcon } from "@heroicons/react/20/solid";
 import { generateUuid } from "@/utils/utils";
+import SortableWrapper from "../DragAndDrop/SortableWrapper";
+import { DndWrapper } from "../DragAndDrop/DndWrapper";
 
 interface AppsGridProps {
   config: Config;
@@ -29,13 +18,6 @@ interface AppsGridProps {
 
 export default function AppsGrid({ config }: AppsGridProps) {
   const [apps, setApps] = useState(config.apps);
-
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  );
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -67,12 +49,8 @@ export default function AppsGrid({ config }: AppsGridProps) {
 
   return (
     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 relative">
-      <DndContext
-        onDragEnd={handleDragEnd}
-        sensors={sensors}
-        collisionDetection={closestCenter}
-      >
-        <SortableContext items={apps} strategy={rectSortingStrategy}>
+      <DndWrapper onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
+        <SortableWrapper items={apps}>
           {apps.map((app) => (
             <SortableItem id={app.id} key={app.id}>
               <App app={app} preview />
@@ -84,8 +62,8 @@ export default function AppsGrid({ config }: AppsGridProps) {
           >
             <PlusIcon className="w-12 h-12" />
           </button>
-        </SortableContext>
-      </DndContext>
+        </SortableWrapper>
+      </DndWrapper>
     </div>
   );
 }
