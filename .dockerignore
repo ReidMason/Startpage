@@ -6,6 +6,5 @@ node_modules
 bun.lockb
 docker-compose.yml
 dockerfile
-pnpm.lock.yaml
 data
 README.md
