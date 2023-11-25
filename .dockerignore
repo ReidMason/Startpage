@@ -1,3 +1,11 @@
 .git
 .next
 node_modules
+.eslintrc.json
+.gitignore
+bun.lockb
+docker-compose.yml
+dockerfile
+pnpm.lock.yaml
+data
+README.md
