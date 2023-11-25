@@ -57,10 +57,10 @@ export default function AppsGrid({ config }: AppsGridProps) {
             </SortableItem>
           ))}
           <button
-            className="rounded-lg border border-primary-400/80 flex items-center justify-center"
+            className="rounded-lg border-2 border-dashed border-primary-400/80 hover:border-primary-400 flex items-center justify-center p-1 hover:opacity-100 transition-all"
             onClick={createNewApp}
           >
-            <PlusIcon className="w-12 h-12" />
+            <PlusIcon className="w-10 h-10" />
           </button>
         </SortableWrapper>
       </DndWrapper>
