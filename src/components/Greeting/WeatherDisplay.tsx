@@ -1,6 +1,6 @@
 "use client";
 
-import { Config } from "@/services/config/schemas";
+import { WeatherConfig } from "@/services/config/schemas";
 import {
   getDetailedWeatherData,
   getWeatherData,
@@ -15,7 +15,7 @@ import { getCachedIpInfo, cacheIpInfo } from "@/services/ipInfo/cachedIpInfo";
 import { IpInfo } from "@/services/ipInfo/schema";
 
 interface WeatherDisplayProps {
-  config: Config;
+  config: WeatherConfig;
 }
 
 export default function WeatherDisplay({ config }: WeatherDisplayProps) {
@@ -45,25 +45,18 @@ export default function WeatherDisplay({ config }: WeatherDisplayProps) {
   };
 
   const updateWeather = async (lat: number, lon: number) => {
-    const weatherData = await getDetailedWeatherData(
-      lat,
-      lon,
-      config.weather.apiKey,
-    );
+    const weatherData = await getDetailedWeatherData(lat, lon, config.apiKey);
 
     setWeather(weatherData);
   };
 
   const updateWeatherFromLocation = async () => {
-    const weatherData = await getWeatherData(
-      config.weather.location,
-      config.weather.apiKey,
-    );
+    const weatherData = await getWeatherData(config.location, config.apiKey);
     setWeather(weatherData);
   };
 
   useEffect(() => {
-    if (config.weather.location) {
+    if (config.location) {
       updateWeatherFromLocation();
       return;
     }
@@ -89,7 +82,7 @@ export default function WeatherDisplay({ config }: WeatherDisplayProps) {
             </p>
             <div className="flex items-center justify-between gap-4 md:items-end">
               <p className="text-4xl">{Math.round(weather.temperature)}°C</p>
-              {config.weather.detailed && (
+              {config.detailed && (
                 <div className="mb-1 flex items-center gap-1 text-lg">
                   <Icon icon="bi:cloud-rain-heavy-fill" />
                   <span>{Math.round(weather.rainChance * 100)}%</span>
@@ -97,7 +90,7 @@ export default function WeatherDisplay({ config }: WeatherDisplayProps) {
               )}
             </div>
 
-            {config.weather.detailed && (
+            {config.detailed && (
               <div className="flex flex-col text-lg">
                 <span>Feels Like {Math.round(weather.feelsLike)}°C</span>
               </div>
