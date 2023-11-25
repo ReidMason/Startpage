@@ -1,13 +1,19 @@
-import React from "react";
+import type { DetailedHTMLProps } from "react";
 
-interface ButtonProps {
-  children: React.ReactNode;
-}
+interface ButtonProps
+  extends DetailedHTMLProps<
+      React.ButtonHTMLAttributes<HTMLButtonElement>,
+      HTMLButtonElement
+    >,
+    React.AriaAttributes {}
 
-export const Button = ({ children }: ButtonProps) => {
+export const Button = (props: ButtonProps) => {
   return (
-    <button className="rounded-full text-primary-50 p-4 bg-primary-700">
-      {children}
+    <button
+      className="rounded-full text-primary-50 p-4 bg-primary-700"
+      {...props}
+    >
+      {props.children}
     </button>
   );
 };
