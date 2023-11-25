@@ -1,6 +1,6 @@
 "use client";
 
-import type { Config } from "@/services/config/schemas";
+import type { GeneralConfig } from "@/services/config/schemas";
 import { useEffect, useState } from "react";
 
 function getDateOrdinal(date: Date) {
@@ -26,7 +26,7 @@ const greetings: { [key: number]: string } = {
 };
 
 interface GreetingTextProps {
-  config: Config;
+  config: GeneralConfig;
 }
 
 export default function GreetingText({ config }: GreetingTextProps) {
@@ -56,11 +56,9 @@ export default function GreetingText({ config }: GreetingTextProps) {
     <div aria-label="greeting-section">
       <div className="mb-3" aria-label="current-date">
         <a
-          className={`text-xl font-semibold ${config.general.calendarUrl ? "cursor-pointer" : ""
+          className={`text-xl font-semibold ${config.calendarUrl ? "cursor-pointer" : ""
             }`}
-          href={
-            config.general.calendarUrl ? config.general.calendarUrl : undefined
-          }
+          href={config.calendarUrl ? config.calendarUrl : undefined}
           tabIndex={-1}
         >
           {dayOfWeek}

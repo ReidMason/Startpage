@@ -34,17 +34,17 @@ const weatherSchema = z.object({
   apiKey: z.string().default(""),
 });
 
+const generalSchema = z.object({
+  searchUrl: z.string().default("https://www.google.com/search?q="),
+  customSearchUrl: z.string().default(""),
+  customSearchEnabled: z.boolean().default(false),
+  calendarUrl: z.string().default("https://calendar.google.com/calendar/"),
+  searchPlaceholder: z.string().default("Search..."),
+});
+
 export const configSchema = z.object({
   version: z.number().default(2),
-  general: z
-    .object({
-      searchUrl: z.string().default("https://www.google.com/search?q="),
-      customSearchUrl: z.string().default(""),
-      customSearchEnabled: z.boolean().default(false),
-      calendarUrl: z.string().default("https://calendar.google.com/calendar/"),
-      searchPlaceholder: z.string().default("Search..."),
-    })
-    .default({}),
+  general: generalSchema.default({}),
   apps: z.array(appSchema).default([
     {
       id: "1",
@@ -60,5 +60,7 @@ export const configSchema = z.object({
 });
 
 export type Config = z.infer<typeof configSchema>;
+export type GeneralConfig = z.infer<typeof generalSchema>;
 export type App = z.infer<typeof appSchema>;
 export type Provider = z.infer<typeof providerSchema>;
+export type WeatherConfig = z.infer<typeof weatherSchema>;
