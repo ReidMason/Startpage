@@ -27,7 +27,7 @@ export function SortableItem({ id, children }: SortableItemProps) {
   };
 
   return (
-    <div
+    <li
       className={isDragging ? "cursor-grabbing" : "cursor-grab"}
       ref={setNodeRef}
       style={style}
@@ -35,6 +35,6 @@ export function SortableItem({ id, children }: SortableItemProps) {
       {...listeners}
     >
       {children}
-    </div>
+    </li>
   );
 }
