@@ -1,19 +1,10 @@
-import { Fragment, HTMLAttributes } from "react";
+import { Fragment, HTMLAttributes, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import {
-  CalendarIcon,
-  FolderIcon,
-  HomeIcon,
-  UsersIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
-
-const navigation = [
-  { name: "General", icon: HomeIcon, current: true },
-  { name: "Appearance", icon: UsersIcon, current: false },
-  { name: "Weather", icon: FolderIcon, current: false },
-  { name: "Providers", icon: CalendarIcon, current: false },
-];
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import { Panel, PanelObject } from "./types";
+import { Home } from "./Home";
+import { General } from "./General";
+import { Config } from "@/services/config/schemas";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -22,13 +13,42 @@ function classNames(...classes: string[]) {
 interface SettingsSidebarProps extends HTMLAttributes<HTMLDivElement> {
   open: boolean;
   setOpen: (open: boolean) => void;
+  config: Config;
+}
+
+const panels: PanelObject[] = [
+  {
+    name: "Home",
+    panel: Panel.Home,
+    component: Home,
+    previousPanel: Panel.Home,
+  },
+  {
+    name: "General",
+    panel: Panel.General,
+    component: General,
+    previousPanel: Panel.Home,
+  },
+];
+
+function getPanel(panel: Panel) {
+  for (let i = 0; i < panels.length; i++) {
+    const element = panels[i];
+    if (element.panel == panel) return element;
+  }
+
+  return panels[0];
 }
 
 export default function SettingsSidebar({
   children,
   open,
   setOpen,
+  config,
 }: SettingsSidebarProps) {
+  const [activePanel, setActivePanel] = useState(Panel.Home);
+  const panel = getPanel(activePanel);
+
   return (
     <div>
       <Transition.Root show={open} as={Fragment}>
@@ -68,37 +88,12 @@ export default function SettingsSidebar({
                   </div>
                 </Transition.Child>
 
-                {/* Sidebar component, swap this element with another sidebar if you like */}
                 <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-2 ring-1 ring-white/10">
-                  <div className="flex h-16 shrink-0 items-center">
-                    <img
-                      className="h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                      alt="Your Company"
-                    />
-                  </div>
-                  <div className="flex flex-1 flex-col">
-                    <ul role="list" className="flex flex-1 flex-col gap-1">
-                      {navigation.map((item) => (
-                        <li key={item.name}>
-                          <button
-                            className={classNames(
-                              item.current
-                                ? "bg-gray-800 text-white"
-                                : "text-gray-400 hover:text-white hover:bg-gray-800",
-                              "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold w-full",
-                            )}
-                          >
-                            <item.icon
-                              className="h-6 w-6 shrink-0"
-                              aria-hidden="true"
-                            />
-                            {item.name}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  <panel.component
+                    setActivePanel={setActivePanel}
+                    panel={panel}
+                    config={config}
+                  />
                 </div>
               </Dialog.Panel>
             </Transition.Child>
