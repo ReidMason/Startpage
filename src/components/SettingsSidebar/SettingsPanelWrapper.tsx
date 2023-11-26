@@ -8,15 +8,15 @@ interface SettingsPanelWrapperProps
 
 export default function SettingsPanelWrapper({
   children,
-  setActivePanel,
-  panel,
+  setActivePage,
+  page: panel,
 }: SettingsPanelWrapperProps) {
   return (
     <div>
       <div className="grid grid-cols-3 pt-4">
         <button
           className="flex text-blue-600 items-center mr-auto mb-4"
-          onClick={() => setActivePanel(panel.previousPanel)}
+          onClick={() => setActivePage(panel.previousPage)}
         >
           <ChevronLeftIcon className="w-8 h-8 -mx-2" />
           <span>Back</span>

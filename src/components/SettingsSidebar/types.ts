@@ -1,21 +1,21 @@
 import { Config } from "@/services/config/schemas";
 
-export enum Panel {
+export enum Page {
   "Home",
   "General",
 }
 
 export type SettingsSection = (props: SettingsSectionProps) => JSX.Element;
 
-export interface PanelObject {
+export interface PageObject {
   name: string;
-  panel: Panel;
+  page: Page;
   component: SettingsSection;
-  previousPanel: Panel;
+  previousPage: Page;
 }
 
 export interface SettingsSectionProps {
-  setActivePanel: (panel: Panel) => void;
-  panel: PanelObject;
+  setActivePage: (panel: Page) => void;
+  page: PageObject;
   config: Config;
 }
