@@ -1,4 +1,5 @@
 import { Config } from "@/services/config/schemas";
+import { StateSetter } from "@/utils/common";
 
 export enum Page {
   "Home",
@@ -18,4 +19,5 @@ export interface SettingsSectionProps {
   setActivePage: (panel: Page) => void;
   page: PageObject;
   config: Config;
+  setConfig: StateSetter<Config>;
 }
