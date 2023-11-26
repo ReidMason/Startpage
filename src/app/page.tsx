@@ -7,11 +7,9 @@ export default async function Home() {
   const config = await getConfig();
 
   return (
-    <main className="py-[5%]">
-      <StyleHandler config={config}>
-        <MainDisplay config={config} />
-      </StyleHandler>
-    </main>
+    <StyleHandler config={config}>
+      <MainDisplay config={config} />
+    </StyleHandler>
   );
 }
 

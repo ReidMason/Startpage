@@ -20,21 +20,23 @@ export default function MainDisplay({ config }: MainDisplayProps) {
 
   return (
     <SettingsSidebar open={sidebarOpen} setOpen={setSidebarOpen}>
-      <div className="container mx-auto flex flex-col gap-8 p-8 text-primary-300 transition bg-primary-transparent-900 glassy:backdrop-blur-xl dark:text-primary-100 sm:p-16 sm:glassy:rounded-2xl">
-        <Searchbar config={config} setAppFilter={setFilter} />
-        <Greeting config={config} />
-        {editMode ? (
-          <EditableAppsGrid config={config} appFilter={filter} />
-        ) : (
-          <AppsGrid config={config} appFilter={filter} />
-        )}
-      </div>
+      <div className="relative h-screen py-[5%]">
+        <div className="container mx-auto flex flex-col gap-8 p-8 text-primary-300 transition bg-primary-transparent-900 glassy:backdrop-blur-xl dark:text-primary-100 sm:p-16 sm:glassy:rounded-2xl">
+          <Searchbar config={config} setAppFilter={setFilter} />
+          <Greeting config={config} />
+          {editMode ? (
+            <EditableAppsGrid config={config} appFilter={filter} />
+          ) : (
+            <AppsGrid config={config} appFilter={filter} />
+          )}
+        </div>
 
-      <div className="flex gap-4">
-        <Button onClick={() => setSidebarOpen(true)}>Settings</Button>
-        <Button onClick={() => setEditMode(!editMode)}>
-          {editMode ? "View mode" : "Edit mode"}
-        </Button>
+        <div className="flex gap-4 absolute bottom-0 left-0 p-4">
+          <Button onClick={() => setSidebarOpen(true)}>Settings</Button>
+          <Button onClick={() => setEditMode(!editMode)}>
+            {editMode ? "View mode" : "Edit mode"}
+          </Button>
+        </div>
       </div>
     </SettingsSidebar>
   );
