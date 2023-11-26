@@ -1,7 +1,7 @@
 import { Fragment, HTMLAttributes, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { Panel, PanelObject } from "./types";
+import { Page as Page, PageObject as SidebarPage } from "./types";
 import { Home } from "./Home";
 import { General } from "./General";
 import { Config } from "@/services/config/schemas";
@@ -16,28 +16,28 @@ interface SettingsSidebarProps extends HTMLAttributes<HTMLDivElement> {
   config: Config;
 }
 
-const panels: PanelObject[] = [
+const pages: SidebarPage[] = [
   {
     name: "Home",
-    panel: Panel.Home,
+    page: Page.Home,
     component: Home,
-    previousPanel: Panel.Home,
+    previousPage: Page.Home,
   },
   {
     name: "General",
-    panel: Panel.General,
+    page: Page.General,
     component: General,
-    previousPanel: Panel.Home,
+    previousPage: Page.Home,
   },
 ];
 
-function getPanel(panel: Panel) {
-  for (let i = 0; i < panels.length; i++) {
-    const element = panels[i];
-    if (element.panel == panel) return element;
+function getPage(page: Page) {
+  for (let i = 0; i < pages.length; i++) {
+    const element = pages[i];
+    if (element.page == page) return element;
   }
 
-  return panels[0];
+  return pages[0];
 }
 
 export default function SettingsSidebar({
@@ -46,8 +46,8 @@ export default function SettingsSidebar({
   setOpen,
   config,
 }: SettingsSidebarProps) {
-  const [activePanel, setActivePanel] = useState(Panel.Home);
-  const panel = getPanel(activePanel);
+  const [activePage, setActivePage] = useState(Page.Home);
+  const page = getPage(activePage);
 
   return (
     <div>
@@ -89,9 +89,9 @@ export default function SettingsSidebar({
                 </Transition.Child>
 
                 <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-2 ring-1 ring-white/10">
-                  <panel.component
-                    setActivePanel={setActivePanel}
-                    panel={panel}
+                  <page.component
+                    setActivePage={setActivePage}
+                    page={page}
                     config={config}
                   />
                 </div>
