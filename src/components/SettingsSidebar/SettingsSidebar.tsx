@@ -5,6 +5,7 @@ import { Page as Page, PageObject as SidebarPage } from "./types";
 import { Home } from "./Home";
 import { General } from "./General";
 import { Config } from "@/services/config/schemas";
+import { StateSetter } from "@/utils/common";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -14,6 +15,7 @@ interface SettingsSidebarProps extends HTMLAttributes<HTMLDivElement> {
   open: boolean;
   setOpen: (open: boolean) => void;
   config: Config;
+  setConfig: StateSetter<Config>;
 }
 
 const pages: SidebarPage[] = [
@@ -45,6 +47,7 @@ export default function SettingsSidebar({
   open,
   setOpen,
   config,
+  setConfig,
 }: SettingsSidebarProps) {
   const [activePage, setActivePage] = useState(Page.Home);
   const page = getPage(activePage);
@@ -93,6 +96,7 @@ export default function SettingsSidebar({
                     setActivePage={setActivePage}
                     page={page}
                     config={config}
+                    setConfig={setConfig}
                   />
                 </div>
               </Dialog.Panel>
