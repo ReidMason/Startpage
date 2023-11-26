@@ -7,7 +7,7 @@ import Searchbar from "../Searchbar/Searchbar";
 import Greeting from "../Greeting/Greeting";
 import EditableAppsGrid from "../Apps/EditableAppsGrid";
 import { Button } from "../Button/Button";
-import SettingsSidebar from "../SettingsSidebar";
+import SettingsSidebar from "../SettingsSidebar/SettingsSidebar";
 
 interface MainDisplayProps {
   config: Config;
@@ -19,7 +19,11 @@ export default function MainDisplay({ config }: MainDisplayProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <SettingsSidebar open={sidebarOpen} setOpen={setSidebarOpen}>
+    <SettingsSidebar
+      open={sidebarOpen}
+      setOpen={setSidebarOpen}
+      config={config}
+    >
       <div className="relative h-screen py-[5%]">
         <div className="container mx-auto flex flex-col gap-8 p-8 text-primary-300 transition bg-primary-transparent-900 glassy:backdrop-blur-xl dark:text-primary-100 sm:p-16 sm:glassy:rounded-2xl">
           <Searchbar config={config} setAppFilter={setFilter} />

@@ -1,4 +1,3 @@
-import { Button } from "@/components/Button/Button";
 import MainDisplay from "@/components/MainDisplay/MainDisplay";
 import StyleHandler from "@/components/StyleHandler/StyleHandler";
 import { getConfig } from "@/services/config/config";
