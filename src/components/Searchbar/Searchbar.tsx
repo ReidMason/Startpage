@@ -109,7 +109,7 @@ export default function Searchbar({ setAppFilter, config }: SearchBarProps) {
         autoFocus
         ref={input}
         spellCheck="false"
-        className="h-10 w-full border-b-2 border-primary-200/40 bg-transparent py-2 text-3xl outline-none placeholder:text-primary-50/80"
+        className="h-10 w-full border-0 border-b-2 border-primary-200/40 bg-transparent p-0 py-2 text-3xl outline-none placeholder:text-primary-50/80 focus:ring-0 focus:border-primary-200/60"
         placeholder={config.general.searchPlaceholder ?? ""}
         onChange={updateSearchTerm}
         aria-label="searchbar"

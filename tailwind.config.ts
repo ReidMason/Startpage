@@ -86,6 +86,7 @@ const config: Config = {
     },
   },
   plugins: [
+    require("@tailwindcss/forms"),
     plugin(function ({ addVariant }) {
       addVariant("glassy", ".glassy &");
     }),
