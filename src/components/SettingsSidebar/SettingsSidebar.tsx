@@ -1,4 +1,4 @@
-import { Fragment, HTMLAttributes, useState } from "react";
+import { Fragment, HTMLAttributes, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Page as Page, PageObject as SidebarPage } from "./types";
@@ -6,6 +6,7 @@ import { Home } from "./Home";
 import { General } from "./General";
 import { Config } from "@/services/config/schemas";
 import { StateSetter } from "@/utils/common";
+import { SubmitHandler, useForm, useWatch } from "react-hook-form";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -52,6 +53,23 @@ export default function SettingsSidebar({
   const [activePage, setActivePage] = useState(Page.Home);
   const page = getPage(activePage);
 
+  const { register, handleSubmit, control, getValues } = useForm<Config>({
+    defaultValues: config,
+  });
+
+  const watcher = useWatch({
+    control,
+    name: ["general.searchPlaceholder"],
+  });
+
+  useEffect(() => {
+    const newConfig = getValues();
+    setConfig(newConfig);
+  }, [watcher]);
+
+  const onSubmit: SubmitHandler<Config> = (data) =>
+    console.log(data.general.searchPlaceholder);
+
   return (
     <div>
       <Transition.Root show={open} as={Fragment}>
@@ -92,12 +110,15 @@ export default function SettingsSidebar({
                 </Transition.Child>
 
                 <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-2 ring-1 ring-white/10">
-                  <page.component
-                    setActivePage={setActivePage}
-                    page={page}
-                    config={config}
-                    setConfig={setConfig}
-                  />
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    <page.component
+                      setActivePage={setActivePage}
+                      page={page}
+                      config={config}
+                      setConfig={setConfig}
+                      register={register}
+                    />
+                  </form>
                 </div>
               </Dialog.Panel>
             </Transition.Child>
