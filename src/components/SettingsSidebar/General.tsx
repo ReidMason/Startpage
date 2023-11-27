@@ -3,9 +3,8 @@ import { SettingsSectionProps } from "./types";
 import SettingsPanelWrapper from "./SettingsPanelWrapper";
 
 export const General = (props: SettingsSectionProps) => {
-  const newConfig = structuredClone(props.config);
-
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
+    const newConfig = structuredClone(props.config);
     newConfig.general.searchPlaceholder = e.currentTarget.value;
     props.setConfig(newConfig);
   };
