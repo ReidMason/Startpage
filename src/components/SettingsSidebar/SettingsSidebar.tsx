@@ -7,10 +7,7 @@ import { General } from "./General";
 import { Config } from "@/services/config/schemas";
 import { StateSetter } from "@/utils/common";
 import { SubmitHandler, useForm, useWatch } from "react-hook-form";
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
+import { classNames } from "@/utils/utils";
 
 interface SettingsSidebarProps extends HTMLAttributes<HTMLDivElement> {
   open: boolean;
@@ -59,7 +56,7 @@ export default function SettingsSidebar({
 
   const watcher = useWatch({
     control,
-    name: ["general.searchPlaceholder"],
+    name: ["general.searchPlaceholder", "weather.enabled"],
   });
 
   useEffect(() => {
@@ -114,6 +111,7 @@ export default function SettingsSidebar({
                     <page.component
                       setActivePage={setActivePage}
                       page={page}
+                      control={control}
                       config={config}
                       setConfig={setConfig}
                       register={register}

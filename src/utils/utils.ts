@@ -20,3 +20,7 @@ export function isValidUrl(text: string) {
 
   return url.protocol === "http:" || url.protocol === "https:";
 }
+
+export function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}

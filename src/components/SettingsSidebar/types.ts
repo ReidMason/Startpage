@@ -1,6 +1,6 @@
 import type { Config } from "@/services/config/schemas";
 import type { StateSetter } from "@/utils/common";
-import type { UseFormRegister } from "react-hook-form";
+import type { Control, UseFormRegister } from "react-hook-form";
 
 export enum Page {
   "Home",
@@ -22,4 +22,5 @@ export interface SettingsSectionProps {
   config: Config;
   setConfig: StateSetter<Config>;
   register: UseFormRegister<Config>;
+  control: Control<Config>;
 }
