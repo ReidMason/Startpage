@@ -1,13 +1,12 @@
 import { Fragment, HTMLAttributes, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { Page as Page, PageObject as SidebarPage } from "./types";
-import { Home } from "./Home";
-import { General } from "./General";
+import { Page as Page } from "./types";
 import { Config } from "@/services/config/schemas";
 import { StateSetter } from "@/utils/common";
 import { SubmitHandler, useForm, useWatch } from "react-hook-form";
 import { classNames } from "@/utils/utils";
+import { pages } from "./pages";
 
 interface SettingsSidebarProps extends HTMLAttributes<HTMLDivElement> {
   open: boolean;
@@ -15,21 +14,6 @@ interface SettingsSidebarProps extends HTMLAttributes<HTMLDivElement> {
   config: Config;
   setConfig: StateSetter<Config>;
 }
-
-const pages: SidebarPage[] = [
-  {
-    name: "Home",
-    page: Page.Home,
-    component: Home,
-    previousPage: Page.Home,
-  },
-  {
-    name: "General",
-    page: Page.General,
-    component: General,
-    previousPage: Page.Home,
-  },
-];
 
 function getPage(page: Page) {
   for (let i = 0; i < pages.length; i++) {
