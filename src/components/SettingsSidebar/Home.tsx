@@ -7,7 +7,7 @@ export const Home = ({ setActivePage }: SettingsSectionProps) => {
 
   return (
     <>
-      <div className="flex-col pt-4 shrink-0 items-center">
+      <div className="flex-col py-4 shrink-0 items-center">
         <h2 className="font-semibold text-white text-xl">Settings</h2>
       </div>
       <div className="flex flex-1 flex-col">
