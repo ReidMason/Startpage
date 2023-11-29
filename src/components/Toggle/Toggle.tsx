@@ -2,18 +2,18 @@ import { classNames } from "@/utils/utils";
 import { Switch } from "@headlessui/react";
 
 interface ToggleProps {
+  id?: string;
   label?: string;
   value: boolean;
   onChange: (checked: boolean) => void;
   onBlur?: React.FocusEventHandler<HTMLButtonElement>;
 }
 
-export const Toggle = ({ value, onChange, onBlur, label }: ToggleProps) => {
+export const Toggle = ({ value, label, ...props }: ToggleProps) => {
   return (
     <Switch
       checked={value}
-      onChange={onChange}
-      onBlur={onBlur}
+      {...props}
       className={classNames(
         value ? "bg-indigo-600" : "bg-gray-200",
         "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2",
