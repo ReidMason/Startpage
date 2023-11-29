@@ -4,6 +4,7 @@ import { Controller } from "react-hook-form";
 import { Toggle } from "../Toggle/Toggle";
 import SettingsPanelWrapper from "./SettingsPanelWrapper";
 import Label from "../Label/Label";
+import Input from "../Input/Input";
 
 export default function Weather({ ...props }: SettingsSectionProps) {
   return (
@@ -16,6 +17,12 @@ export default function Weather({ ...props }: SettingsSectionProps) {
             <Toggle {...field} id="WeatherEnabled" />
           )}
         ></Controller>
+        <Label text="ApiKey" htmlFor="WeatherApiKey">
+          <Input
+            register={props.register("weather.apiKey")}
+            id="WeatherApiKey"
+          />
+        </Label>
       </Label>
     </SettingsPanelWrapper>
   );
