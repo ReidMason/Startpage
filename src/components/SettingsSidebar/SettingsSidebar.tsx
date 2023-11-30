@@ -40,7 +40,12 @@ export default function SettingsSidebar({
 
   const watcher = useWatch({
     control,
-    name: ["general.searchPlaceholder", "weather.enabled"],
+    name: [
+      "general.searchPlaceholder",
+      "weather.enabled",
+      "weather.detailed",
+      "weather.showLocation",
+    ],
   });
 
   useEffect(() => {
@@ -90,7 +95,7 @@ export default function SettingsSidebar({
                   </div>
                 </Transition.Child>
 
-                <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-2 ring-1 ring-white/10">
+                <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-3 pb-2 ring-1 ring-white/10">
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <page.component
                       setActivePage={setActivePage}

@@ -25,7 +25,7 @@ export default function SettingsPanelWrapper({
           {panel.name}
         </h2>
       </div>
-      {children}
+      <div className="flex flex-col gap-5">{children}</div>
     </div>
   );
 }
