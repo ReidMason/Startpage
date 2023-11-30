@@ -95,7 +95,7 @@ export default function WeatherDisplay({ config }: WeatherDisplayProps) {
                 <span>Feels Like {Math.round(weather.feelsLike)}°C</span>
               </div>
             )}
-            {ipInfo && <p>{ipInfo.city}</p>}
+            {config.showLocation && ipInfo && <p>{ipInfo.city}</p>}
           </div>
         </div>
       ) : (

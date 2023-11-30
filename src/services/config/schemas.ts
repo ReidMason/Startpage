@@ -32,6 +32,7 @@ const weatherSchema = z.object({
   location: z.string().default(""),
   detailed: z.boolean().default(false),
   apiKey: z.string().default(""),
+  showLocation: z.boolean().default(true),
 });
 
 const generalSchema = z.object({
