@@ -46,7 +46,7 @@ export async function getDetailedWeatherData(
   }
 
   const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely&units=metric&appid=${apiKey}`;
-  const weatherResponse = await fetch(url);
+  const weatherResponse = await fetch(url, { cache: "no-store" });
   if (weatherResponse.status !== 200) return null;
 
   const weatherData = weatherDataResponseToWeatherData(
