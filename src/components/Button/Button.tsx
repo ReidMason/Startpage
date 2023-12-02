@@ -10,7 +10,7 @@ interface ButtonProps
 export const Button = (props: ButtonProps) => {
   return (
     <button
-      className="rounded-full text-primary-50 p-4 bg-primary-700"
+      className="rounded-full text-primary-50 px-4 py-2 bg-primary-700"
       {...props}
     >
       {props.children}
