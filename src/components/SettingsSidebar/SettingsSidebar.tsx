@@ -42,6 +42,7 @@ export default function SettingsSidebar({
     control,
     name: [
       "general.searchPlaceholder",
+      "general.customSearchEnabled",
       "weather.enabled",
       "weather.detailed",
       "weather.showLocation",
