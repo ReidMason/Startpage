@@ -11,7 +11,7 @@ export default function Weather({ ...props }: SettingsSectionProps) {
   return (
     <SettingsPanelWrapper {...props}>
       <SettingsGroup>
-        <Label text="Weather enabled" htmlFor="WeatherEnabled">
+        <Label text="Enabled" htmlFor="WeatherEnabled">
           <Controller
             name="weather.enabled"
             control={props.control}

@@ -7,14 +7,14 @@ interface LabelProps extends HTMLAttributes<HTMLLabelElement> {
 
 export default function Label({ children, text, ...props }: LabelProps) {
   return (
-    <div className="flex gap-2 items-center justify-between">
+    <>
       <label
         {...props}
-        className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-50"
+        className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-50 col-span-2"
       >
         {text}
       </label>
-      {children}
-    </div>
+      <div className="flex justify-end col-span-3">{children}</div>
+    </>
   );
 }

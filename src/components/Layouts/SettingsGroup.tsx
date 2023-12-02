@@ -9,14 +9,20 @@ export default function SettingsGroup({
   return (
     <div
       {...props}
-      className="flex flex-col rounded-lg dark:bg-gray-800 gap-2 py-2"
+      className="grid grid-cols-5 rounded-lg dark:bg-gray-800 gap-2 p-2 items-center"
     >
       {childrenArray.map((child, i) => (
-        <div key={i} className="flex flex-col gap-2">
-          <div className="px-2">{child}</div>
-          {i < childrenArray.length - 1 && <hr className="opacity-10" />}
-        </div>
+        <Temp key={i}>
+          {child}
+          {i < childrenArray.length - 1 && (
+            <hr className="opacity-10 col-span-full" />
+          )}
+        </Temp>
       ))}
     </div>
   );
+}
+
+function Temp({ children }: { children: React.ReactNode }) {
+  return <>{children}</>;
 }
