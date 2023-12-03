@@ -1,8 +1,6 @@
-import { Fragment, HTMLAttributes, useEffect, useState } from "react";
+import { Fragment, HTMLAttributes } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { StateSetter } from "@/utils/common";
-import { SubmitHandler, useForm, useWatch } from "react-hook-form";
 import { classNames } from "@/utils/utils";
 
 interface SettingsSidebarProps extends HTMLAttributes<HTMLDivElement> {
