@@ -53,14 +53,14 @@ export default function AppsGrid({ setEditOpen, config }: AppsGridProps) {
       <DndWrapper onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
         <SortableWrapper items={apps}>
           {apps.map((app) => (
-            <div className="relative group">
+            <div className="relative group" key={app.id}>
               <button
                 className="z-10 absolute bottom-0 right-0 opacity-0 group-hover:opacity-100 pr-2 pb-1"
                 onClick={() => setEditOpen(true)}
               >
                 Edit
               </button>
-              <SortableItem id={app.id} key={app.id}>
+              <SortableItem id={app.id}>
                 <App app={app} preview editable />
               </SortableItem>
             </div>
