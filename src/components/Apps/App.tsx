@@ -5,10 +5,11 @@ import Icon from "@/components/Icon/Icon";
 interface AppProps extends HTMLAttributes<HTMLDivElement> {
   app: AppInterface;
   preview?: boolean;
+  editable?: boolean;
   clasName?: string;
 }
 
-export default function App({ app, preview, ...props }: AppProps) {
+export default function App({ app, preview, editable, ...props }: AppProps) {
   // Remove http, https and trailing slashes
   const displayUrl = app.url.replace(/^https?:\/\//gi, "").split("/", 1)[0];
 
@@ -20,7 +21,7 @@ export default function App({ app, preview, ...props }: AppProps) {
   return (
     <div {...props}>
       <a
-        className="flex rounded-lg p-2 transition duration-200 hover:bg-primary-100 hover:shadow-lg focus:bg-primary-100 focus:shadow-lg focus:outline-none dark:text-primary-100 hover:dark:bg-primary-100/30 focus:dark:bg-primary-100/30"
+        className="flex rounded-lg p-2 transition duration-200 hover:bg-primary-100 hover:shadow-lg focus:bg-primary-100 focus:shadow-lg focus:outline-none dark:text-primary-100 hover:dark:bg-primary-100/30 focus:dark:bg-primary-100/30 overflow-hidden"
         {...(preview ? {} : { href: app.url })}
       >
         <div className="mr-2 text-4xl">

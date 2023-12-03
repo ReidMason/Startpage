@@ -27,8 +27,6 @@ const searchOptions = [
 ];
 
 export const General = ({ ...props }: SettingsSectionProps) => {
-  console.log(props.config.general.searchUrl);
-
   return (
     <SettingsPanelWrapper {...props}>
       <SettingsGroup>
