@@ -6,8 +6,24 @@ import Label from "../Label/Label";
 import SettingsGroup from "../Layouts/SettingsGroup";
 import { Toggle } from "../Toggle/Toggle";
 import { Controller } from "react-hook-form";
+import ListBox from "../ListBox/ListBox";
+
+const searchOptions = [
+  {
+    id: 1,
+    value: "https://www.google.com/search?q=",
+    text: "Google",
+  },
+  {
+    id: 2,
+    value: "https://duckduckgo.com/?q=",
+    text: "DuckDuckGo",
+  },
+];
 
 export const General = ({ ...props }: SettingsSectionProps) => {
+  console.log(props.config.general.searchUrl);
+
   return (
     <SettingsPanelWrapper {...props}>
       <SettingsGroup>
@@ -37,12 +53,22 @@ export const General = ({ ...props }: SettingsSectionProps) => {
           />
         </Label>
         {!props.config.general.customSearchEnabled && (
-          <Label text="Search URL" htmlFor="SearchUrl">
-            <Input
-              register={props.register("general.searchUrl")}
-              id="SearchUrl"
+          <Label text="Search URL" htmlFor="CustomSearchUrlEnabled">
+            <Controller
+              name="general.searchUrl"
+              control={props.control}
+              render={({ field: { ref, ...field } }) => (
+                <ListBox options={searchOptions} {...field} id="SearchUrl" />
+              )}
             />
           </Label>
+        )}
+        {props.config.general.customSearchEnabled && (
+          <Input
+            className="col-span-full"
+            register={props.register("general.customSearchUrl")}
+            id="CustomSearchUrl"
+          />
         )}
       </SettingsGroup>
     </SettingsPanelWrapper>
