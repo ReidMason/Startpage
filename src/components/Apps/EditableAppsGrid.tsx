@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState } from "react";
 import type { Config } from "@/services/config/schemas";
 import App from "./App";
@@ -10,7 +8,6 @@ import { PlusIcon } from "@heroicons/react/20/solid";
 import { generateUuid } from "@/utils/utils";
 import SortableWrapper from "../DragAndDrop/SortableWrapper";
 import { DndWrapper } from "../DragAndDrop/DndWrapper";
-import AppEditor from "../AppEditor/AppEditor";
 
 interface AppsGridProps {
   config: Config;
