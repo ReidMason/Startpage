@@ -1,3 +1,4 @@
+import { classNames } from "@/utils/utils";
 import React, { HTMLAttributes } from "react";
 import type { UseFormRegisterReturn } from "react-hook-form";
 
@@ -24,7 +25,10 @@ export default function Input({
       value={value}
       onChange={handleChange}
       {...register}
-      className="block w-full text-white bg-primary-600 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+      className={classNames(
+        "block w-full text-gray-800 bg-white rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+        props.className ?? "",
+      )}
     />
   );
 }
