@@ -19,6 +19,11 @@ const searchOptions = [
     value: "https://duckduckgo.com/?q=",
     text: "DuckDuckGo",
   },
+  {
+    id: 3,
+    value: "https://search.brave.com/search?q=",
+    text: "Brave",
+  },
 ];
 
 export const General = ({ ...props }: SettingsSectionProps) => {
