@@ -26,6 +26,11 @@ function getPage(page: Page) {
   return pages[0];
 }
 
+enum State {
+  Default,
+  Loading,
+}
+
 export default function SettingsSidebar({
   children,
   open,
@@ -35,8 +40,16 @@ export default function SettingsSidebar({
 }: SettingsSidebarProps) {
   const [activePage, setActivePage] = useState(Page.Home);
   const page = getPage(activePage);
+  const [state, setState] = useState(State.Default);
 
-  const { register, handleSubmit, control, getValues } = useForm<Config>({
+  const {
+    register,
+    handleSubmit,
+    control,
+    getValues,
+    formState: { isDirty },
+    reset,
+  } = useForm<Config>({
     defaultValues: config,
   });
 
@@ -56,8 +69,12 @@ export default function SettingsSidebar({
     setConfig(newConfig);
   }, [watcher]);
 
-  const onSubmit: SubmitHandler<Config> = (data) => saveConfig(data);
-  // console.log(data.general.searchPlaceholder);
+  const onSubmit: SubmitHandler<Config> = (data) => {
+    setState(State.Loading);
+    saveConfig(data);
+    reset(data);
+    setState(State.Default);
+  };
 
   return (
     <div>
@@ -113,7 +130,13 @@ export default function SettingsSidebar({
                     />
 
                     <div>
-                      <Button className="w-full">Save</Button>
+                      <Button
+                        className="w-full"
+                        disabled={!isDirty}
+                        loading={state == State.Loading}
+                      >
+                        Save
+                      </Button>
                     </div>
                   </form>
                 </div>
