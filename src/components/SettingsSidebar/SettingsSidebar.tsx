@@ -7,6 +7,8 @@ import { StateSetter } from "@/utils/common";
 import { SubmitHandler, useForm, useWatch } from "react-hook-form";
 import { classNames } from "@/utils/utils";
 import { pages } from "./pages";
+import { Button } from "../Button/Button";
+import { saveConfig } from "@/services/config/config";
 
 interface SettingsSidebarProps extends HTMLAttributes<HTMLDivElement> {
   open: boolean;
@@ -54,8 +56,8 @@ export default function SettingsSidebar({
     setConfig(newConfig);
   }, [watcher]);
 
-  const onSubmit: SubmitHandler<Config> = (data) =>
-    console.log(data.general.searchPlaceholder);
+  const onSubmit: SubmitHandler<Config> = (data) => saveConfig(data);
+  // console.log(data.general.searchPlaceholder);
 
   return (
     <div>
@@ -96,8 +98,11 @@ export default function SettingsSidebar({
                   </div>
                 </Transition.Child>
 
-                <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-3 pb-2 ring-1 ring-white/10">
-                  <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="grow bg-gray-900 px-3 pb-2 ring-1 ring-white/10">
+                  <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="flex h-full flex-col justify-between"
+                  >
                     <page.component
                       setActivePage={setActivePage}
                       page={page}
@@ -106,6 +111,10 @@ export default function SettingsSidebar({
                       setConfig={setConfig}
                       register={register}
                     />
+
+                    <div>
+                      <Button className="w-full">Save</Button>
+                    </div>
                   </form>
                 </div>
               </Dialog.Panel>
@@ -117,7 +126,7 @@ export default function SettingsSidebar({
       <main
         className={classNames(
           open ? "md:ml-80 md:px-4" : "",
-          "transition-all ease-in-out duration-300",
+          "transition-all duration-300 ease-in-out",
         )}
       >
         {children}
