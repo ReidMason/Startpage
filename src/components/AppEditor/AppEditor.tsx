@@ -14,7 +14,7 @@ export default function AppEditor({
   setOpen,
 }: SettingsSidebarProps) {
   return (
-    <div>
+    <>
       <Transition.Root show={open} as={Fragment}>
         <Dialog as="div" className="relative z-50" onClose={setOpen}>
           <div className="fixed inset-0 flex justify-end">
@@ -71,6 +71,6 @@ export default function AppEditor({
       >
         {children}
       </main>
-    </div>
+    </>
   );
 }

@@ -32,6 +32,6 @@ function ensureConfigExists() {
   }
 }
 
-function saveConfig(newConfig: Config) {
+export async function saveConfig(newConfig: Config) {
   fs.writeFileSync(CONFIG_PATH, JSON.stringify(newConfig));
 }
