@@ -21,17 +21,17 @@ export default function App({ app, preview, editable, ...props }: AppProps) {
   return (
     <div {...props}>
       <a
-        className="flex rounded-lg p-2 transition duration-200 hover:bg-primary-100 hover:shadow-lg focus:bg-primary-100 focus:shadow-lg focus:outline-none dark:text-primary-100 hover:dark:bg-primary-100/30 focus:dark:bg-primary-100/30 overflow-hidden"
+        className="hover:bg-primary-100 focus:bg-primary-100 flex overflow-hidden rounded-lg p-2 transition duration-200 hover:bg-accent-foreground/30 hover:shadow-lg focus:bg-accent-foreground/30 focus:shadow-lg focus:outline-none"
         {...(preview ? {} : { href: app.url })}
       >
-        <div className="mr-2 text-4xl">
+        <div className="mr-2 text-4xl text-accent-foreground">
           <Icon icon={app.icon || "entypo:new-message"} />
         </div>
         <div className="overflow-hidden">
-          <p className="lowercase dark:text-primary-50">
+          <p className="lowercase text-accent-foreground">
             {app.name || "New app"}
           </p>
-          <p className="truncate text-xs text-primary-300 dark:text-white">
+          <p className="truncate text-xs text-secondary-foreground">
             {displayUrl || "app.example.com"}
           </p>
         </div>
