@@ -14,7 +14,7 @@ export default function StyleHandler({ config, children }: StyleHandlerProps) {
 
   return (
     <div
-      className={`bg-slate-800 ${config.appearance.glassy ? "glassy" : ""}`}
+      className={`${config.appearance.glassy ? "glassy" : ""}`}
       style={style}
     >
       {children}

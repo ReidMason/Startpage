@@ -1,12 +1,15 @@
 import React from "react";
 import { SettingsSectionProps } from "./types";
 import SettingsPanelWrapper from "./SettingsPanelWrapper";
-import Input from "../Input/Input";
-import Label from "../Label/Label";
-import SettingsGroup from "../Layouts/SettingsGroup";
-import { Toggle } from "../Toggle/Toggle";
-import { Controller } from "react-hook-form";
-import ListBox from "../ListBox/ListBox";
+import { Input } from "@/components/ui/input";
+import { FormControl, FormField, FormItem, FormLabel } from "../ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const searchOptions = [
   {
@@ -29,51 +32,53 @@ const searchOptions = [
 export const General = ({ ...props }: SettingsSectionProps) => {
   return (
     <SettingsPanelWrapper {...props}>
-      <SettingsGroup>
-        <Label text="Search placeholder" htmlFor="SearchPlaceholder">
-          <Input
-            register={props.register("general.searchPlaceholder")}
-            id="SearchPlaceholder"
-          />
-        </Label>
-
-        <Label text="Calendar url" htmlFor="CalendarUrl">
-          <Input
-            register={props.register("general.calendarUrl")}
-            id="CalendarUrl"
-          />
-        </Label>
-      </SettingsGroup>
-
-      <SettingsGroup>
-        <Label text="Custom Search" htmlFor="CustomSearchUrlEnabled">
-          <Controller
-            name="general.customSearchEnabled"
-            control={props.control}
-            render={({ field: { ref, ...field } }) => (
-              <Toggle {...field} id="CustomSearchUrlEnabled" />
-            )}
-          />
-        </Label>
-        {!props.config.general.customSearchEnabled && (
-          <Label text="Search URL" htmlFor="CustomSearchUrlEnabled">
-            <Controller
-              name="general.searchUrl"
-              control={props.control}
-              render={({ field: { ref, ...field } }) => (
-                <ListBox options={searchOptions} {...field} id="SearchUrl" />
-              )}
-            />
-          </Label>
+      <FormField
+        control={props.control}
+        name="general.searchPlaceholder"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Search placeholder</FormLabel>
+            <FormControl>
+              <Input placeholder="Search Placeholder" {...field} />
+            </FormControl>
+          </FormItem>
         )}
-        {props.config.general.customSearchEnabled && (
-          <Input
-            className="col-span-full"
-            register={props.register("general.customSearchUrl")}
-            id="CustomSearchUrl"
-          />
+      />
+      <FormField
+        control={props.control}
+        name="general.calendarUrl"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Calendar url</FormLabel>
+            <FormControl>
+              <Input placeholder="Calendar url" {...field} />
+            </FormControl>
+          </FormItem>
         )}
-      </SettingsGroup>
+      />
+      <FormField
+        control={props.control}
+        name="general.searchUrl"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Search provider</FormLabel>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a search provider" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {searchOptions.map((option) => (
+                  <SelectItem key={option.id} value={option.value}>
+                    {option.text}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </FormItem>
+        )}
+      />
     </SettingsPanelWrapper>
   );
 };

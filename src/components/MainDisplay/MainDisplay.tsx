@@ -30,7 +30,7 @@ export default function MainDisplay({ config }: MainDisplayProps) {
     >
       <AppEditor open={appEditOpen} setOpen={setAppEditOpen}>
         <div className="relative h-screen py-[5%]">
-          <div className="container mx-auto flex flex-col gap-8 p-8 text-primary-300 transition bg-primary-transparent-900 glassy:backdrop-blur-xl dark:text-primary-100 sm:p-16 sm:glassy:rounded-2xl">
+          <div className="text-primary-300 bg-primary-transparent-900 dark:text-primary-100 container mx-auto flex flex-col gap-8 p-8 transition glassy:backdrop-blur-xl sm:p-16 sm:glassy:rounded-2xl">
             <Searchbar config={mutableConfig} setAppFilter={setFilter} />
             <Greeting config={mutableConfig} />
             {editMode ? (
@@ -43,7 +43,7 @@ export default function MainDisplay({ config }: MainDisplayProps) {
             )}
           </div>
 
-          <div className="flex gap-4 absolute bottom-0 left-0 p-4">
+          <div className="absolute bottom-0 left-0 flex gap-4 p-4">
             <Button onClick={() => setSidebarOpen(true)}>Settings</Button>
             <Button onClick={() => setEditMode(!editMode)}>
               {editMode ? "View mode" : "Edit mode"}

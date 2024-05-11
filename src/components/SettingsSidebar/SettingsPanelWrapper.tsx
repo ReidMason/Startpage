@@ -4,7 +4,7 @@ import { ChevronLeftIcon } from "@heroicons/react/20/solid";
 
 interface SettingsPanelWrapperProps
   extends HTMLAttributes<HTMLDivElement>,
-    SettingsSectionProps {}
+  SettingsSectionProps { }
 
 export default function SettingsPanelWrapper({
   children,
@@ -15,13 +15,13 @@ export default function SettingsPanelWrapper({
     <div>
       <div className="grid grid-cols-3 pt-4">
         <button
-          className="flex text-blue-600 items-center mr-auto mb-4"
+          className="mb-4 mr-auto flex items-center text-accent"
           onClick={() => setActivePage(panel.previousPage)}
         >
-          <ChevronLeftIcon className="w-8 h-8 -mx-2" />
+          <ChevronLeftIcon className="-mx-2 h-8 w-8" />
           <span>Back</span>
         </button>
-        <h2 className="font-semibold text-white text-xl text-center">
+        <h2 className="text-center text-xl font-semibold text-white">
           {panel.name}
         </h2>
       </div>

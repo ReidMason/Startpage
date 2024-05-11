@@ -2,7 +2,7 @@ import type { Config } from "tailwindcss";
 import plugin from "tailwindcss/plugin";
 
 const config = {
-  darkMode: ["class"],
+  darkMode: ["selector"],
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -77,7 +77,7 @@ const config = {
   },
   plugins: [
     require("tailwindcss-animate"),
-    plugin(function ({ addVariant }) {
+    plugin(function({ addVariant }) {
       addVariant("glassy", ".glassy &");
     }),
   ],

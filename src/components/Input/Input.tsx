@@ -26,7 +26,7 @@ export default function Input({
       onChange={handleChange}
       {...register}
       className={classNames(
-        "block w-full text-gray-800 bg-white rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+        "block w-full rounded-md border-0 bg-white py-1.5 text-gray-800 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
         props.className ?? "",
       )}
     />
