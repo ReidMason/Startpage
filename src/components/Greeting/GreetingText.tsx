@@ -53,11 +53,12 @@ export default function GreetingText({ config }: GreetingTextProps) {
   }, []);
 
   return (
-    <div aria-label="greeting-section">
+    <div aria-label="greeting-section" className="text-accent-foreground">
       <div className="mb-3" aria-label="current-date">
         <a
-          className={`text-xl font-semibold ${config.calendarUrl ? "cursor-pointer" : ""
-            }`}
+          className={`text-xl font-semibold ${
+            config.calendarUrl ? "cursor-pointer" : ""
+          }`}
           href={config.calendarUrl ? config.calendarUrl : undefined}
           tabIndex={-1}
         >
