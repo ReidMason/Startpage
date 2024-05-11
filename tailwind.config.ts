@@ -1,95 +1,86 @@
 import type { Config } from "tailwindcss";
 import plugin from "tailwindcss/plugin";
 
-const config: Config = {
+const config = {
+  darkMode: ["class"],
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
   ],
+  prefix: "",
   theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
     extend: {
       colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         primary: {
-          50: "rgb(var(--colour-primary-50) / <alpha-value>)",
-          100: "rgb(var(--colour-primary-100) / <alpha-value>)",
-          200: "rgb(var(--colour-primary-200) / <alpha-value>)",
-          300: "rgb(var(--colour-primary-300) / <alpha-value>)",
-          400: "rgb(var(--colour-primary-400) / <alpha-value>)",
-          500: "rgb(var(--colour-primary-500) / <alpha-value>)",
-          600: "rgb(var(--colour-primary-600) / <alpha-value>)",
-          700: "rgb(var(--colour-primary-700) / <alpha-value>)",
-          800: "rgb(var(--colour-primary-800) / <alpha-value>)",
-          900: "rgb(var(--colour-primary-900) / <alpha-value>)",
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
-        "primary-transparent": {
-          50: "rgb(var(--colour-primary-50) / var(--transparency-level))",
-          100: "rgb(var(--colour-primary-100) / var(--transparency-level))",
-          200: "rgb(var(--colour-primary-200) / var(--transparency-level))",
-          300: "rgb(var(--colour-primary-300) / var(--transparency-level))",
-          400: "rgb(var(--colour-primary-400) / var(--transparency-level))",
-          500: "rgb(var(--colour-primary-500) / var(--transparency-level))",
-          600: "rgb(var(--colour-primary-600) / var(--transparency-level))",
-          700: "rgb(var(--colour-primary-700) / var(--transparency-level))",
-          800: "rgb(var(--colour-primary-800) / var(--transparency-level))",
-          900: "rgb(var(--colour-primary-900) / var(--transparency-level))",
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
         },
-        green: {
-          50: "rgb(var(--colour-green-50) / <alpha-value>)",
-          100: "rgb(var(--colour-green-100) / <alpha-value>)",
-          200: "rgb(var(--colour-green-200) / <alpha-value>)",
-          300: "rgb(var(--colour-green-300) / <alpha-value>)",
-          400: "rgb(var(--colour-green-400) / <alpha-value>)",
-          500: "rgb(var(--colour-green-500) / <alpha-value>)",
-          600: "rgb(var(--colour-green-600) / <alpha-value>)",
-          700: "rgb(var(--colour-green-700) / <alpha-value>)",
-          800: "rgb(var(--colour-green-800) / <alpha-value>)",
-          900: "rgb(var(--colour-green-900) / <alpha-value>)",
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
         },
-        yellow: {
-          50: "rgb(var(--colour-yellow-50) / <alpha-value>)",
-          100: "rgb(var(--colour-yellow-100) / <alpha-value>)",
-          200: "rgb(var(--colour-yellow-200) / <alpha-value>)",
-          300: "rgb(var(--colour-yellow-300) / <alpha-value>)",
-          400: "rgb(var(--colour-yellow-400) / <alpha-value>)",
-          500: "rgb(var(--colour-yellow-500) / <alpha-value>)",
-          600: "rgb(var(--colour-yellow-600) / <alpha-value>)",
-          700: "rgb(var(--colour-yellow-700) / <alpha-value>)",
-          800: "rgb(var(--colour-yellow-800) / <alpha-value>)",
-          900: "rgb(var(--colour-yellow-900) / <alpha-value>)",
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
         },
-        grey: {
-          50: "rgb(var(--colour-grey-50) / <alpha-value>)",
-          100: "rgb(var(--colour-grey-100) / <alpha-value>)",
-          200: "rgb(var(--colour-grey-200) / <alpha-value>)",
-          300: "rgb(var(--colour-grey-300) / <alpha-value>)",
-          400: "rgb(var(--colour-grey-400) / <alpha-value>)",
-          500: "rgb(var(--colour-grey-500) / <alpha-value>)",
-          600: "rgb(var(--colour-grey-600) / <alpha-value>)",
-          700: "rgb(var(--colour-grey-700) / <alpha-value>)",
-          800: "rgb(var(--colour-grey-800) / <alpha-value>)",
-          900: "rgb(var(--colour-grey-900) / <alpha-value>)",
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
         },
-        red: {
-          50: "rgb(var(--colour-red-50) / <alpha-value>)",
-          100: "rgb(var(--colour-red-100) / <alpha-value>)",
-          200: "rgb(var(--colour-red-200) / <alpha-value>)",
-          300: "rgb(var(--colour-red-300) / <alpha-value>)",
-          400: "rgb(var(--colour-red-400) / <alpha-value>)",
-          500: "rgb(var(--colour-red-500) / <alpha-value>)",
-          600: "rgb(var(--colour-red-600) / <alpha-value>)",
-          700: "rgb(var(--colour-red-700) / <alpha-value>)",
-          800: "rgb(var(--colour-red-800) / <alpha-value>)",
-          900: "rgb(var(--colour-red-900) / <alpha-value>)",
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
         },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+      keyframes: {
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
       },
     },
   },
   plugins: [
-    require("@tailwindcss/forms"),
+    require("tailwindcss-animate"),
     plugin(function ({ addVariant }) {
       addVariant("glassy", ".glassy &");
     }),
   ],
-};
+} satisfies Config;
+
 export default config;
