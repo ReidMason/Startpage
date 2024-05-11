@@ -65,7 +65,7 @@ export default function WeatherDisplay({ config }: WeatherDisplayProps) {
   }, []);
 
   return (
-    <div className="text-primary-100">
+    <div className="text-accent-foreground">
       {!!weather ? (
         <div className="flex">
           <div>
@@ -101,11 +101,11 @@ export default function WeatherDisplay({ config }: WeatherDisplayProps) {
       ) : (
         <div className="flex h-[124px] animate-pulse space-x-4">
           <div className="flex h-full items-center">
-            <div className="h-16 w-16 rounded-full bg-primary-200 dark:bg-primary-700/40" />
+            <div className="bg-primary-200 dark:bg-primary-700/40 h-16 w-16 rounded-full" />
           </div>
           <div className="flex w-36 flex-col gap-2">
-            <div className="h-6 rounded-xl bg-primary-200 dark:bg-primary-700/40" />
-            <div className="h-16 rounded-xl bg-primary-200 dark:bg-primary-700/40" />
+            <div className="bg-primary-200 dark:bg-primary-700/40 h-6 rounded-xl" />
+            <div className="bg-primary-200 dark:bg-primary-700/40 h-16 rounded-xl" />
           </div>
         </div>
       )}
