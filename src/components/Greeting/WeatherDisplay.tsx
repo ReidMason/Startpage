@@ -1,18 +1,11 @@
 "use client";
 
 import { WeatherConfig } from "@/services/config/schemas";
-import {
-  getDetailedWeatherData,
-  getWeatherData,
-} from "@/services/weather/weather";
+import { getWeatherData } from "@/services/weather/weather";
 import Image from "next/image";
 import Icon from "../Icon/Icon";
 import { useEffect, useState } from "react";
 import { Weather } from "@/services/weather/schemas";
-import { getIpInfo } from "@/services/ipInfo/ipInfo";
-import { getIpCookie, setIpCookie } from "@/services/cookies/cookies";
-import { getCachedIpInfo, cacheIpInfo } from "@/services/ipInfo/cachedIpInfo";
-import { IpInfo } from "@/services/ipInfo/schema";
 
 interface WeatherDisplayProps {
   config: WeatherConfig;
@@ -20,48 +13,20 @@ interface WeatherDisplayProps {
 
 export default function WeatherDisplay({ config }: WeatherDisplayProps) {
   const [weather, setWeather] = useState<Weather | null>(null);
-  const [ipInfo, setIpInfo] = useState<IpInfo | null>(null);
-
-  const getWeatherFromIp = async () => {
-    let newIpInfo: IpInfo | undefined = undefined;
-
-    const ip = getIpCookie();
-    if (ip != undefined) {
-      newIpInfo = await getCachedIpInfo(ip);
-    }
-
-    if (newIpInfo == undefined) {
-      newIpInfo = await getIpInfo();
-      if (newIpInfo != undefined) {
-        cacheIpInfo(newIpInfo.query, newIpInfo);
-        setIpCookie(newIpInfo.query);
-      }
-    }
-
-    if (newIpInfo != undefined) {
-      updateWeather(newIpInfo.lat, newIpInfo.lon);
-      setIpInfo(newIpInfo);
-    }
-  };
-
-  const updateWeather = async (lat: number, lon: number) => {
-    const weatherData = await getDetailedWeatherData(lat, lon, config.apiKey);
-
-    setWeather(weatherData);
-  };
 
   const updateWeatherFromLocation = async () => {
-    const weatherData = await getWeatherData(config.location, config.apiKey);
-    setWeather(weatherData);
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const weatherData = await getWeatherData(
+        position.coords.latitude,
+        position.coords.longitude,
+        new Date(),
+      );
+      setWeather(weatherData);
+    });
   };
 
   useEffect(() => {
-    if (config.location) {
-      updateWeatherFromLocation();
-      return;
-    }
-
-    getWeatherFromIp();
+    updateWeatherFromLocation();
   }, []);
 
   return (
@@ -70,7 +35,7 @@ export default function WeatherDisplay({ config }: WeatherDisplayProps) {
         <div className="flex">
           <div>
             <Image
-              src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
+              src={weather.imageUrl}
               alt="weather"
               width={100}
               height={100}
@@ -95,7 +60,6 @@ export default function WeatherDisplay({ config }: WeatherDisplayProps) {
                 <span>Feels Like {Math.round(weather.feelsLike)}°C</span>
               </div>
             )}
-            {config.showLocation && ipInfo && <p>{ipInfo.city}</p>}
           </div>
         </div>
       ) : (

@@ -37,6 +37,7 @@ export default function GreetingText({ config }: GreetingTextProps) {
 
   useEffect(() => {
     const date = new Date();
+    // TODO: Generaize this to use it throughout the codebase
     setGreeting(greetings[Math.floor(date.getHours() / 6)]);
     setDayOfWeek(
       `${date.toLocaleString("default", {

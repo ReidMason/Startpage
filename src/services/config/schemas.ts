@@ -29,10 +29,7 @@ const providerSchema = z.object({
 
 const weatherSchema = z.object({
   enabled: z.boolean().default(false),
-  location: z.string().default(""),
   detailed: z.boolean().default(false),
-  apiKey: z.string().default(""),
-  showLocation: z.boolean().default(true),
 });
 
 const generalSchema = z.object({
