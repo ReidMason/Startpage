@@ -48,10 +48,8 @@ export default function Searchbar({ setAppFilter, config }: SearchBarProps) {
       return;
     }
 
-    const chosenSearchUrl = config.general.customSearchEnabled
-      ? config.general.customSearchUrl
-      : config.general.searchUrl;
-    window.location.href = chosenSearchUrl + encodeURIComponent(searchTerm);
+    window.location.href =
+      config.general.searchUrl + encodeURIComponent(searchTerm);
   };
 
   const search = (e: React.FormEvent) => {
@@ -109,7 +107,7 @@ export default function Searchbar({ setAppFilter, config }: SearchBarProps) {
         autoFocus
         ref={input}
         spellCheck="false"
-        className="h-10 w-full border-0 border-b-2 border-primary-200/40 bg-transparent p-0 py-2 text-3xl outline-none placeholder:text-primary-50/80 focus:ring-0 focus:border-primary-200/60"
+        className="border-primary-200/40 placeholder:text-primary-50/80 focus:border-primary-200/60 h-10 w-full border-0 border-b-2 bg-transparent p-0 py-2 text-3xl outline-none focus:ring-0"
         placeholder={config.general.searchPlaceholder ?? ""}
         onChange={updateSearchTerm}
         aria-label="searchbar"
