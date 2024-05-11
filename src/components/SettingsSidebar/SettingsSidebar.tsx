@@ -51,12 +51,7 @@ export default function SettingsSidebar({
 
   const watcher = useWatch({
     control: form.control,
-    name: [
-      "general.searchPlaceholder",
-      "weather.enabled",
-      "weather.detailed",
-      "weather.showLocation",
-    ],
+    name: ["general.searchPlaceholder", "weather.enabled", "weather.detailed"],
   });
 
   useEffect(() => {

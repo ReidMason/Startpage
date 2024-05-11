@@ -22,7 +22,7 @@ export default function WeatherDisplay({ config }: WeatherDisplayProps) {
         new Date(),
       );
       setWeather(weatherData);
-    });
+    }, console.error);
   };
 
   useEffect(() => {
