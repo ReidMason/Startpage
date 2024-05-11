@@ -21,7 +21,7 @@ export default function App({ app, preview, editable, ...props }: AppProps) {
   return (
     <div {...props}>
       <a
-        className="hover:bg-primary-100 focus:bg-primary-100 flex overflow-hidden rounded-lg p-2 transition duration-200 hover:bg-accent-foreground/30 hover:shadow-lg focus:bg-accent-foreground/30 focus:shadow-lg focus:outline-none"
+        className="flex overflow-hidden rounded-lg p-2 transition duration-200 hover:bg-accent-foreground/30 hover:shadow-lg focus:bg-accent-foreground/30 focus:shadow-lg focus:outline-none"
         {...(preview ? {} : { href: app.url })}
       >
         <div className="mr-2 text-4xl text-accent-foreground">

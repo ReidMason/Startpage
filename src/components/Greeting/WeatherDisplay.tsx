@@ -101,11 +101,11 @@ export default function WeatherDisplay({ config }: WeatherDisplayProps) {
       ) : (
         <div className="flex h-[124px] animate-pulse space-x-4">
           <div className="flex h-full items-center">
-            <div className="bg-primary-200 dark:bg-primary-700/40 h-16 w-16 rounded-full" />
+            <div className="h-16 w-16 rounded-full bg-accent" />
           </div>
           <div className="flex w-36 flex-col gap-2">
-            <div className="bg-primary-200 dark:bg-primary-700/40 h-6 rounded-xl" />
-            <div className="bg-primary-200 dark:bg-primary-700/40 h-16 rounded-xl" />
+            <div className="h-6 rounded-xl bg-accent" />
+            <div className="h-16 rounded-xl bg-accent" />
           </div>
         </div>
       )}
