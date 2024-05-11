@@ -4,7 +4,7 @@ import { ChevronLeftIcon } from "@heroicons/react/20/solid";
 
 interface SettingsPanelWrapperProps
   extends HTMLAttributes<HTMLDivElement>,
-  SettingsSectionProps { }
+    SettingsSectionProps {}
 
 export default function SettingsPanelWrapper({
   children,
@@ -12,7 +12,7 @@ export default function SettingsPanelWrapper({
   page: panel,
 }: SettingsPanelWrapperProps) {
   return (
-    <div>
+    <>
       <div className="grid grid-cols-3 pt-4">
         <button
           className="mb-4 mr-auto flex items-center text-accent"
@@ -26,6 +26,6 @@ export default function SettingsPanelWrapper({
         </h2>
       </div>
       <div className="flex flex-col gap-5">{children}</div>
-    </div>
+    </>
   );
 }

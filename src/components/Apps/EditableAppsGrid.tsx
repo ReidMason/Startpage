@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { Config } from "@/services/config/schemas";
+import type { Config, App as AppType } from "@/services/config/schemas";
 import App from "./App";
 import { DragEndEvent, closestCenter } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
@@ -11,10 +11,10 @@ import { DndWrapper } from "../DragAndDrop/DndWrapper";
 
 interface AppsGridProps {
   config: Config;
-  setEditOpen: (value: boolean) => void;
+  setAppToEdit: (value: AppType | null) => void;
 }
 
-export default function AppsGrid({ setEditOpen, config }: AppsGridProps) {
+export default function AppsGrid({ setAppToEdit, config }: AppsGridProps) {
   const [apps, setApps] = useState(config.apps);
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -53,7 +53,7 @@ export default function AppsGrid({ setEditOpen, config }: AppsGridProps) {
             <div className="group relative" key={app.id}>
               <button
                 className="absolute bottom-0 right-0 z-10 pb-1 pr-2 opacity-0 group-hover:opacity-100"
-                onClick={() => setEditOpen(true)}
+                onClick={() => setAppToEdit(app)}
               >
                 Edit
               </button>

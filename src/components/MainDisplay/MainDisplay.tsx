@@ -1,6 +1,6 @@
 "use client";
 
-import { Config } from "@/services/config/schemas";
+import type { App, Config } from "@/services/config/schemas";
 import React, { useState } from "react";
 import AppsGrid from "../Apps/AppsGrid";
 import Searchbar from "../Searchbar/Searchbar";
@@ -18,8 +18,8 @@ export default function MainDisplay({ config }: MainDisplayProps) {
   const [filter, setFilter] = useState("");
   const [editMode, setEditMode] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [appEditOpen, setAppEditOpen] = useState(false);
   const [mutableConfig, setMutableConfig] = useState(config);
+  const [appToEdit, setAppToEdit] = useState<App | null>(null);
 
   return (
     <SettingsSidebar
@@ -28,7 +28,11 @@ export default function MainDisplay({ config }: MainDisplayProps) {
       config={mutableConfig}
       setConfig={setMutableConfig}
     >
-      <AppEditor open={appEditOpen} setOpen={setAppEditOpen}>
+      <AppEditor
+        open={!!appToEdit}
+        setOpen={(value) => setAppToEdit(value ? appToEdit : null)}
+        app={appToEdit}
+      >
         <div className="relative h-screen py-[5%]">
           <div className="container mx-auto flex flex-col gap-8 bg-primary p-8 transition glassy:backdrop-blur-xl sm:p-16 sm:glassy:rounded-2xl">
             <Searchbar config={mutableConfig} setAppFilter={setFilter} />
@@ -36,7 +40,7 @@ export default function MainDisplay({ config }: MainDisplayProps) {
             {editMode ? (
               <EditableAppsGrid
                 config={mutableConfig}
-                setEditOpen={setAppEditOpen}
+                setAppToEdit={setAppToEdit}
               />
             ) : (
               <AppsGrid config={mutableConfig} appFilter={filter} />

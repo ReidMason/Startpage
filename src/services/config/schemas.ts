@@ -4,7 +4,7 @@ enum Theme {
   "default",
 }
 
-const appSchema = z.object({
+export const appSchema = z.object({
   id: z.string(),
   name: z.string(),
   url: z.string(),
