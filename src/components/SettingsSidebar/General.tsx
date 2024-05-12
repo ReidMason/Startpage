@@ -39,7 +39,11 @@ export const General = ({ ...props }: SettingsSectionProps) => {
           <FormItem>
             <FormLabel>Search placeholder</FormLabel>
             <FormControl>
-              <Input placeholder="Search Placeholder" {...field} />
+              <Input
+                placeholder="Search Placeholder"
+                autoComplete="off"
+                {...field}
+              />
             </FormControl>
           </FormItem>
         )}
@@ -51,7 +55,7 @@ export const General = ({ ...props }: SettingsSectionProps) => {
           <FormItem>
             <FormLabel>Calendar url</FormLabel>
             <FormControl>
-              <Input placeholder="Calendar url" {...field} />
+              <Input placeholder="Calendar url" autoComplete="off" {...field} />
             </FormControl>
           </FormItem>
         )}
