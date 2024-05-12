@@ -52,7 +52,7 @@ export default function MainDisplay({ config }: MainDisplayProps) {
 
   const saveNewConfig = async (config: Config) => {
     try {
-      setMutableConfig(config);
+      setMutableConfig(window.structuredClone(config));
       await saveConfig(config);
       toast.success("Config saved");
     } catch (e) {

@@ -64,10 +64,12 @@ export default function SettingsSidebar({
   }, [watcher, form, setConfig]);
 
   const onSubmit = (data: ConfigSettings) => {
-    console.log("data", data);
     setState(State.Loading);
+    if (data.file) {
+      data.appearance.backgroundEnabled = true;
+    }
     saveConfig(data);
-    // form.reset(data);
+    form.reset(data);
     setState(State.Default);
   };
 
