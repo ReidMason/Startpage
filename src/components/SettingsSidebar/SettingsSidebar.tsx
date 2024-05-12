@@ -55,7 +55,7 @@ export default function SettingsSidebar({
   useEffect(() => {
     const newConfig = form.getValues();
     setConfig(newConfig);
-  }, [watcher]);
+  }, [watcher, form, setConfig]);
 
   const onSubmit = (data: Config) => {
     setState(State.Loading);
