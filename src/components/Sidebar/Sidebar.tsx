@@ -9,7 +9,7 @@ interface SidebarProps {
 
 export default function Sidebar({ open, setOpen, children }: SidebarProps) {
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet open={open} onOpenChange={setOpen} modal={false}>
       <SheetContent side="left" className="border-r border-secondary bg-card">
         {children}
       </SheetContent>

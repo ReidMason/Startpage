@@ -9,12 +9,15 @@ import EditableAppsGrid from "../Apps/EditableAppsGrid";
 import { Button } from "@/components/ui/button";
 import SettingsSidebar from "../SettingsSidebar/SettingsSidebar";
 import AppEditor from "../AppEditor/AppEditor";
-import { saveConfig } from "@/services/config/config";
+import { saveBackgroundImage, saveConfig } from "@/services/config/config";
 import { toast } from "sonner";
+import StyleHandler from "../StyleHandler/StyleHandler";
+import { ConfigSettings } from "../SettingsSidebar/types";
 
 interface MainDisplayProps {
   config: Config;
 }
+const IMAGE_URL = "/static/background.jpg";
 
 export default function MainDisplay({ config }: MainDisplayProps) {
   const [filter, setFilter] = useState("");
@@ -22,6 +25,7 @@ export default function MainDisplay({ config }: MainDisplayProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mutableConfig, setMutableConfig] = useState(config);
   const [appToEdit, setAppToEdit] = useState<App | null>(null);
+  const [imageUrl, setImageUrl] = useState(IMAGE_URL);
 
   const saveApp = (app: App) => {
     const newApps = mutableConfig.apps.map((a) => (a.id === app.id ? app : a));
@@ -33,20 +37,38 @@ export default function MainDisplay({ config }: MainDisplayProps) {
     saveNewConfig(newConfig);
   };
 
-  const saveNewConfig = (config: Config) => {
-    setMutableConfig(config);
-    saveConfig(config);
-    toast.success("Config saved");
+  const saveSettings = async (settings: ConfigSettings) => {
+    if (settings.file) {
+      const formData = new FormData();
+      formData.append("backgroundImage", settings.file);
+      await saveBackgroundImage(formData);
+      setImageUrl(IMAGE_URL + "?t=" + new Date().getTime());
+    }
+
+    // Remove the file from the settings object
+    const newConfig = { ...settings, file: undefined };
+    saveNewConfig(newConfig);
+  };
+
+  const saveNewConfig = async (config: Config) => {
+    try {
+      setMutableConfig(config);
+      await saveConfig(config);
+      toast.success("Config saved");
+    } catch (e) {
+      console.error(e);
+      toast.error("Failed to save config");
+    }
   };
 
   return (
-    <>
+    <StyleHandler config={mutableConfig} imageUrl={imageUrl}>
       <SettingsSidebar
         open={sidebarOpen}
         setOpen={setSidebarOpen}
         config={mutableConfig}
         setConfig={setMutableConfig}
-        saveConfig={saveNewConfig}
+        saveConfig={saveSettings}
       ></SettingsSidebar>
       <AppEditor
         open={!!appToEdit}
@@ -55,7 +77,12 @@ export default function MainDisplay({ config }: MainDisplayProps) {
         saveApp={saveApp}
       ></AppEditor>
       <div className="relative h-screen py-[5%]">
-        <div className="container flex max-w-screen-2xl flex-col gap-8 rounded-2xl bg-primary p-8 transition glassy:bg-primary/30 glassy:backdrop-blur-xl sm:p-16">
+        <div
+          className="container flex max-w-screen-2xl flex-col gap-8 rounded-2xl bg-primary p-8 transition sm:p-16"
+          style={{
+            backdropFilter: `blur(${mutableConfig.appearance.glassy / 2}px)`,
+          }}
+        >
           <Searchbar config={mutableConfig} setAppFilter={setFilter} />
           <Greeting config={mutableConfig} />
           {editMode ? (
@@ -78,6 +105,6 @@ export default function MainDisplay({ config }: MainDisplayProps) {
           </Button>
         </div>
       </div>
-    </>
+    </StyleHandler>
   );
 }

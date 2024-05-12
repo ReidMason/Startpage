@@ -1,6 +1,15 @@
 import React from "react";
 import { SettingsSectionProps } from "./types";
 import SettingsPanelWrapper from "./SettingsPanelWrapper";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
+import { Input } from "@/components/ui/input";
 
 export default function Appearance({
   setActivePage,
@@ -10,7 +19,102 @@ export default function Appearance({
 }: SettingsSectionProps) {
   return (
     <SettingsPanelWrapper setActivePage={setActivePage} panel={page}>
-      <p className="text-white">Nothing here yet :(</p>
+      <FormField
+        control={control}
+        name="appearance.backgroundEnabled"
+        render={({ field }) => (
+          <FormItem className="flex items-center justify-between">
+            <FormLabel>Enable background image</FormLabel>
+            <FormControl>
+              <Switch
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                disabled={loading}
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={control}
+        name="file"
+        render={({ field: { value, onChange, ...fieldProps } }) => (
+          <FormItem>
+            <FormLabel>File</FormLabel>
+            <FormControl>
+              <Input
+                {...fieldProps}
+                onChange={(event) => {
+                  console.log(event.target.files && event.target.files[0]);
+                  onChange(event.target.files && event.target.files[0]);
+                }}
+                placeholder="Background image URL"
+                type="file"
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={control}
+        name="appearance.glassy"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Glassy</FormLabel>
+            <FormControl>
+              <div className="flex gap-4">
+                <span className="w-12">{field.value}%</span>
+                <Slider
+                  max={100}
+                  step={1}
+                  value={[field.value]}
+                  onValueChange={(value) => field.onChange(value[0])}
+                />
+              </div>
+            </FormControl>
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={control}
+        name="appearance.backgroundBlur"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Background blur</FormLabel>
+            <FormControl>
+              <div className="flex gap-4">
+                <span className="w-12">{field.value}%</span>
+                <Slider
+                  max={100}
+                  step={1}
+                  value={[field.value]}
+                  onValueChange={(value) => field.onChange(value[0])}
+                />
+              </div>
+            </FormControl>
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={control}
+        name="appearance.opacity"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Opacity</FormLabel>
+            <FormControl>
+              <div className="flex gap-4">
+                <span className="w-12">{field.value}%</span>
+                <Slider
+                  max={100}
+                  step={1}
+                  value={[field.value]}
+                  onValueChange={(value) => field.onChange(value[0])}
+                />
+              </div>
+            </FormControl>
+          </FormItem>
+        )}
+      />
     </SettingsPanelWrapper>
   );
 }

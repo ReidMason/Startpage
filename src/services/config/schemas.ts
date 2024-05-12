@@ -14,10 +14,10 @@ export const appSchema = z.object({
 
 const appearanceSchema = z.object({
   backgroundEnabled: z.boolean().default(false),
-  backgroundBlur: z.boolean().default(false),
+  backgroundBlur: z.number().default(0),
   theme: z.nativeEnum(Theme).default(Theme.default),
   opacity: z.number().default(10),
-  glassy: z.boolean().default(true),
+  glassy: z.number().default(0),
 });
 
 const providerSchema = z.object({

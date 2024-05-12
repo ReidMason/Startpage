@@ -5,6 +5,7 @@ import { Config, configSchema } from "./schemas";
 import fs from "fs";
 
 const CONFIG_PATH = `${process.cwd()}/data/config.json`;
+const BACKGROUND_IMAGE_PATH = `${process.cwd()}/public/static/background.jpg`;
 const defaultConfig = configSchema.parse({});
 
 export async function getConfig(): Promise<Config> {
@@ -51,4 +52,10 @@ function ensureConfigExists() {
 
 export async function saveConfig(newConfig: Config) {
   fs.writeFileSync(CONFIG_PATH, JSON.stringify(newConfig));
+}
+
+export async function saveBackgroundImage(formData: FormData) {
+  const file = formData.get("backgroundImage") as File;
+  const buffer = await file.arrayBuffer();
+  fs.writeFileSync(BACKGROUND_IMAGE_PATH, Buffer.from(buffer));
 }

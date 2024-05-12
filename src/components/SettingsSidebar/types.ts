@@ -1,6 +1,7 @@
-import type { Config } from "@/services/config/schemas";
+import { configSchema } from "@/services/config/schemas";
 import type { Control } from "react-hook-form";
 import { PageObject } from "./pages";
+import { z } from "zod";
 
 export enum Page {
   "Home",
@@ -11,10 +12,15 @@ export enum Page {
 }
 
 export type SettingsSection = (props: SettingsSectionProps) => JSX.Element;
+export type ConfigSettings = z.infer<typeof configSettingsSchema>;
 
 export interface SettingsSectionProps {
   setActivePage: (panel: Page) => void;
   page: PageObject;
-  control: Control<Config>;
+  control: Control<ConfigSettings>;
   loading: boolean;
 }
+
+export const configSettingsSchema = configSchema.extend({
+  file: z.instanceof(File).optional(),
+});

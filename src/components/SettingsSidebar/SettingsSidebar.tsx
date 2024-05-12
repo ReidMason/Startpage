@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Page as Page } from "./types";
-import { Config, configSchema } from "@/services/config/schemas";
+import { ConfigSettings, configSettingsSchema, Page as Page } from "./types";
+import { Config } from "@/services/config/schemas";
 import { StateSetter } from "@/utils/common";
 import { useForm, useWatch } from "react-hook-form";
 import { pages } from "./pages";
@@ -14,7 +14,7 @@ interface SettingsSidebarProps {
   setOpen: (open: boolean) => void;
   config: Config;
   setConfig: StateSetter<Config>;
-  saveConfig: (config: Config) => void;
+  saveConfig: (config: ConfigSettings) => Promise<void>;
 }
 
 function getPage(page: Page) {
@@ -42,14 +42,20 @@ export default function SettingsSidebar({
   const page = getPage(activePage);
   const [state, setState] = useState(State.Default);
 
-  const form = useForm<Config>({
-    resolver: zodResolver(configSchema),
-    defaultValues: config,
+  const form = useForm<ConfigSettings>({
+    resolver: zodResolver(configSettingsSchema),
+    defaultValues: { ...config, file: undefined },
   });
 
   const watcher = useWatch({
     control: form.control,
-    name: ["general.searchPlaceholder", "weather.enabled", "weather.detailed"],
+    name: [
+      "file",
+      "general.searchPlaceholder",
+      "weather",
+      "weather",
+      "appearance",
+    ],
   });
 
   useEffect(() => {
@@ -57,10 +63,11 @@ export default function SettingsSidebar({
     setConfig(newConfig);
   }, [watcher, form, setConfig]);
 
-  const onSubmit = (data: Config) => {
+  const onSubmit = (data: ConfigSettings) => {
+    console.log("data", data);
     setState(State.Loading);
     saveConfig(data);
-    form.reset(data);
+    // form.reset(data);
     setState(State.Default);
   };
 

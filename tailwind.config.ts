@@ -1,5 +1,4 @@
 import type { Config } from "tailwindcss";
-import plugin from "tailwindcss/plugin";
 
 const config = {
   darkMode: ["selector"],
@@ -26,7 +25,7 @@ const config = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
+          DEFAULT: "hsla(var(--primary), var(--transparency-level))",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
@@ -75,12 +74,7 @@ const config = {
       },
     },
   },
-  plugins: [
-    require("tailwindcss-animate"),
-    plugin(function({ addVariant }) {
-      addVariant("glassy", ".glassy &");
-    }),
-  ],
+  plugins: [require("tailwindcss-animate")],
 } satisfies Config;
 
 export default config;
