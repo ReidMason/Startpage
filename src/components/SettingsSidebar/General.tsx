@@ -29,11 +29,16 @@ const searchOptions = [
   },
 ];
 
-export const General = ({ ...props }: SettingsSectionProps) => {
+export const General = ({
+  setActivePage,
+  page,
+  control,
+  loading,
+}: SettingsSectionProps) => {
   return (
-    <SettingsPanelWrapper {...props}>
+    <SettingsPanelWrapper setActivePage={setActivePage} panel={page}>
       <FormField
-        control={props.control}
+        control={control}
         name="general.searchPlaceholder"
         render={({ field }) => (
           <FormItem>
@@ -42,6 +47,7 @@ export const General = ({ ...props }: SettingsSectionProps) => {
               <Input
                 placeholder="Search Placeholder"
                 autoComplete="off"
+                disabled={loading}
                 {...field}
               />
             </FormControl>
@@ -49,24 +55,33 @@ export const General = ({ ...props }: SettingsSectionProps) => {
         )}
       />
       <FormField
-        control={props.control}
+        control={control}
         name="general.calendarUrl"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Calendar url</FormLabel>
             <FormControl>
-              <Input placeholder="Calendar url" autoComplete="off" {...field} />
+              <Input
+                placeholder="Calendar url"
+                autoComplete="off"
+                disabled={loading}
+                {...field}
+              />
             </FormControl>
           </FormItem>
         )}
       />
       <FormField
-        control={props.control}
+        control={control}
         name="general.searchUrl"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Search provider</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+              disabled={loading}
+            >
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a search provider" />

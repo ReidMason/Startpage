@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import Sidebar from "../Sidebar/Sidebar";
-import { Loader2 } from "lucide-react";
 
 interface SettingsSidebarProps extends HTMLAttributes<HTMLDivElement> {
   open: boolean;
@@ -80,9 +79,7 @@ export default function SettingsSidebar({
                 setActivePage={setActivePage}
                 page={page}
                 control={form.control}
-                config={config}
-                setConfig={setConfig}
-                register={form.register}
+                loading={state == State.Loading}
               />
             </div>
 

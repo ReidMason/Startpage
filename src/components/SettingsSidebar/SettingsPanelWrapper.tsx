@@ -1,16 +1,21 @@
-import React, { HTMLAttributes } from "react";
-import { SettingsSectionProps } from "./types";
+import React from "react";
+import type { Page } from "./types";
 import { ChevronLeftIcon } from "@heroicons/react/20/solid";
 import { Button } from "@/components/ui/button";
 
-interface SettingsPanelWrapperProps
-  extends HTMLAttributes<HTMLDivElement>,
-    SettingsSectionProps {}
+interface SettingsPanelWrapperProps {
+  children: React.ReactNode;
+  setActivePage: (page: Page) => void;
+  panel: {
+    previousPage: Page;
+    name: string;
+  };
+}
 
 export default function SettingsPanelWrapper({
   children,
   setActivePage,
-  page: panel,
+  panel,
 }: SettingsPanelWrapperProps) {
   return (
     <>
