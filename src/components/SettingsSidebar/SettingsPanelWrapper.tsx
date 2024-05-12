@@ -23,6 +23,7 @@ export default function SettingsPanelWrapper({
         <Button
           className="mb-4 mr-auto flex items-center text-accent"
           onClick={() => setActivePage(panel.previousPage)}
+          type="button"
         >
           <ChevronLeftIcon className="-mx-2 h-8 w-8" />
           <span>Back</span>
