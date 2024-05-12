@@ -15,6 +15,7 @@ export default function SettingsPanelWrapper({
     <>
       <div className="grid grid-cols-3 pt-4">
         <button
+          type="button"
           className="mb-4 mr-auto flex items-center text-accent"
           onClick={() => setActivePage(panel.previousPage)}
         >
