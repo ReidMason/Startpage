@@ -31,7 +31,7 @@ export default function App({ app, preview, editable, ...props }: AppProps) {
           <p className="lowercase text-accent-foreground">
             {app.name || "New app"}
           </p>
-          <p className="truncate text-xs text-secondary-foreground">
+          <p className="truncate text-xs text-foreground">
             {displayUrl || "app.example.com"}
           </p>
         </div>
