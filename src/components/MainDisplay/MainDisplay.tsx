@@ -40,44 +40,44 @@ export default function MainDisplay({ config }: MainDisplayProps) {
   };
 
   return (
-    <SettingsSidebar
-      open={sidebarOpen}
-      setOpen={setSidebarOpen}
-      config={mutableConfig}
-      setConfig={setMutableConfig}
-      saveConfig={saveNewConfig}
-    >
+    <>
+      <SettingsSidebar
+        open={sidebarOpen}
+        setOpen={setSidebarOpen}
+        config={mutableConfig}
+        setConfig={setMutableConfig}
+        saveConfig={saveNewConfig}
+      ></SettingsSidebar>
       <AppEditor
         open={!!appToEdit}
         setOpen={(value) => setAppToEdit(value ? appToEdit : null)}
         app={appToEdit}
         saveApp={saveApp}
-      >
-        <div className="relative h-screen py-[5%]">
-          <div className="container mx-auto flex flex-col gap-8 bg-primary p-8 transition glassy:backdrop-blur-xl sm:p-16 sm:glassy:rounded-2xl">
-            <Searchbar config={mutableConfig} setAppFilter={setFilter} />
-            <Greeting config={mutableConfig} />
-            {editMode ? (
-              <EditableAppsGrid
-                apps={mutableConfig.apps}
-                setAppToEdit={setAppToEdit}
-                setApps={saveApps}
-              />
-            ) : (
-              <AppsGrid config={mutableConfig} appFilter={filter} />
-            )}
-          </div>
-
-          <div className="absolute bottom-0 left-0 flex gap-4 p-4">
-            <Button variant="secondary" onClick={() => setSidebarOpen(true)}>
-              Settings
-            </Button>
-            <Button variant="secondary" onClick={() => setEditMode(!editMode)}>
-              {editMode ? "View mode" : "Edit mode"}
-            </Button>
-          </div>
+      ></AppEditor>
+      <div className="relative h-screen py-[5%]">
+        <div className="container mx-auto flex flex-col gap-8 bg-primary p-8 transition glassy:backdrop-blur-xl sm:p-16 sm:glassy:rounded-2xl">
+          <Searchbar config={mutableConfig} setAppFilter={setFilter} />
+          <Greeting config={mutableConfig} />
+          {editMode ? (
+            <EditableAppsGrid
+              apps={mutableConfig.apps}
+              setAppToEdit={setAppToEdit}
+              setApps={saveApps}
+            />
+          ) : (
+            <AppsGrid config={mutableConfig} appFilter={filter} />
+          )}
         </div>
-      </AppEditor>
-    </SettingsSidebar>
+
+        <div className="absolute bottom-0 left-0 flex gap-4 p-4">
+          <Button variant="secondary" onClick={() => setSidebarOpen(true)}>
+            Settings
+          </Button>
+          <Button variant="secondary" onClick={() => setEditMode(!editMode)}>
+            {editMode ? "View mode" : "Edit mode"}
+          </Button>
+        </div>
+      </div>
+    </>
   );
 }

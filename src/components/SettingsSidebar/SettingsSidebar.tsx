@@ -1,16 +1,15 @@
-import { HTMLAttributes, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Page as Page } from "./types";
 import { Config, configSchema } from "@/services/config/schemas";
 import { StateSetter } from "@/utils/common";
 import { useForm, useWatch } from "react-hook-form";
-import { classNames } from "@/utils/utils";
 import { pages } from "./pages";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
-import Sidebar from "../Sidebar/Sidebar";
+import Sidebar from "@/components/Sidebar/Sidebar";
 
-interface SettingsSidebarProps extends HTMLAttributes<HTMLDivElement> {
+interface SettingsSidebarProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   config: Config;
@@ -33,7 +32,6 @@ enum State {
 }
 
 export default function SettingsSidebar({
-  children,
   open,
   setOpen,
   config,
@@ -67,41 +65,31 @@ export default function SettingsSidebar({
   };
 
   return (
-    <div>
-      <Sidebar open={open} setOpen={setOpen}>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex h-full flex-col justify-between"
-          >
-            <div>
-              <page.component
-                setActivePage={setActivePage}
-                page={page}
-                control={form.control}
-                loading={state == State.Loading}
-              />
-            </div>
-
-            <Button
-              className="w-full"
-              variant="secondary"
-              disabled={!form.formState.isDirty}
+    <Sidebar open={open} setOpen={setOpen}>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex h-full flex-col justify-between"
+        >
+          <div>
+            <page.component
+              setActivePage={setActivePage}
+              page={page}
+              control={form.control}
               loading={state == State.Loading}
-            >
-              Save
-            </Button>
-          </form>
-        </Form>
-      </Sidebar>
-      <main
-        className={classNames(
-          open ? "md:ml-80 md:px-4" : "",
-          "transition-all duration-300 ease-in-out",
-        )}
-      >
-        {children}
-      </main>
-    </div>
+            />
+          </div>
+
+          <Button
+            className="w-full"
+            variant="secondary"
+            disabled={!form.formState.isDirty}
+            loading={state == State.Loading}
+          >
+            Save
+          </Button>
+        </form>
+      </Form>
+    </Sidebar>
   );
 }

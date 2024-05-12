@@ -2,6 +2,7 @@ import React from "react";
 import type { Page } from "./types";
 import { ChevronLeftIcon } from "@heroicons/react/20/solid";
 import { Button } from "@/components/ui/button";
+import { SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 interface SettingsPanelWrapperProps {
   children: React.ReactNode;
@@ -19,19 +20,21 @@ export default function SettingsPanelWrapper({
 }: SettingsPanelWrapperProps) {
   return (
     <>
-      <div className="grid grid-cols-3 pt-4">
+      <SheetHeader className="grid grid-cols-3">
         <Button
           className="mb-4 mr-auto flex items-center text-accent"
           onClick={() => setActivePage(panel.previousPage)}
           type="button"
+          variant="link"
         >
-          <ChevronLeftIcon className="-mx-2 h-8 w-8" />
+          <ChevronLeftIcon className="-mx-1 h-6 w-6" />
           <span>Back</span>
         </Button>
-        <h2 className="text-center text-xl font-semibold text-white">
+
+        <SheetTitle className="text-center text-xl font-semibold text-white">
           {panel.name}
-        </h2>
-      </div>
+        </SheetTitle>
+      </SheetHeader>
       <div className="flex flex-col gap-5">{children}</div>
     </>
   );

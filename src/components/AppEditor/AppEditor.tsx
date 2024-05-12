@@ -1,14 +1,12 @@
-import { HTMLAttributes } from "react";
-import { classNames } from "@/utils/utils";
-import Sidebar from "../Sidebar/Sidebar";
 import { appSchema, type App as AppType } from "@/services/config/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "@/components/ui/input";
 import App from "../Apps/App";
+import Sidebar from "../Sidebar/Sidebar";
 
-interface SettingsSidebarProps extends HTMLAttributes<HTMLDivElement> {
+interface SettingsSidebarProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   app: AppType | null;
@@ -16,7 +14,6 @@ interface SettingsSidebarProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export default function AppEditor({
-  children,
   open,
   setOpen,
   app,
@@ -28,20 +25,9 @@ export default function AppEditor({
   }
 
   return (
-    <>
-      <Sidebar open={open} setOpen={setOpen}>
-        {!!app && <AppEdit app={app} saveApp={saveApp} />}
-      </Sidebar>
-
-      <main
-        className={classNames(
-          open ? "md:ml-80 md:px-4" : "",
-          "transition-all duration-300 ease-in-out",
-        )}
-      >
-        {children}
-      </main>
-    </>
+    <Sidebar open={open} setOpen={setOpen}>
+      {!!app && <AppEdit app={app} saveApp={saveApp} />}
+    </Sidebar>
   );
 }
 
