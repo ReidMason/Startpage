@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import SettingsSidebar from "../SettingsSidebar/SettingsSidebar";
 import AppEditor from "../AppEditor/AppEditor";
 import { saveConfig } from "@/services/config/config";
+import { toast } from "sonner";
 
 interface MainDisplayProps {
   config: Config;
@@ -35,6 +36,7 @@ export default function MainDisplay({ config }: MainDisplayProps) {
   const saveNewConfig = (config: Config) => {
     setMutableConfig(config);
     saveConfig(config);
+    toast.success("Config saved");
   };
 
   return (
