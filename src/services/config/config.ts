@@ -16,8 +16,25 @@ export async function getConfig(): Promise<Config> {
 }
 
 function validateConfig(config: Config): Config {
-  const newConfig = merge(defaultConfig, config);
-  if (JSON.stringify(config) != JSON.stringify(newConfig))
+  const newConfig = merge(structuredClone(defaultConfig), config);
+
+  // Replace any invalid values with the default value
+  const result = configSchema.safeParse(newConfig);
+  result.error?.errors.forEach((error) => {
+    const value = error.path.reduce(
+      (obj: any, key) => (obj || {})[key],
+      defaultConfig,
+    );
+
+    error.path.reduce((obj: any, key, i: number) => {
+      if (i === error.path.length - 1) {
+        obj[key] = value;
+      }
+      return (obj || {})[key];
+    }, newConfig);
+  });
+
+  if (result.error || JSON.stringify(config) != JSON.stringify(newConfig))
     saveConfig(newConfig);
 
   return newConfig;
