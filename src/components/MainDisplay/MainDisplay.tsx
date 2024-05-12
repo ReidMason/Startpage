@@ -55,7 +55,7 @@ export default function MainDisplay({ config }: MainDisplayProps) {
         saveApp={saveApp}
       ></AppEditor>
       <div className="relative h-screen py-[5%]">
-        <div className="container mx-auto flex flex-col gap-8 bg-primary p-8 transition glassy:backdrop-blur-xl sm:p-16 sm:glassy:rounded-2xl">
+        <div className="container mx-auto flex flex-col gap-8 rounded-2xl bg-primary p-8 transition glassy:bg-primary/30 glassy:backdrop-blur-xl sm:p-16">
           <Searchbar config={mutableConfig} setAppFilter={setFilter} />
           <Greeting config={mutableConfig} />
           {editMode ? (
