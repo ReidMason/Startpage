@@ -52,7 +52,7 @@ export default function WeatherDisplay({ config }: WeatherDisplayProps) {
               {config.detailed && (
                 <div className="mb-1 flex items-center gap-1 text-lg">
                   <Icon icon="bi:cloud-rain-heavy-fill" />
-                  <span>{Math.round(weather.rainChance * 100)}%</span>
+                  <span>{weather.rainChance}%</span>
                 </div>
               )}
             </div>

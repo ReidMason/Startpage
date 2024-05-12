@@ -38,12 +38,16 @@ async function requestWeatherData(
       "precipitation",
       "weather_code",
     ],
+    hourly: ["precipitation_probability"],
+    forecast_days: 1,
   };
 
   const url = new URL("https://api.open-meteo.com/v1/forecast");
   url.searchParams.append("latitude", params.latitude.toString());
   url.searchParams.append("longitude", params.longitude.toString());
   url.searchParams.append("current", params.current.join(","));
+  url.searchParams.append("hourly", params.hourly.join(","));
+  url.searchParams.append("forecast_days", params.forecast_days.toString());
 
   const response = await fetch(url);
   if (response.status !== 200) {
@@ -72,12 +76,18 @@ function weatherDataResponseToWeatherData(
   );
   const timeWeatherData = isDay ? weatherCodeData.day : weatherCodeData.night;
 
+  const timeIndex = weatherDataResponse.hourly.time.findIndex((hour) => {
+    return hour.getTime() > time.getTime();
+  });
+  const rainChance =
+    weatherDataResponse.hourly.precipitation_probability[timeIndex - 1];
+
   return {
     temperature: weatherDataResponse.current.temperature_2m,
     feelsLike: weatherDataResponse.current.apparent_temperature,
     description: timeWeatherData.description,
     imageUrl: timeWeatherData.image,
-    rainChance: weatherDataResponse.current.precipitation,
+    rainChance: rainChance,
   };
 }
 

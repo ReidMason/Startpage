@@ -25,7 +25,6 @@ export const weatherDataResponseSchema = z.object({
     interval: z.string(),
     temperature_2m: z.string(),
     apparent_temperature: z.string(),
-    precipitation: z.string(),
     weather_code: z.string(),
   }),
   current: z.object({
@@ -33,7 +32,14 @@ export const weatherDataResponseSchema = z.object({
     interval: z.number(),
     temperature_2m: z.number(),
     apparent_temperature: z.number(),
-    precipitation: z.number(),
     weather_code: z.number(),
+  }),
+  hourly_units: z.object({
+    time: z.string(),
+    precipitation_probability: z.string(),
+  }),
+  hourly: z.object({
+    time: z.array(z.coerce.date()),
+    precipitation_probability: z.array(z.number()),
   }),
 });
