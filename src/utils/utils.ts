@@ -5,6 +5,10 @@ export function getUnixTime(): number {
   return Math.floor(Date.now() / 1000);
 }
 
+export function roundToDecimal(value: number, decimal: number): number {
+  return Math.round(value * Math.pow(10, decimal)) / Math.pow(10, decimal);
+}
+
 export function generateUuid(): string {
   return uuidv4();
 }

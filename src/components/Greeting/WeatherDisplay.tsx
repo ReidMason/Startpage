@@ -6,6 +6,7 @@ import Image from "next/image";
 import Icon from "../Icon/Icon";
 import { useEffect, useState } from "react";
 import { Weather } from "@/services/weather/schemas";
+import { roundToDecimal } from "@/utils/utils";
 
 interface WeatherDisplayProps {
   config: WeatherConfig;
@@ -16,9 +17,10 @@ export default function WeatherDisplay({ config }: WeatherDisplayProps) {
 
   const updateWeatherFromLocation = async () => {
     navigator.geolocation.getCurrentPosition(async (position) => {
+      const decimalPlaces = 2;
       const weatherData = await getWeatherData(
-        position.coords.latitude,
-        position.coords.longitude,
+        roundToDecimal(position.coords.latitude, decimalPlaces),
+        roundToDecimal(position.coords.longitude, decimalPlaces),
         new Date(),
       );
       setWeather(weatherData);
