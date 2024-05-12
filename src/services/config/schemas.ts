@@ -16,7 +16,7 @@ const appearanceSchema = z.object({
   backgroundEnabled: z.boolean().default(false),
   backgroundBlur: z.number().default(0),
   theme: z.nativeEnum(Theme).default(Theme.default),
-  opacity: z.number().default(10),
+  opacity: z.number().default(100),
   glassy: z.number().default(0),
 });
 
