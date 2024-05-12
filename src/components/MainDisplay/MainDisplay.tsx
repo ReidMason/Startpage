@@ -6,7 +6,7 @@ import AppsGrid from "../Apps/AppsGrid";
 import Searchbar from "../Searchbar/Searchbar";
 import Greeting from "../Greeting/Greeting";
 import EditableAppsGrid from "../Apps/EditableAppsGrid";
-import { Button } from "../Button/Button";
+import { Button } from "@/components/ui/button";
 import SettingsSidebar from "../SettingsSidebar/SettingsSidebar";
 import AppEditor from "../AppEditor/AppEditor";
 import { saveConfig } from "@/services/config/config";
@@ -67,8 +67,10 @@ export default function MainDisplay({ config }: MainDisplayProps) {
           </div>
 
           <div className="absolute bottom-0 left-0 flex gap-4 p-4">
-            <Button onClick={() => setSidebarOpen(true)}>Settings</Button>
-            <Button onClick={() => setEditMode(!editMode)}>
+            <Button variant="secondary" onClick={() => setSidebarOpen(true)}>
+              Settings
+            </Button>
+            <Button variant="secondary" onClick={() => setEditMode(!editMode)}>
               {editMode ? "View mode" : "Edit mode"}
             </Button>
           </div>

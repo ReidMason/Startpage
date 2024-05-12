@@ -1,6 +1,7 @@
 import React, { HTMLAttributes } from "react";
 import { SettingsSectionProps } from "./types";
 import { ChevronLeftIcon } from "@heroicons/react/20/solid";
+import { Button } from "@/components/ui/button";
 
 interface SettingsPanelWrapperProps
   extends HTMLAttributes<HTMLDivElement>,
@@ -14,14 +15,13 @@ export default function SettingsPanelWrapper({
   return (
     <>
       <div className="grid grid-cols-3 pt-4">
-        <button
-          type="button"
+        <Button
           className="mb-4 mr-auto flex items-center text-accent"
           onClick={() => setActivePage(panel.previousPage)}
         >
           <ChevronLeftIcon className="-mx-2 h-8 w-8" />
           <span>Back</span>
-        </button>
+        </Button>
         <h2 className="text-center text-xl font-semibold text-white">
           {panel.name}
         </h2>

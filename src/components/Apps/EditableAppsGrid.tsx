@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import type { Config, App as AppType } from "@/services/config/schemas";
+import React from "react";
+import type { App as AppType } from "@/services/config/schemas";
 import App from "./App";
 import { DragEndEvent, closestCenter } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";

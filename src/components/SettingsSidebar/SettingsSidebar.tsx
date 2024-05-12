@@ -5,10 +5,11 @@ import { StateSetter } from "@/utils/common";
 import { useForm, useWatch } from "react-hook-form";
 import { classNames } from "@/utils/utils";
 import { pages } from "./pages";
-import { Button } from "../Button/Button";
+import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import Sidebar from "../Sidebar/Sidebar";
+import { Loader2 } from "lucide-react";
 
 interface SettingsSidebarProps extends HTMLAttributes<HTMLDivElement> {
   open: boolean;
@@ -87,6 +88,7 @@ export default function SettingsSidebar({
 
             <Button
               className="w-full"
+              variant="secondary"
               disabled={!form.formState.isDirty}
               loading={state == State.Loading}
             >
