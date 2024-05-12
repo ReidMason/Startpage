@@ -6,7 +6,6 @@ import { useForm, useWatch } from "react-hook-form";
 import { classNames } from "@/utils/utils";
 import { pages } from "./pages";
 import { Button } from "../Button/Button";
-import { saveConfig } from "@/services/config/config";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import Sidebar from "../Sidebar/Sidebar";
@@ -16,6 +15,7 @@ interface SettingsSidebarProps extends HTMLAttributes<HTMLDivElement> {
   setOpen: (open: boolean) => void;
   config: Config;
   setConfig: StateSetter<Config>;
+  saveConfig: (config: Config) => void;
 }
 
 function getPage(page: Page) {
@@ -38,6 +38,7 @@ export default function SettingsSidebar({
   setOpen,
   config,
   setConfig,
+  saveConfig,
 }: SettingsSidebarProps) {
   const [activePage, setActivePage] = useState(Page.Home);
   const page = getPage(activePage);
@@ -73,24 +74,24 @@ export default function SettingsSidebar({
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex h-full flex-col justify-between"
           >
-            <page.component
-              setActivePage={setActivePage}
-              page={page}
-              control={form.control}
-              config={config}
-              setConfig={setConfig}
-              register={form.register}
-            />
-
             <div>
-              <Button
-                className="w-full"
-                disabled={!form.formState.isDirty}
-                loading={state == State.Loading}
-              >
-                Save
-              </Button>
+              <page.component
+                setActivePage={setActivePage}
+                page={page}
+                control={form.control}
+                config={config}
+                setConfig={setConfig}
+                register={form.register}
+              />
             </div>
+
+            <Button
+              className="w-full"
+              disabled={!form.formState.isDirty}
+              loading={state == State.Loading}
+            >
+              Save
+            </Button>
           </form>
         </Form>
       </Sidebar>

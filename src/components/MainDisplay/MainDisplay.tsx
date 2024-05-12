@@ -9,6 +9,7 @@ import EditableAppsGrid from "../Apps/EditableAppsGrid";
 import { Button } from "../Button/Button";
 import SettingsSidebar from "../SettingsSidebar/SettingsSidebar";
 import AppEditor from "../AppEditor/AppEditor";
+import { saveConfig } from "@/services/config/config";
 
 interface MainDisplayProps {
   config: Config;
@@ -21,17 +22,34 @@ export default function MainDisplay({ config }: MainDisplayProps) {
   const [mutableConfig, setMutableConfig] = useState(config);
   const [appToEdit, setAppToEdit] = useState<App | null>(null);
 
+  const saveApp = (app: App) => {
+    const newApps = mutableConfig.apps.map((a) => (a.id === app.id ? app : a));
+    saveApps(newApps);
+  };
+
+  const saveApps = (apps: App[]) => {
+    const newConfig = { ...mutableConfig, apps };
+    saveNewConfig(newConfig);
+  };
+
+  const saveNewConfig = (config: Config) => {
+    setMutableConfig(config);
+    saveConfig(config);
+  };
+
   return (
     <SettingsSidebar
       open={sidebarOpen}
       setOpen={setSidebarOpen}
       config={mutableConfig}
       setConfig={setMutableConfig}
+      saveConfig={saveNewConfig}
     >
       <AppEditor
         open={!!appToEdit}
         setOpen={(value) => setAppToEdit(value ? appToEdit : null)}
         app={appToEdit}
+        saveApp={saveApp}
       >
         <div className="relative h-screen py-[5%]">
           <div className="container mx-auto flex flex-col gap-8 bg-primary p-8 transition glassy:backdrop-blur-xl sm:p-16 sm:glassy:rounded-2xl">
@@ -39,8 +57,9 @@ export default function MainDisplay({ config }: MainDisplayProps) {
             <Greeting config={mutableConfig} />
             {editMode ? (
               <EditableAppsGrid
-                config={mutableConfig}
+                apps={mutableConfig.apps}
                 setAppToEdit={setAppToEdit}
+                setApps={saveApps}
               />
             ) : (
               <AppsGrid config={mutableConfig} appFilter={filter} />

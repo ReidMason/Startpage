@@ -7,12 +7,12 @@ import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "@/components/ui/input";
 import App from "../Apps/App";
-import SettingsPanelWrapper from "../SettingsSidebar/SettingsPanelWrapper";
 
 interface SettingsSidebarProps extends HTMLAttributes<HTMLDivElement> {
   open: boolean;
   setOpen: (open: boolean) => void;
   app: AppType | null;
+  saveApp: (app: AppType) => void;
 }
 
 export default function AppEditor({
@@ -20,6 +20,7 @@ export default function AppEditor({
   open,
   setOpen,
   app,
+  saveApp,
 }: SettingsSidebarProps) {
   if (!app && open) {
     setOpen(false);
@@ -29,7 +30,7 @@ export default function AppEditor({
   return (
     <>
       <Sidebar open={open} setOpen={setOpen}>
-        {!!app && <AppEdit app={app} />}
+        {!!app && <AppEdit app={app} saveApp={saveApp} />}
       </Sidebar>
 
       <main
@@ -46,21 +47,30 @@ export default function AppEditor({
 
 interface AppEditProps {
   app: AppType;
+  saveApp: (app: AppType) => void;
 }
 
-function AppEdit({ app }: AppEditProps) {
+function AppEdit({ app, saveApp }: AppEditProps) {
   const form = useForm<AppType>({
     resolver: zodResolver(appSchema),
     defaultValues: app,
   });
   const modifiedApp = form.watch();
 
+  const onSubmit = (app: AppType) => {
+    saveApp(app);
+    form.reset(app);
+  };
+
   return (
     <Form {...form}>
       <h2 className="pt-4 text-center text-xl font-semibold text-white">
         Edit App
       </h2>
-      <div className="flex flex-col gap-2">
+      <form
+        className="flex flex-col gap-2"
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
         <App app={modifiedApp} preview />
         <FormField
           control={form.control}
@@ -98,7 +108,9 @@ function AppEdit({ app }: AppEditProps) {
             </FormItem>
           )}
         />
-      </div>
+
+        <button>Save</button>
+      </form>
     </Form>
   );
 }

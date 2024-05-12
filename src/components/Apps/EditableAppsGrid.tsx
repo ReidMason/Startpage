@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { Config, App as AppType } from "@/services/config/schemas";
 import App from "./App";
 import { DragEndEvent, closestCenter } from "@dnd-kit/core";
@@ -10,31 +10,31 @@ import SortableWrapper from "../DragAndDrop/SortableWrapper";
 import { DndWrapper } from "../DragAndDrop/DndWrapper";
 
 interface AppsGridProps {
-  config: Config;
+  apps: AppType[];
   setAppToEdit: (value: AppType | null) => void;
+  setApps: (apps: AppType[]) => void;
 }
 
-export default function AppsGrid({ setAppToEdit, config }: AppsGridProps) {
-  const [apps, setApps] = useState(config.apps);
-
+export default function AppsGrid({
+  setAppToEdit,
+  apps,
+  setApps,
+}: AppsGridProps) {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
     if (over == null) return;
 
     if (active.id !== over.id) {
-      setApps((items) => {
-        const oldIndex = items.findIndex((x) => x.id === active.id);
-        const newIndex = items.findIndex((x) => x.id === over.id);
-
-        return arrayMove(items, oldIndex, newIndex);
-      });
+      const oldIndex = apps.findIndex((x) => x.id === active.id);
+      const newIndex = apps.findIndex((x) => x.id === over.id);
+      setApps(arrayMove(apps, oldIndex, newIndex));
     }
   };
 
   const createNewApp = () => {
-    setApps((oldApps) => [
-      ...oldApps,
+    setApps([
+      ...apps,
       {
         id: generateUuid(),
         url: "",
