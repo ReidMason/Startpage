@@ -12,7 +12,7 @@ export const appSchema = z.object({
   enabled: z.boolean().default(true),
 });
 
-const appearanceSchema = z.object({
+export const appearanceSchema = z.object({
   backgroundEnabled: z.boolean().default(false),
   backgroundImageKey: z.string().default(""),
   backgroundBlur: z.number().default(0),

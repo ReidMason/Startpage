@@ -37,7 +37,7 @@ export default function Appearance({
       />
       <FormField
         control={control}
-        name="file"
+        name="appearance.newBackgroundImage"
         render={({ field: { value, onChange, ...fieldProps } }) => (
           <FormItem>
             <FormLabel>File</FormLabel>
@@ -45,7 +45,6 @@ export default function Appearance({
               <Input
                 {...fieldProps}
                 onChange={(event) => {
-                  console.log(event.target.files && event.target.files[0]);
                   onChange(event.target.files && event.target.files[0]);
                 }}
                 placeholder="Background image URL"

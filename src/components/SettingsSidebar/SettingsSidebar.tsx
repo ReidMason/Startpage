@@ -14,7 +14,7 @@ interface SettingsSidebarProps {
   setOpen: (open: boolean) => void;
   config: Config;
   setConfig: StateSetter<Config>;
-  saveConfig: (config: ConfigSettings) => Promise<void>;
+  saveSettings: (config: ConfigSettings) => Promise<void>;
 }
 
 function getPage(page: Page) {
@@ -36,7 +36,7 @@ export default function SettingsSidebar({
   setOpen,
   config,
   setConfig,
-  saveConfig,
+  saveSettings,
 }: SettingsSidebarProps) {
   const [activePage, setActivePage] = useState(Page.Home);
   const page = getPage(activePage);
@@ -44,18 +44,12 @@ export default function SettingsSidebar({
 
   const form = useForm<ConfigSettings>({
     resolver: zodResolver(configSettingsSchema),
-    defaultValues: { ...config, file: undefined },
+    defaultValues: config,
   });
 
   const watcher = useWatch({
     control: form.control,
-    name: [
-      "file",
-      "general.searchPlaceholder",
-      "weather",
-      "weather",
-      "appearance",
-    ],
+    name: ["general.searchPlaceholder", "weather", "weather", "appearance"],
   });
 
   useEffect(() => {
@@ -65,10 +59,11 @@ export default function SettingsSidebar({
 
   const onSubmit = (data: ConfigSettings) => {
     setState(State.Loading);
-    if (data.file) {
+    if (data.appearance.newBackgroundImage)
       data.appearance.backgroundEnabled = true;
-    }
-    saveConfig(data);
+
+    console.log("Saving settings data", data);
+    saveSettings(data);
     form.reset(data);
     setState(State.Default);
   };

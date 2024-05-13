@@ -1,4 +1,4 @@
-import { configSchema } from "@/services/config/schemas";
+import { appearanceSchema, configSchema } from "@/services/config/schemas";
 import type { Control } from "react-hook-form";
 import { PageObject } from "./pages";
 import { z } from "zod";
@@ -22,5 +22,7 @@ export interface SettingsSectionProps {
 }
 
 export const configSettingsSchema = configSchema.extend({
-  file: z.instanceof(File).optional(),
+  appearance: appearanceSchema.extend({
+    newBackgroundImage: z.instanceof(File).optional(),
+  }),
 });

@@ -1,6 +1,6 @@
 "use client";
 
-import type { App, Config } from "@/services/config/schemas";
+import { configSchema, type App, type Config } from "@/services/config/schemas";
 import React, { useState } from "react";
 import AppsGrid from "../Apps/AppsGrid";
 import Searchbar from "../Searchbar/Searchbar";
@@ -44,17 +44,25 @@ export default function MainDisplay({ config }: MainDisplayProps) {
   };
 
   const saveSettings = async (settings: ConfigSettings) => {
-    if (settings.file) {
+    if (settings.appearance.newBackgroundImage) {
       settings.appearance.backgroundImageKey = new Date().getTime().toString();
       const formData = new FormData();
-      formData.append("backgroundImage", settings.file);
+      formData.append(
+        "backgroundImage",
+        settings.appearance.newBackgroundImage,
+      );
       await saveBackgroundImage(formData);
       setImageUrl(formatImageUrl(settings.appearance.backgroundImageKey));
     }
 
-    // Remove the file from the settings object
-    const newConfig = { ...settings, file: undefined };
-    saveNewConfig(newConfig);
+    // Remove any additional fields from the settings object
+    const result = configSchema.safeParse(settings);
+    if (!result.success) {
+      toast.error("Failed to save settings");
+      return;
+    }
+
+    saveNewConfig(result.data);
   };
 
   const saveNewConfig = async (config: Config) => {
@@ -75,7 +83,7 @@ export default function MainDisplay({ config }: MainDisplayProps) {
         setOpen={setSidebarOpen}
         config={mutableConfig}
         setConfig={setMutableConfig}
-        saveConfig={saveSettings}
+        saveSettings={saveSettings}
       ></SettingsSidebar>
       <AppEditor
         open={!!appToEdit}
