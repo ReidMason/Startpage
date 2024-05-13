@@ -14,6 +14,7 @@ export const appSchema = z.object({
 
 const appearanceSchema = z.object({
   backgroundEnabled: z.boolean().default(false),
+  backgroundImageKey: z.string().default(""),
   backgroundBlur: z.number().default(0),
   theme: z.nativeEnum(Theme).default(Theme.default),
   opacity: z.number().default(100),

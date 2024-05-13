@@ -19,13 +19,19 @@ interface MainDisplayProps {
 }
 const IMAGE_URL = "/static/background.jpg";
 
+function formatImageUrl(key: string) {
+  return `${IMAGE_URL}?t=${key}`;
+}
+
 export default function MainDisplay({ config }: MainDisplayProps) {
   const [filter, setFilter] = useState("");
   const [editMode, setEditMode] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mutableConfig, setMutableConfig] = useState(config);
   const [appToEdit, setAppToEdit] = useState<App | null>(null);
-  const [imageUrl, setImageUrl] = useState(IMAGE_URL);
+  const [imageUrl, setImageUrl] = useState(
+    formatImageUrl(config.appearance.backgroundImageKey),
+  );
 
   const saveApp = (app: App) => {
     const newApps = mutableConfig.apps.map((a) => (a.id === app.id ? app : a));
@@ -39,10 +45,11 @@ export default function MainDisplay({ config }: MainDisplayProps) {
 
   const saveSettings = async (settings: ConfigSettings) => {
     if (settings.file) {
+      settings.appearance.backgroundImageKey = new Date().getTime().toString();
       const formData = new FormData();
       formData.append("backgroundImage", settings.file);
       await saveBackgroundImage(formData);
-      setImageUrl(IMAGE_URL + "?t=" + new Date().getTime());
+      setImageUrl(formatImageUrl(settings.appearance.backgroundImageKey));
     }
 
     // Remove the file from the settings object

@@ -28,7 +28,7 @@ export default function StyleHandler({
     >
       {config.appearance.backgroundEnabled && (
         <div className="fixed h-full w-full" style={imageContainerStyle}>
-          <img
+          <Image
             src={imageUrl}
             width={1920}
             height={1080}
