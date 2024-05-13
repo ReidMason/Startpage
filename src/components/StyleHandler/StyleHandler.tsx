@@ -23,7 +23,7 @@ export default function StyleHandler({
 
   return (
     <div style={style}>
-      {config.appearance.backgroundEnabled && (
+      {config.appearance.backgroundImageEnabled && (
         <div className="fixed h-full w-full" style={imageContainerStyle}>
           <Image
             src={imageUrl}

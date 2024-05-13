@@ -60,7 +60,7 @@ export default function SettingsSidebar({
   const onSubmit = (data: ConfigSettings) => {
     setState(State.Loading);
     if (data.appearance.newBackgroundImage)
-      data.appearance.backgroundEnabled = true;
+      data.appearance.backgroundImageEnabled = true;
 
     console.log("Saving settings data", data);
     saveSettings(data);

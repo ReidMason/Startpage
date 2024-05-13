@@ -13,7 +13,7 @@ export const appSchema = z.object({
 });
 
 export const appearanceSchema = z.object({
-  backgroundEnabled: z.boolean().default(false),
+  backgroundImageEnabled: z.boolean().default(false),
   backgroundImageKey: z.string().default(""),
   backgroundBlur: z.number().default(0),
   theme: z.nativeEnum(Theme).default(Theme.default),

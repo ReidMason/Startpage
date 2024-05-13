@@ -21,7 +21,7 @@ export default function Appearance({
     <SettingsPanelWrapper setActivePage={setActivePage} panel={page}>
       <FormField
         control={control}
-        name="appearance.backgroundEnabled"
+        name="appearance.backgroundImageEnabled"
         render={({ field }) => (
           <FormItem className="flex items-center justify-between">
             <FormLabel>Enable background image</FormLabel>
