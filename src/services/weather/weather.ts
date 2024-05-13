@@ -12,7 +12,7 @@ export async function getWeatherData(
   lon: number,
   time: Date,
 ): Promise<Weather | null> {
-  console.log(`Getting weather data for: ${lat}, ${lon}`);
+  console.info(`Getting weather data for: ${lat}, ${lon}`);
   const weatherResponse =
     (await getCachedWeatherData(lat, lon)) ??
     (await requestWeatherData(lat, lon));
@@ -28,7 +28,7 @@ async function requestWeatherData(
   latitude: number,
   longitude: number,
 ): Promise<WeatherDataResponse | null> {
-  console.log(`Requesting weather data for: ${latitude}, ${longitude}`);
+  console.info(`Requesting weather data for: ${latitude}, ${longitude}`);
   const params = {
     latitude,
     longitude,

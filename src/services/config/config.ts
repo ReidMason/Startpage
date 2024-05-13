@@ -55,7 +55,6 @@ export async function saveConfig(newConfig: Config) {
 }
 
 export async function saveBackgroundImage(formData: FormData) {
-  console.log("Saving background image");
   const file = formData.get("backgroundImage") as File;
   const buffer = await file.arrayBuffer();
   fs.writeFileSync(BACKGROUND_IMAGE_PATH, Buffer.from(buffer));

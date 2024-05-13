@@ -62,7 +62,6 @@ export default function SettingsSidebar({
     if (data.appearance.newBackgroundImage)
       data.appearance.backgroundImageEnabled = true;
 
-    console.log("Saving settings data", data);
     saveSettings(data);
     form.reset(data);
     setState(State.Default);
