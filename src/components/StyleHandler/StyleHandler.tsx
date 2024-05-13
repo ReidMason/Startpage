@@ -18,14 +18,11 @@ export default function StyleHandler({
   } as React.CSSProperties;
 
   const imageContainerStyle = {
-    filter: `blur(${config.appearance.backgroundBlur / 2}px)`,
+    filter: `blur(${config.appearance.backgroundBlur / 4}px)`,
   } as React.CSSProperties;
 
   return (
-    <div
-      className={config.appearance.glassy ? "glassy" : undefined}
-      style={style}
-    >
+    <div style={style}>
       {config.appearance.backgroundEnabled && (
         <div className="fixed h-full w-full" style={imageContainerStyle}>
           <Image

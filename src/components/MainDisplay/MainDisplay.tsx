@@ -95,7 +95,7 @@ export default function MainDisplay({ config }: MainDisplayProps) {
         <div
           className="container flex max-w-screen-2xl flex-col gap-8 rounded-2xl bg-primary p-8 transition sm:p-16"
           style={{
-            backdropFilter: `blur(${mutableConfig.appearance.glassy / 2}px)`,
+            backdropFilter: `blur(${mutableConfig.appearance.glassy / 4}px)`,
           }}
         >
           <Searchbar config={mutableConfig} setAppFilter={setFilter} />
