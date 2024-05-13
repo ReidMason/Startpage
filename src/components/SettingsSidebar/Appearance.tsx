@@ -40,7 +40,7 @@ export default function Appearance({
         name="appearance.newBackgroundImage"
         render={({ field: { value, onChange, ...fieldProps } }) => (
           <FormItem>
-            <FormLabel>File</FormLabel>
+            <FormLabel>Background image</FormLabel>
             <FormControl>
               <Input
                 {...fieldProps}
@@ -56,10 +56,10 @@ export default function Appearance({
       />
       <FormField
         control={control}
-        name="appearance.glassy"
+        name="appearance.backgroundBlur"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Glassy</FormLabel>
+            <FormLabel>Background blur</FormLabel>
             <FormControl>
               <div className="flex gap-4">
                 <span className="w-12">{field.value}%</span>
@@ -76,10 +76,10 @@ export default function Appearance({
       />
       <FormField
         control={control}
-        name="appearance.backgroundBlur"
+        name="appearance.glassy"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Background blur</FormLabel>
+            <FormLabel>Glassy</FormLabel>
             <FormControl>
               <div className="flex gap-4">
                 <span className="w-12">{field.value}%</span>
