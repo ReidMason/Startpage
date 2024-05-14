@@ -1,8 +1,7 @@
 import { z } from "zod";
 
-enum Theme {
-  "default",
-}
+export const themes = ["dark", "light"] as const;
+const themesSchema = z.enum(themes);
 
 export const appSchema = z.object({
   id: z.string(),
@@ -16,7 +15,7 @@ export const appearanceSchema = z.object({
   backgroundImageEnabled: z.boolean().default(false),
   backgroundImageKey: z.string().default(""),
   backgroundBlur: z.number().default(0),
-  theme: z.nativeEnum(Theme).default(Theme.default),
+  theme: themesSchema.default("dark"),
   opacity: z.number().default(100),
   glassy: z.number().default(0),
 });

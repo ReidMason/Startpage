@@ -22,7 +22,7 @@ export default function StyleHandler({
   } as React.CSSProperties;
 
   return (
-    <div style={style}>
+    <body style={style} className={config.appearance.theme.toString()}>
       {config.appearance.backgroundImageEnabled && (
         <div className="fixed h-full w-full" style={imageContainerStyle}>
           <Image
@@ -35,6 +35,6 @@ export default function StyleHandler({
         </div>
       )}
       {children}
-    </div>
+    </body>
   );
 }

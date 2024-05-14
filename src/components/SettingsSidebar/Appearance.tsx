@@ -10,6 +10,14 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { themes } from "@/services/config/schemas";
 
 export default function Appearance({
   setActivePage,
@@ -111,6 +119,34 @@ export default function Appearance({
                 />
               </div>
             </FormControl>
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={control}
+        name="appearance.theme"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Theme</FormLabel>
+            <Select
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+              disabled={loading}
+            >
+              <FormControl>
+                <SelectTrigger className="capitalize">
+                  <SelectValue placeholder="Select a search provider" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {themes.map((theme) => (
+                  <SelectItem className="capitalize" key={theme} value={theme}>
+                    {theme}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </FormItem>
         )}
       />

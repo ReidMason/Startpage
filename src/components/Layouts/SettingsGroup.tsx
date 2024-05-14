@@ -9,13 +9,13 @@ export default function SettingsGroup({
   return (
     <div
       {...props}
-      className="grid grid-cols-5 rounded-lg dark:bg-gray-800 gap-2 p-2 items-center"
+      className="grid grid-cols-5 items-center gap-2 rounded-lg p-2"
     >
       {childrenArray.map((child, i) => (
         <Temp key={i}>
           {child}
           {i < childrenArray.length - 1 && (
-            <hr className="opacity-10 col-span-full" />
+            <hr className="col-span-full opacity-10" />
           )}
         </Temp>
       ))}
