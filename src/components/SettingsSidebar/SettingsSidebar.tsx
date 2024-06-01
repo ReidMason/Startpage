@@ -85,7 +85,6 @@ export default function SettingsSidebar({
 
           <Button
             className="w-full"
-            variant="secondary"
             disabled={!form.formState.isDirty}
             loading={state == State.Loading}
           >
