@@ -13,6 +13,7 @@ import { saveBackgroundImage, saveConfig } from "@/services/config/config";
 import { toast } from "sonner";
 import StyleHandler from "../StyleHandler/StyleHandler";
 import { ConfigSettings } from "../SettingsSidebar/types";
+import { Toaster } from "@/components/ui/sonner";
 
 interface MainDisplayProps {
   config: Config;
@@ -78,6 +79,7 @@ export default function MainDisplay({ config }: MainDisplayProps) {
 
   return (
     <StyleHandler config={mutableConfig} imageUrl={imageUrl}>
+      <Toaster />
       <SettingsSidebar
         open={sidebarOpen}
         setOpen={setSidebarOpen}
