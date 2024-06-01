@@ -8,7 +8,7 @@ interface GreetingProps {
 
 export default function Greeting({ config }: GreetingProps) {
   return (
-    <div className="sm:flex justify-between">
+    <div className="justify-between sm:flex">
       <GreetingText config={config.general} />
       {config.weather.enabled && <WeatherDisplay config={config.weather} />}
     </div>

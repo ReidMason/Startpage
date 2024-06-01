@@ -19,10 +19,10 @@ function getDateOrdinal(date: Date) {
 }
 
 const greetings: { [key: number]: string } = {
-  0: "Good night!",
-  1: "Good morning!",
-  2: "Good afternoon!",
-  3: "Good evening!",
+  0: "Good night",
+  1: "Good morning",
+  2: "Good afternoon",
+  3: "Good evening",
 };
 
 interface GreetingTextProps {
@@ -67,7 +67,10 @@ export default function GreetingText({ config }: GreetingTextProps) {
           <sup>{dateOrdinal}</sup> {monthAndYear}
         </a>
       </div>
-      <p className="text-4xl font-bold md:text-5xl" aria-label="greeting">
+      <p
+        className="text-4xl font-bold capitalize md:text-5xl"
+        aria-label="greeting"
+      >
         {greeting}
       </p>
     </div>
