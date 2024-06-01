@@ -93,7 +93,7 @@ export default function MainDisplay({ config }: MainDisplayProps) {
       ></AppEditor>
       <div className="relative h-screen py-[5%]">
         <div
-          className="container flex max-w-screen-2xl flex-col gap-8 rounded-2xl bg-primary p-8 transition sm:p-16"
+          className="container flex max-w-screen-2xl flex-col gap-8 rounded-2xl bg-card p-8 text-card-foreground transition sm:p-16"
           style={{
             backdropFilter: `blur(${mutableConfig.appearance.glassy / 4}px)`,
           }}

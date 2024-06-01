@@ -32,7 +32,7 @@ export default function WeatherDisplay({ config }: WeatherDisplayProps) {
   }, []);
 
   return (
-    <div className="text-accent-foreground">
+    <div>
       {!!weather ? (
         <div className="flex">
           <div>
