@@ -44,7 +44,7 @@ export const themeColours: Record<Themes, ColourTheme> = {
     "popover-foreground": "210 40% 98%",
 
     /* Primary colors for <Button /> */
-    primary: "221, 39%, 11%",
+    primary: "221 55% 62%",
     "primary-foreground": "210 40% 98%",
 
     /* Secondary colors for <Button /> */
@@ -71,33 +71,46 @@ export const themeColours: Record<Themes, ColourTheme> = {
     ring: "212.7 26.8% 83.9%",
   },
   "catpuccin-mocha": {
+    border: "267 84% 81%",
     background: "240 21% 15%",
+    input: "234 13.2 31.2",
+    ring: "267 83.5 81",
     foreground: "226 64% 88%",
-
-    card: "240 21% 12%",
-    "card-foreground": "226 64% 88%",
-
-    popover: "0 0% 100%",
-    "popover-foreground": "222.2 84% 4.9%",
-
     primary: "267 84% 81%",
     "primary-foreground": "240 23% 9%",
-
     secondary: "233 12% 39%",
     "secondary-foreground": "226 64% 88%",
-
-    muted: "210 40% 96.1%",
-    "muted-foreground": "215.4 16.3% 46.9%",
-
-    accent: "267 84% 81%",
-    "accent-foreground": "40 23% 9%",
-
     destructive: "0 84.2% 60.2%",
     "destructive-foreground": "210 40% 98%",
-
-    border: "267 84% 81%",
-    input: "214.3 31.8% 91.4%",
-    ring: "222.2 84% 4.9%",
+    muted: "210 40% 96.1%",
+    "muted-foreground": "215.4 16.3% 46.9%",
+    accent: "267 84% 81%",
+    "accent-foreground": "40 23% 9%",
+    popover: "240 21.3 12",
+    "popover-foreground": "226 63.9 88",
+    card: "240 21% 12%",
+    "card-foreground": "226 64% 88%",
+  },
+  "tokyo-night": {
+    border: "230 24.2 18.6",
+    background: "235 18.8 12.5",
+    input: "235 18.8 12.5",
+    ring: "212.7 26.8% 83.9%",
+    foreground: "226 63.9 88",
+    primary: "221 55% 62%",
+    "primary-foreground": "210 40% 98%",
+    secondary: "217.2 32.6% 17.5%",
+    "secondary-foreground": "226 63.9 88",
+    destructive: "349 89 71.6",
+    "destructive-foreground": "210 40% 98%",
+    muted: "217.2 32.6% 17.5%",
+    "muted-foreground": "215 20.2% 65.1%",
+    accent: "217 39.8 55.7",
+    "accent-foreground": "226 63.9 88",
+    popover: "240 15.4 10.2",
+    "popover-foreground": "210 40% 98%",
+    card: "240 17 10.4",
+    "card-foreground": "226 64% 88%",
   },
   custom: {
     border: "#000000",

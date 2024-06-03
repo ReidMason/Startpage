@@ -1,6 +1,12 @@
 import { z } from "zod";
 
-export const themes = ["dark", "light", "catpuccin-mocha", "custom"] as const;
+export const themes = [
+  "dark",
+  "light",
+  "catpuccin-mocha",
+  "tokyo-night",
+  "custom",
+] as const;
 const themesSchema = z.enum(themes);
 
 export const appSchema = z.object({
