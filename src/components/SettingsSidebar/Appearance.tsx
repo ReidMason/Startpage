@@ -19,6 +19,8 @@ import {
 } from "../ui/select";
 import { themes } from "@/services/config/schemas";
 import { hexToHSL, hslToHex } from "@/utils/utils";
+import { Button } from "../ui/button";
+import { themeColours } from "../StyleHandler/Themes";
 
 function debounce<F extends (...args: any[]) => any>(func: F, waitFor: number) {
   let timeoutId: NodeJS.Timeout | null = null;
@@ -175,15 +177,36 @@ export default function Appearance({
           name="appearance.customTheme"
           render={({ field }) => (
             <div>
-              <FormLabel>Theme colours</FormLabel>
-              {Object.keys(field.value).map((colour) => (
-                <div className="flex items-center justify-between gap-4">
-                  <FormLabel>{colour.replace("bg-", "")}</FormLabel>
+              <div className="flex items-center justify-between">
+                <FormLabel>Custom theme colours</FormLabel>
+                <FormField
+                  control={control}
+                  name="appearance.theme"
+                  render={({ field: themeField }) => (
+                    <Button
+                      type="button"
+                      variant="link"
+                      onClick={() => {
+                        if (themeField.value === "custom") return;
+                        field.onChange(themeColours[themeField.value]);
+                      }}
+                    >
+                      Load into custom
+                    </Button>
+                  )}
+                />
+              </div>
+              {Object.keys(field.value).map((colourName) => (
+                <div
+                  className="flex items-center justify-between gap-4"
+                  key={colourName}
+                >
+                  <FormLabel>{colourName.replace("bg-", "")}</FormLabel>
                   <input
                     className="w-full max-w-32 rounded-md border-0 bg-transparent p-0"
                     type="color"
                     value={hslToHex(
-                      ...(field.value[colour as keyof typeof field.value]
+                      ...(field.value[colourName as keyof typeof field.value]
                         .split(" ")
                         .map((value) => parseInt(value)) as [
                           number,
@@ -194,7 +217,7 @@ export default function Appearance({
                     onChange={(e) =>
                       debounceUpdate(field.onChange, {
                         ...field.value,
-                        [colour]: hexToHSL(e.target.value),
+                        [colourName]: hexToHSL(e.target.value),
                       })
                     }
                   />

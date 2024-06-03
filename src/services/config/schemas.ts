@@ -83,5 +83,5 @@ export type GeneralConfig = z.infer<typeof generalSchema>;
 export type App = z.infer<typeof appSchema>;
 export type Provider = z.infer<typeof providerSchema>;
 export type WeatherConfig = z.infer<typeof weatherSchema>;
-export type Theme = z.infer<typeof themeSchema>;
+export type ColourTheme = z.infer<typeof themeSchema>;
 export type Themes = z.infer<typeof themesSchema>;
