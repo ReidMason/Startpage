@@ -196,33 +196,35 @@ export default function Appearance({
                   )}
                 />
               </div>
-              {Object.keys(field.value).map((colourName) => (
-                <div
-                  className="flex items-center justify-between gap-4"
-                  key={colourName}
-                >
-                  <FormLabel>{colourName.replace("bg-", "")}</FormLabel>
-                  <input
-                    className="w-full max-w-32 rounded-md border-0 bg-transparent p-0"
-                    type="color"
-                    value={hslToHex(
-                      ...(field.value[colourName as keyof typeof field.value]
-                        .split(" ")
-                        .map((value) => parseInt(value)) as [
-                          number,
-                          number,
-                          number,
-                        ]),
-                    )}
-                    onChange={(e) =>
-                      debounceUpdate(field.onChange, {
-                        ...field.value,
-                        [colourName]: hexToHSL(e.target.value),
-                      })
-                    }
-                  />
-                </div>
-              ))}
+              {Object.keys(field.value)
+                .sort()
+                .map((colourName) => (
+                  <div
+                    className="flex items-center justify-between gap-4"
+                    key={colourName}
+                  >
+                    <FormLabel>{colourName.replace("bg-", "")}</FormLabel>
+                    <input
+                      className="w-full max-w-32 rounded-md border-0 bg-transparent p-0"
+                      type="color"
+                      value={hslToHex(
+                        ...(field.value[colourName as keyof typeof field.value]
+                          .split(" ")
+                          .map((value) => parseInt(value)) as [
+                            number,
+                            number,
+                            number,
+                          ]),
+                      )}
+                      onChange={(e) =>
+                        debounceUpdate(field.onChange, {
+                          ...field.value,
+                          [colourName]: hexToHSL(e.target.value),
+                        })
+                      }
+                    />
+                  </div>
+                ))}
             </div>
           )}
         />
