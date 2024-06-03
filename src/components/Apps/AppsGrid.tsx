@@ -12,9 +12,9 @@ interface AppsGridProps {
 export default function AppsGrid({ config, appFilter }: AppsGridProps) {
   const filteredApps = !!appFilter.trim()
     ? config.apps.filter((x) => {
-      const filter = appFilter.toLowerCase().trim();
-      return x.name.toLowerCase().trim().includes(filter);
-    })
+        const filter = appFilter.toLowerCase().trim();
+        return x.name.toLowerCase().trim().includes(filter);
+      })
     : config.apps;
 
   return (
