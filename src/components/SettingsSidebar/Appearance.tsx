@@ -203,7 +203,7 @@ export default function Appearance({
                     className="flex items-center justify-between gap-4"
                     key={colourName}
                   >
-                    <FormLabel>{colourName.replace("bg-", "")}</FormLabel>
+                    <FormLabel className="capitalize">{colourName}</FormLabel>
                     <input
                       className="w-full max-w-32 rounded-md border-0 bg-transparent p-0"
                       type="color"
