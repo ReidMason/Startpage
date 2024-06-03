@@ -18,6 +18,24 @@ import {
   SelectValue,
 } from "../ui/select";
 import { themes } from "@/services/config/schemas";
+import { hexToHSL, hslToHex } from "@/utils/utils";
+
+function debounce<F extends (...args: any[]) => any>(func: F, waitFor: number) {
+  let timeoutId: NodeJS.Timeout | null = null;
+
+  return (...args: Parameters<F>): void => {
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId);
+    }
+
+    timeoutId = setTimeout(() => func(...args), waitFor);
+  };
+}
+
+const debounceUpdate = debounce(
+  (func: (...event: any[]) => void, ...args: any[]) => func(...args),
+  1,
+);
 
 export default function Appearance({
   setActivePage,
@@ -150,6 +168,42 @@ export default function Appearance({
           </FormItem>
         )}
       />
+
+      <div>
+        <FormField
+          control={control}
+          name="appearance.customTheme"
+          render={({ field }) => (
+            <div>
+              <FormLabel>Theme colours</FormLabel>
+              {Object.keys(field.value).map((colour) => (
+                <div className="flex items-center justify-between gap-4">
+                  <FormLabel>{colour.replace("bg-", "")}</FormLabel>
+                  <input
+                    className="w-full max-w-32 rounded-md border-0 bg-transparent p-0"
+                    type="color"
+                    value={hslToHex(
+                      ...(field.value[colour as keyof typeof field.value]
+                        .split(" ")
+                        .map((value) => parseInt(value)) as [
+                          number,
+                          number,
+                          number,
+                        ]),
+                    )}
+                    onChange={(e) =>
+                      debounceUpdate(field.onChange, {
+                        ...field.value,
+                        [colour]: hexToHSL(e.target.value),
+                      })
+                    }
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        />
+      </div>
     </SettingsPanelWrapper>
   );
 }

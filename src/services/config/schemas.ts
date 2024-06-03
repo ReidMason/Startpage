@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const themes = ["dark", "light"] as const;
+export const themes = ["dark", "light", "catpuccin-mocha", "custom"] as const;
 const themesSchema = z.enum(themes);
 
 export const appSchema = z.object({
@@ -11,6 +11,28 @@ export const appSchema = z.object({
   enabled: z.boolean().default(true),
 });
 
+export const themeSchema = z.object({
+  border: z.string().default(""),
+  background: z.string().default(""),
+  input: z.string().default(""),
+  ring: z.string().default(""),
+  foreground: z.string().default(""),
+  primary: z.string().default(""),
+  "primary-foreground": z.string().default(""),
+  secondary: z.string().default(""),
+  "secondary-foreground": z.string().default(""),
+  destructive: z.string().default(""),
+  "destructive-foreground": z.string().default(""),
+  muted: z.string().default(""),
+  "muted-foreground": z.string().default(""),
+  accent: z.string().default(""),
+  "accent-foreground": z.string().default(""),
+  popover: z.string().default(""),
+  "popover-foreground": z.string().default(""),
+  card: z.string().default(""),
+  "card-foreground": z.string().default(""),
+});
+
 export const appearanceSchema = z.object({
   backgroundImageEnabled: z.boolean().default(false),
   backgroundImageKey: z.string().default(""),
@@ -18,6 +40,7 @@ export const appearanceSchema = z.object({
   theme: themesSchema.default("dark"),
   opacity: z.number().default(100),
   glassy: z.number().default(0),
+  customTheme: themeSchema.default({}),
 });
 
 const providerSchema = z.object({
@@ -60,3 +83,5 @@ export type GeneralConfig = z.infer<typeof generalSchema>;
 export type App = z.infer<typeof appSchema>;
 export type Provider = z.infer<typeof providerSchema>;
 export type WeatherConfig = z.infer<typeof weatherSchema>;
+export type Theme = z.infer<typeof themeSchema>;
+export type Themes = z.infer<typeof themesSchema>;
