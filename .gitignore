@@ -3,6 +3,8 @@
 # dependencies
 /node_modules
 /.pnp
+/node_modules
+/.pnp
 .pnp.js
 
 # testing
@@ -11,14 +13,22 @@
 # next.js
 /.next/
 /out/
+/coverage
+
+# next.js
+/.next/
+/out/
 
 # production
+/build
 /build
 
 # misc
 .DS_Store
 *.pem
+*.pem
 
+# debug
 # debug
 npm-debug.log*
 yarn-debug.log*
