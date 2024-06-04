@@ -3,8 +3,6 @@
 @tailwind utilities;
 
 :root {
-  --toastify-color-dark: #111727 !important;
-
   --colour-primary-900: 3 18 38;
   --colour-primary-800: 10 34 67;
   --colour-primary-700: 14 46 89;
@@ -59,25 +57,4 @@
   --colour-grey-200: 226 232 240;
   --colour-grey-100: 241 245 249;
   --colour-grey-50: 248 250 252;
-}
-
-.my-theme {
-  --colour-primary-900: 15 23 42;
-  --colour-primary-800: 30 41 59;
-  --colour-primary-700: 51 65 85;
-  --colour-primary-600: 71 85 105;
-  --colour-primary-500: 100 116 139;
-  --colour-primary-400: 148 163 184;
-  --colour-primary-300: 203 213 225;
-  --colour-primary-200: 226 232 240;
-  --colour-primary-100: 241 245 249;
-  --colour-primary-50: 248 250 252;
-}
-
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: "Noto Sans", sans-serif;
-  -webkit-tap-highlight-color: transparent;
 }
