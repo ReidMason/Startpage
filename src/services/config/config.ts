@@ -3,6 +3,7 @@
 import { merge } from "lodash-es";
 import { Config, configSchema } from "./schemas";
 import fs from "fs";
+import path from "path";
 
 const CONFIG_PATH = `${process.cwd()}/data/config.json`;
 const BACKGROUND_IMAGE_PATH = `${process.cwd()}/public/static/background.jpg`;
@@ -42,6 +43,13 @@ function validateConfig(config: Config): Config {
 }
 
 function ensureConfigExists() {
+  const configDir = path.dirname(CONFIG_PATH);
+  try {
+    fs.statSync(configDir);
+  } catch (ex) {
+    console.warn("Failed to find config directory. Creating a new one.");
+    fs.mkdirSync(configDir, { recursive: true });
+  }
   try {
     fs.statSync(CONFIG_PATH);
   } catch (ex) {
