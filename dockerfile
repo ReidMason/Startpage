@@ -43,9 +43,16 @@ ENV NEXT_TELEMETRY_DISABLED 1
 
 COPY --from=builder /app/public ./public
 
+ARG UID=99
+ARG GID=100
+
+RUN groupmod -g $GID node && usermod -u $UID -g $GID node
+
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder --chown=node:node /app/.next/standalone ./
+COPY --from=builder --chown=node:node /app/.next/static ./.next/static
+
+USER node
 
 CMD ["node", "server.js"]
