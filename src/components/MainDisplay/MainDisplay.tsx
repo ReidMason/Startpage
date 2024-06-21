@@ -17,6 +17,7 @@ import { Toaster } from "@/components/ui/sonner";
 
 interface MainDisplayProps {
   config: Config;
+  backgroundImageUrl: string;
 }
 const IMAGE_URL = "/static/background.jpg";
 
@@ -24,7 +25,10 @@ function formatImageUrl(key: string) {
   return `${IMAGE_URL}?t=${key}`;
 }
 
-export default function MainDisplay({ config }: MainDisplayProps) {
+export default function MainDisplay({
+  config,
+  backgroundImageUrl,
+}: MainDisplayProps) {
   const [filter, setFilter] = useState("");
   const [editMode, setEditMode] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -78,7 +82,7 @@ export default function MainDisplay({ config }: MainDisplayProps) {
   };
 
   return (
-    <StyleHandler config={mutableConfig} imageUrl={imageUrl}>
+    <StyleHandler config={mutableConfig} imageUrl={backgroundImageUrl}>
       <Toaster />
       <SettingsSidebar
         open={sidebarOpen}

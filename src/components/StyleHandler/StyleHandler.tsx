@@ -1,6 +1,5 @@
 import { Config } from "@/services/config/schemas";
 import React from "react";
-import Image from "next/image";
 import { themeColours } from "./Themes";
 
 interface StyleHandlerProps {
@@ -35,13 +34,7 @@ export default function StyleHandler({
     <body style={style}>
       {config.appearance.backgroundImageEnabled && (
         <div className="fixed h-full w-full" style={imageContainerStyle}>
-          <Image
-            src={imageUrl}
-            width={1920}
-            height={1080}
-            alt="background"
-            className="h-full w-full object-cover"
-          />
+          <img src={imageUrl} className="h-full w-full object-cover" />
         </div>
       )}
       {children}

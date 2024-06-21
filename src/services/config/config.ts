@@ -6,7 +6,7 @@ import fs from "fs";
 import path from "path";
 
 const CONFIG_PATH = `${process.cwd()}/data/config.json`;
-const BACKGROUND_IMAGE_PATH = `${process.cwd()}/public/static/background.jpg`;
+const BACKGROUND_IMAGE_PATH = `${process.cwd()}/data/background.jpg`;
 const defaultConfig = configSchema.parse({});
 
 export async function getConfig(): Promise<Config> {
@@ -66,4 +66,12 @@ export async function saveBackgroundImage(formData: FormData) {
   const file = formData.get("backgroundImage") as File;
   const buffer = await file.arrayBuffer();
   fs.writeFileSync(BACKGROUND_IMAGE_PATH, Buffer.from(buffer));
+}
+
+export async function getBackgroundImage() {
+  try {
+    return fs.readFileSync(BACKGROUND_IMAGE_PATH);
+  } catch (ex) {
+    return null;
+  }
 }
