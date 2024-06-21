@@ -32,7 +32,7 @@ export default function StyleHandler({
   } as React.CSSProperties;
 
   return (
-    <body style={style} className={config.appearance.theme.toString()}>
+    <body style={style}>
       {config.appearance.backgroundImageEnabled && (
         <div className="fixed h-full w-full" style={imageContainerStyle}>
           <Image
