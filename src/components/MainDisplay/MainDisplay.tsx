@@ -23,11 +23,6 @@ interface MainDisplayProps {
   config: Config;
   backgroundImageUrl?: string;
 }
-const IMAGE_URL = "/static/background.jpg";
-
-function formatImageUrl(key: string) {
-  return `${IMAGE_URL}?t=${key}`;
-}
 
 export default function MainDisplay({
   config,
@@ -52,7 +47,6 @@ export default function MainDisplay({
 
   const saveSettings = async (settings: ConfigSettings) => {
     if (settings.appearance.newBackgroundImage) {
-      settings.appearance.backgroundImageKey = new Date().getTime().toString();
       const formData = new FormData();
       formData.append(
         "backgroundImage",

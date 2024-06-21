@@ -41,7 +41,6 @@ export const themeSchema = z.object({
 
 export const appearanceSchema = z.object({
   backgroundImageEnabled: z.boolean().default(false),
-  backgroundImageKey: z.string().default(""),
   backgroundBlur: z.number().default(0),
   theme: themesSchema.default("dark"),
   opacity: z.number().default(100),
