@@ -63,6 +63,7 @@ export default function SettingsSidebar({
       data.appearance.backgroundImageEnabled = true;
 
     saveSettings(data);
+    data.appearance.newBackgroundImage = undefined;
     form.reset(data);
     setState(State.Default);
   };
