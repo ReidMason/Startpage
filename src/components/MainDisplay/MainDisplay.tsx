@@ -17,7 +17,7 @@ import { Toaster } from "@/components/ui/sonner";
 
 interface MainDisplayProps {
   config: Config;
-  backgroundImageUrl: string;
+  backgroundImageUrl?: string;
 }
 const IMAGE_URL = "/static/background.jpg";
 

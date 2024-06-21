@@ -68,10 +68,13 @@ export async function saveBackgroundImage(formData: FormData) {
   fs.writeFileSync(BACKGROUND_IMAGE_PATH, Buffer.from(buffer));
 }
 
-export async function getBackgroundImage() {
+export async function getBackgroundImage(): Promise<string | undefined> {
   try {
-    return fs.readFileSync(BACKGROUND_IMAGE_PATH);
+    const imageBuffer = fs.readFileSync(BACKGROUND_IMAGE_PATH);
+    if (!imageBuffer) undefined;
+    const base64String = Buffer.from(imageBuffer).toString("base64");
+    return `data:image/jpeg;base64,${base64String}`;
   } catch (ex) {
-    return null;
+    return undefined;
   }
 }

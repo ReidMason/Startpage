@@ -5,7 +5,7 @@ import { themeColours } from "./Themes";
 interface StyleHandlerProps {
   children: React.ReactNode;
   config: Config;
-  imageUrl: string;
+  imageUrl?: string;
 }
 
 export default function StyleHandler({
@@ -34,7 +34,9 @@ export default function StyleHandler({
     <body style={style}>
       {config.appearance.backgroundImageEnabled && (
         <div className="fixed h-full w-full" style={imageContainerStyle}>
-          <img src={imageUrl} className="h-full w-full object-cover" />
+          {imageUrl && (
+            <img src={imageUrl} className="h-full w-full object-cover" />
+          )}
         </div>
       )}
       {children}
