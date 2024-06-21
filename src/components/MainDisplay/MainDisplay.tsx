@@ -9,7 +9,11 @@ import EditableAppsGrid from "../Apps/EditableAppsGrid";
 import { Button } from "@/components/ui/button";
 import SettingsSidebar from "../SettingsSidebar/SettingsSidebar";
 import AppEditor from "../AppEditor/AppEditor";
-import { saveBackgroundImage, saveConfig } from "@/services/config/config";
+import {
+  getBackgroundImage,
+  saveBackgroundImage,
+  saveConfig,
+} from "@/services/config/config";
 import { toast } from "sonner";
 import StyleHandler from "../StyleHandler/StyleHandler";
 import { ConfigSettings } from "../SettingsSidebar/types";
@@ -34,9 +38,7 @@ export default function MainDisplay({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mutableConfig, setMutableConfig] = useState(config);
   const [appToEdit, setAppToEdit] = useState<App | null>(null);
-  const [imageUrl, setImageUrl] = useState(
-    formatImageUrl(config.appearance.backgroundImageKey),
-  );
+  const [imageUrl, setImageUrl] = useState(backgroundImageUrl);
 
   const saveApp = (app: App) => {
     const newApps = mutableConfig.apps.map((a) => (a.id === app.id ? app : a));
@@ -57,7 +59,8 @@ export default function MainDisplay({
         settings.appearance.newBackgroundImage,
       );
       await saveBackgroundImage(formData);
-      setImageUrl(formatImageUrl(settings.appearance.backgroundImageKey));
+      const newImageUrl = await getBackgroundImage();
+      setImageUrl(newImageUrl);
     }
 
     // Remove any additional fields from the settings object
@@ -82,7 +85,7 @@ export default function MainDisplay({
   };
 
   return (
-    <StyleHandler config={mutableConfig} imageUrl={backgroundImageUrl}>
+    <StyleHandler config={mutableConfig} imageUrl={imageUrl}>
       <Toaster />
       <SettingsSidebar
         open={sidebarOpen}
