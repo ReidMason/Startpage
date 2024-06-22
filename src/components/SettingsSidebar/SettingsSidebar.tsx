@@ -26,10 +26,7 @@ function getPage(page: Page) {
   return pages[0];
 }
 
-enum State {
-  Default,
-  Loading,
-}
+type PageState = "Default" | "Loading";
 
 export default function SettingsSidebar({
   open,
@@ -40,7 +37,7 @@ export default function SettingsSidebar({
 }: SettingsSidebarProps) {
   const [activePage, setActivePage] = useState(Page.Home);
   const page = getPage(activePage);
-  const [state, setState] = useState(State.Default);
+  const [pageState, setPageState] = useState<PageState>("Default");
 
   const form = useForm<ConfigSettings>({
     resolver: zodResolver(configSettingsSchema),
@@ -58,14 +55,14 @@ export default function SettingsSidebar({
   }, [watcher, form, setConfig]);
 
   const onSubmit = (data: ConfigSettings) => {
-    setState(State.Loading);
+    setPageState("Loading");
     if (data.appearance.newBackgroundImage)
       data.appearance.backgroundImageEnabled = true;
 
     saveSettings(data);
     data.appearance.newBackgroundImage = undefined;
     form.reset(data);
-    setState(State.Default);
+    setPageState("Default");
   };
 
   return (
@@ -80,14 +77,14 @@ export default function SettingsSidebar({
               setActivePage={setActivePage}
               page={page}
               control={form.control}
-              loading={state == State.Loading}
+              loading={pageState == "Loading"}
             />
           </div>
 
           <Button
             className="w-full"
             disabled={!form.formState.isDirty}
-            loading={state == State.Loading}
+            loading={pageState == "Loading"}
           >
             Save
           </Button>
