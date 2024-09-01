@@ -33,7 +33,7 @@ export default function StyleHandler({
   return (
     <body style={style}>
       {config.appearance.backgroundImageEnabled && (
-        <div className="fixed h-full w-full" style={imageContainerStyle}>
+        <div className="fixed h-lvh w-lvw" style={imageContainerStyle}>
           {imageUrl && (
             <img src={imageUrl} className="h-full w-full object-cover" />
           )}
