@@ -11,7 +11,7 @@ export const themeColours: Record<Themes, ColourTheme> = {
     popover: "0 0% 100%",
     "popover-foreground": "222.2 84% 4.9%",
 
-    primary: "240, 5.9%, 80%",
+    primary: "240 5.9% 80%",
     "primary-foreground": "210 40% 98%",
 
     secondary: "210 40% 96.1%",
