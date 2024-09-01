@@ -113,8 +113,7 @@ export default function MainDisplay({
             <AppsGrid config={mutableConfig} appFilter={filter} />
           )}
         </div>
-
-        <div className="absolute bottom-0 left-0 flex gap-4 p-4">
+        <div className="fixed bottom-0 left-0 flex gap-4 p-4">
           <Button variant="secondary" onClick={() => setSidebarOpen(true)}>
             Settings
           </Button>
