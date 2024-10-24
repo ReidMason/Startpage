@@ -67,7 +67,7 @@ const generalSchema = z.object({
 });
 
 export const configSchema = z.object({
-  version: z.number().default(2),
+  version: z.number().default(3),
   general: generalSchema.default({}),
   apps: z.array(appSchema).default([
     {

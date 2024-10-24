@@ -59,6 +59,8 @@ function ensureConfigExists() {
 }
 
 export async function saveConfig(newConfig: Config) {
+  newConfig.version = defaultConfig.version;
+
   fs.writeFileSync(CONFIG_PATH, JSON.stringify(newConfig));
 }
 
