@@ -72,9 +72,9 @@ export const configSchema = z.object({
   apps: z.array(appSchema).default([
     {
       id: "1",
-      name: "YouTube",
-      url: "https://www.youtube.com/",
-      icon: "",
+      name: "Google",
+      url: "https://www.google.com/",
+      icon: "mdi:google",
       enabled: true,
     },
   ]),
