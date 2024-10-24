@@ -1,9 +1,14 @@
-module.exports = {
-  reactStrictMode: true,
-  experimental: {
-    outputStandalone: true,
-  },
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: "standalone",
   images: {
-    domains: ['openweathermap.org'],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "openweathermap.org",
+      },
+    ],
   },
-}
+};
+
+module.exports = nextConfig;

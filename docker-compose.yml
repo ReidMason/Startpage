@@ -3,11 +3,8 @@ services:
   startpage:
     build:
       context: .
-
+      dockerfile: Dockerfile
     ports:
-      - "3000:3000"
-
-    volumes:
-      - ./data:/app/data
-    environment:
-      - HOST=https://start.skippythesnake.com
+      - 3000:3000
+    # volumes:
+    # - ./data:/app/data
