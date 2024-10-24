@@ -5,12 +5,14 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "@/components/ui/input";
 import App from "../Apps/App";
 import Sidebar from "../Sidebar/Sidebar";
+import { Button } from "../ui/button";
 
 interface SettingsSidebarProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   app: AppType | null;
   saveApp: (app: AppType) => void;
+  removeApp: (id: string) => void;
 }
 
 export default function AppEditor({
@@ -18,6 +20,7 @@ export default function AppEditor({
   setOpen,
   app,
   saveApp,
+  removeApp,
 }: SettingsSidebarProps) {
   if (!app && open) {
     setOpen(false);
@@ -26,7 +29,7 @@ export default function AppEditor({
 
   return (
     <Sidebar open={open} setOpen={setOpen}>
-      {!!app && <AppEdit app={app} saveApp={saveApp} />}
+      {!!app && <AppEdit app={app} saveApp={saveApp} removeApp={removeApp} />}
     </Sidebar>
   );
 }
@@ -34,9 +37,10 @@ export default function AppEditor({
 interface AppEditProps {
   app: AppType;
   saveApp: (app: AppType) => void;
+  removeApp: (id: string) => void;
 }
 
-function AppEdit({ app, saveApp }: AppEditProps) {
+function AppEdit({ app, saveApp, removeApp }: AppEditProps) {
   const form = useForm<AppType>({
     resolver: zodResolver(appSchema),
     defaultValues: app,
@@ -95,7 +99,16 @@ function AppEdit({ app, saveApp }: AppEditProps) {
           )}
         />
 
-        <button>Save</button>
+        <div className="grid grid-cols-5 gap-4">
+          <Button className="col-span-4">Save</Button>
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={() => removeApp(app.id)}
+          >
+            Delete
+          </Button>
+        </div>
       </form>
     </Form>
   );

@@ -40,6 +40,13 @@ export default function MainDisplay({
     saveApps(newApps);
   };
 
+  const removeApp = (id: string) => {
+    const newApps = mutableConfig.apps.filter((a) => a.id !== id);
+    saveApps(newApps);
+    setSidebarOpen(false);
+    setAppToEdit(null);
+  };
+
   const saveApps = (apps: App[]) => {
     const newConfig = { ...mutableConfig, apps };
     saveNewConfig(newConfig);
@@ -93,6 +100,7 @@ export default function MainDisplay({
         setOpen={(value) => setAppToEdit(value ? appToEdit : null)}
         app={appToEdit}
         saveApp={saveApp}
+        removeApp={removeApp}
       ></AppEditor>
       <div className="relative h-screen py-[5%]">
         <div
