@@ -1,6 +1,7 @@
 import Appearance from "./Appearance";
 import { General } from "./General";
 import { Home } from "./Home";
+import Providers from "./Providers";
 import Weather from "./Weather";
 import { Page, SettingsSection } from "./types";
 import {
@@ -54,7 +55,7 @@ export const pages: PageObject[] = [
   {
     name: "Providers",
     page: Page.Providers,
-    component: Appearance,
+    component: Providers,
     previousPage: Page.Home,
     icon: DocumentMagnifyingGlassIcon,
   },

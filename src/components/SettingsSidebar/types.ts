@@ -1,5 +1,5 @@
 import { appearanceSchema, configSchema } from "@/services/config/schemas";
-import type { Control } from "react-hook-form";
+import type { Control, UseFormRegister } from "react-hook-form";
 import { PageObject } from "./pages";
 import { z } from "zod";
 
@@ -19,6 +19,7 @@ export interface SettingsSectionProps {
   page: PageObject;
   control: Control<ConfigSettings>;
   loading: boolean;
+  register: UseFormRegister<ConfigSettings>;
 }
 
 export const configSettingsSchema = configSchema.extend({

@@ -78,6 +78,7 @@ export default function SettingsSidebar({
               page={page}
               control={form.control}
               loading={pageState == "Loading"}
+              register={form.register}
             />
           </div>
 
