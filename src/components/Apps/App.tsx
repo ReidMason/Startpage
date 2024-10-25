@@ -6,7 +6,6 @@ interface AppProps extends HTMLAttributes<HTMLDivElement> {
   app: AppInterface;
   preview?: boolean;
   editable?: boolean;
-  clasName?: string;
 }
 
 export default function App({ app, preview, editable, ...props }: AppProps) {
