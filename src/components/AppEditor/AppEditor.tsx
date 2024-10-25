@@ -13,6 +13,7 @@ interface SettingsSidebarProps {
   app: AppType | null;
   saveApp: (app: AppType) => void;
   removeApp: (id: string) => void;
+  capitalizeAppName: boolean;
 }
 
 export default function AppEditor({
@@ -21,6 +22,7 @@ export default function AppEditor({
   app,
   saveApp,
   removeApp,
+  capitalizeAppName,
 }: SettingsSidebarProps) {
   if (!app && open) {
     setOpen(false);
@@ -29,7 +31,14 @@ export default function AppEditor({
 
   return (
     <Sidebar open={open} setOpen={setOpen}>
-      {!!app && <AppEdit app={app} saveApp={saveApp} removeApp={removeApp} />}
+      {!!app && (
+        <AppEdit
+          app={app}
+          saveApp={saveApp}
+          removeApp={removeApp}
+          capitalizeAppName={capitalizeAppName}
+        />
+      )}
     </Sidebar>
   );
 }
@@ -38,9 +47,10 @@ interface AppEditProps {
   app: AppType;
   saveApp: (app: AppType) => void;
   removeApp: (id: string) => void;
+  capitalizeAppName: boolean;
 }
 
-function AppEdit({ app, saveApp, removeApp }: AppEditProps) {
+function AppEdit({ app, saveApp, removeApp, capitalizeAppName }: AppEditProps) {
   const form = useForm<AppType>({
     resolver: zodResolver(appSchema),
     defaultValues: app,
@@ -61,7 +71,7 @@ function AppEdit({ app, saveApp, removeApp }: AppEditProps) {
         className="flex flex-col gap-2"
         onSubmit={form.handleSubmit(onSubmit)}
       >
-        <App app={modifiedApp} preview />
+        <App app={modifiedApp} preview capitalizeAppName={capitalizeAppName} />
         <FormField
           control={form.control}
           name="name"

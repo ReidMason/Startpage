@@ -13,12 +13,14 @@ interface AppsGridProps {
   apps: AppType[];
   setAppToEdit: (value: AppType | null) => void;
   setApps: (apps: AppType[]) => void;
+  capitalizeAppName: boolean;
 }
 
 export default function AppsGrid({
   setAppToEdit,
   apps,
   setApps,
+  capitalizeAppName,
 }: AppsGridProps) {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -58,7 +60,12 @@ export default function AppsGrid({
                 Edit
               </button>
               <SortableItem id={app.id}>
-                <App app={app} preview editable />
+                <App
+                  app={app}
+                  preview
+                  editable
+                  capitalizeAppName={capitalizeAppName}
+                />
               </SortableItem>
             </div>
           ))}

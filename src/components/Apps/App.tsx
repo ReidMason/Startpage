@@ -4,11 +4,18 @@ import Icon from "@/components/Icon/Icon";
 
 interface AppProps extends HTMLAttributes<HTMLDivElement> {
   app: AppInterface;
+  capitalizeAppName: boolean;
   preview?: boolean;
   editable?: boolean;
 }
 
-export default function App({ app, preview, editable, ...props }: AppProps) {
+export default function App({
+  app,
+  preview,
+  editable,
+  capitalizeAppName,
+  ...props
+}: AppProps) {
   // Remove http, https, trailing slashes and www. from the URL
   let displayUrl = app.url.replace(/^https?:\/\//gi, "").split("/", 1)[0];
   if (displayUrl.startsWith("www.")) displayUrl = displayUrl.slice(4);
@@ -28,7 +35,9 @@ export default function App({ app, preview, editable, ...props }: AppProps) {
           <Icon icon={app.icon || "entypo:new-message"} />
         </div>
         <div className="overflow-hidden">
-          <p className="lowercase">{app.name || "New app"}</p>
+          <p className={capitalizeAppName ? "capitalize" : "lowercase"}>
+            {app.name || "New app"}
+          </p>
           <p className="truncate text-xs text-card-foreground">
             {displayUrl || "app.example.com"}
           </p>

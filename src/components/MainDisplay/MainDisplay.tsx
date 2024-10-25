@@ -101,6 +101,7 @@ export default function MainDisplay({
         app={appToEdit}
         saveApp={saveApp}
         removeApp={removeApp}
+        capitalizeAppName={mutableConfig.appearance.capitalizeAppNames}
       ></AppEditor>
       <div className="relative h-screen py-[5%]">
         <div
@@ -116,6 +117,7 @@ export default function MainDisplay({
               apps={mutableConfig.apps}
               setAppToEdit={setAppToEdit}
               setApps={saveApps}
+              capitalizeAppName={mutableConfig.appearance.capitalizeAppNames}
             />
           ) : (
             <AppsGrid config={mutableConfig} appFilter={filter} />

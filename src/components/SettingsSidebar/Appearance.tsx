@@ -47,6 +47,25 @@ export default function Appearance({
 }: SettingsSectionProps) {
   return (
     <SettingsPanelWrapper setActivePage={setActivePage} panel={page}>
+      <SectionHeader>Apps</SectionHeader>
+      <FormField
+        control={control}
+        name="appearance.capitalizeAppNames"
+        render={({ field }) => (
+          <FormItem className="flex items-center justify-between">
+            <FormLabel>Capitalize app names</FormLabel>
+            <FormControl>
+              <Switch
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                disabled={loading}
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+
+      <SectionHeader>Background</SectionHeader>
       <FormField
         control={control}
         name="appearance.backgroundImageEnabled"
@@ -102,6 +121,8 @@ export default function Appearance({
           </FormItem>
         )}
       />
+
+      <SectionHeader>Visuals</SectionHeader>
       <FormField
         control={control}
         name="appearance.glassy"
@@ -143,6 +164,7 @@ export default function Appearance({
         )}
       />
 
+      <SectionHeader>Theme</SectionHeader>
       <FormField
         control={control}
         name="appearance.theme"
@@ -211,10 +233,10 @@ export default function Appearance({
                         ...(field.value[colourName as keyof typeof field.value]
                           .split(" ")
                           .map((value) => parseInt(value)) as [
-                            number,
-                            number,
-                            number,
-                          ]),
+                          number,
+                          number,
+                          number,
+                        ]),
                       )}
                       onChange={(e) =>
                         debounceUpdate(field.onChange, {
@@ -230,5 +252,13 @@ export default function Appearance({
         />
       </div>
     </SettingsPanelWrapper>
+  );
+}
+
+function SectionHeader({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 className="mt-4 border-b border-primary pb-1 text-xl font-semibold">
+      {children}
+    </h2>
   );
 }

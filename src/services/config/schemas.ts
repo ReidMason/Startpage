@@ -46,6 +46,7 @@ export const appearanceSchema = z.object({
   opacity: z.number().default(100),
   glassy: z.number().default(0),
   customTheme: themeSchema.default({}),
+  capitalizeAppNames: z.boolean().default(false),
 });
 
 const providerSchema = z.object({

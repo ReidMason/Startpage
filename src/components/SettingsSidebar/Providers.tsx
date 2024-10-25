@@ -3,7 +3,7 @@ import SettingsPanelWrapper from "./SettingsPanelWrapper";
 import { SettingsSectionProps } from "./types";
 import { useFieldArray } from "react-hook-form";
 import { Input } from "../ui/input";
-import { FormControl, FormField, FormItem, FormLabel } from "../ui/form";
+import { FormControl, FormField, FormLabel } from "../ui/form";
 import { Button } from "../ui/button";
 import { generateUuid } from "@/utils/utils";
 
