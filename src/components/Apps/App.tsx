@@ -10,8 +10,9 @@ interface AppProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export default function App({ app, preview, editable, ...props }: AppProps) {
-  // Remove http, https and trailing slashes
-  const displayUrl = app.url.replace(/^https?:\/\//gi, "").split("/", 1)[0];
+  // Remove http, https, trailing slashes and www. from the URL
+  let displayUrl = app.url.replace(/^https?:\/\//gi, "").split("/", 1)[0];
+  if (displayUrl.startsWith("www.")) displayUrl = displayUrl.slice(4);
 
   const nonPreviewStyling = preview ? "" : " hover:scale-105";
   props.className = (
