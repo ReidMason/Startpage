@@ -51,7 +51,7 @@ Startup exits non-zero naming the problem if a required variable is missing, `PU
 ## Development
 
 ```sh
-cd web && npm ci && npm run build   # builds the SPA into web/dist for embedding
+cd web && pnpm install && pnpm build   # builds the SPA into web/dist for embedding
 go test ./...                       # needs Docker (Postgres via testcontainers)
 ```
 
@@ -63,7 +63,7 @@ export DATABASE_URL=postgres://startpage:startpage@localhost:5432/startpage?sslm
 export PUBLIC_BASE_URL=http://localhost:8080
 export OIDC_ISSUER_URL=... OIDC_CLIENT_ID=... OIDC_CLIENT_SECRET=...
 go run ./cmd/startpage              # API and built SPA on :8080
-cd web && npm run dev               # Vite on :5173, proxies /api and /auth to :8080
+cd web && pnpm dev                   # Vite on :5173, proxies /api and /auth to :8080
 ```
 
-Regenerate the TypeScript API client after editing `api/openapi.yaml` with `npm run generate` in `web/`, and the database code after editing migrations or queries with `sqlc generate`.
+Regenerate the TypeScript API client after editing `api/openapi.yaml` with `pnpm generate` in `web/`, and the database code after editing migrations or queries with `sqlc generate`.
