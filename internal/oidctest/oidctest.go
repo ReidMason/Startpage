@@ -50,6 +50,7 @@ func New(t *testing.T) *Provider {
 			"issuer":                                p.URL,
 			"authorization_endpoint":                p.URL + "/authorize",
 			"token_endpoint":                        p.URL + "/token",
+			"end_session_endpoint":                  p.URL + "/end-session",
 			"jwks_uri":                              p.URL + "/jwks",
 			"response_types_supported":              []string{"code"},
 			"subject_types_supported":               []string{"public"},

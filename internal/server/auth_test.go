@@ -56,6 +56,27 @@ func (b *browser) signIn() *http.Response {
 	return b.get(b.app.URL + callback.Path + "?" + callback.RawQuery)
 }
 
+func (b *browser) logout() (*http.Response, string) {
+	b.t.Helper()
+	req, _ := http.NewRequest(http.MethodPost, b.app.URL+"/auth/logout", nil)
+	for _, c := range b.cookies {
+		req.AddCookie(c)
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		b.t.Fatal(err)
+	}
+	defer resp.Body.Close()
+	for _, c := range resp.Cookies() {
+		b.cookies[c.Name] = c
+	}
+	var body struct {
+		RedirectURL string `json:"redirectUrl"`
+	}
+	_ = json.NewDecoder(resp.Body).Decode(&body)
+	return resp, body.RedirectURL
+}
+
 func (b *browser) me() (int, string) {
 	b.t.Helper()
 	req, _ := http.NewRequest(http.MethodGet, b.app.URL+"/api/me", nil)
@@ -374,10 +395,10 @@ func TestSignOutInvalidatesSessionAndClearsCookie(t *testing.T) {
 	b, dbURL := signedIn(t)
 	old := b.cookies[sessionCookie].Value
 
-	resp := b.post(b.app.URL + "/auth/logout")
+	resp, _ := b.logout()
 
-	if resp.StatusCode != http.StatusNoContent {
-		t.Fatalf("status = %d, want 204", resp.StatusCode)
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("status = %d, want 200", resp.StatusCode)
 	}
 	if c := b.cookies[sessionCookie]; c == nil || c.MaxAge >= 0 || c.Value != "" {
 		t.Errorf("cookie = %+v, want cleared (Max-Age<=0)", c)
@@ -394,8 +415,36 @@ func TestSignOutInvalidatesSessionAndClearsCookie(t *testing.T) {
 func TestSignOutWithoutSessionIsHarmless(t *testing.T) {
 	app, _, _ := startWithProvider(t)
 
-	if resp := newBrowser(t, app).post(app.URL + "/auth/logout"); resp.StatusCode != http.StatusNoContent {
-		t.Errorf("status = %d, want 204", resp.StatusCode)
+	resp, redirect := newBrowser(t, app).logout()
+
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("status = %d, want 200", resp.StatusCode)
+	}
+	if redirect == "" {
+		t.Error("want a redirectUrl even without a session")
+	}
+}
+
+func TestSignOutRedirectsToProviderEndSession(t *testing.T) {
+	app, _, provider := startWithProvider(t)
+	b := newBrowser(t, app)
+	b.signIn()
+
+	_, redirect := b.logout()
+
+	u, err := url.Parse(redirect)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := u.Scheme + "://" + u.Host + u.Path; got != provider.URL+"/end-session" {
+		t.Errorf("redirectUrl = %q, want provider end-session endpoint", redirect)
+	}
+	q := u.Query()
+	if q.Get("post_logout_redirect_uri") != "https://start.example.com/" {
+		t.Errorf("post_logout_redirect_uri = %q", q.Get("post_logout_redirect_uri"))
+	}
+	if q.Get("id_token_hint") == "" {
+		t.Error("id_token_hint missing")
 	}
 }
 

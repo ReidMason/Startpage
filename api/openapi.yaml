@@ -21,10 +21,20 @@ paths:
       operationId: logout
       summary: End the current Session
       responses:
-        "204":
-          description: Session ended
+        "200":
+          description: Session ended; navigate to redirectUrl to finish signing out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Logout"
 components:
   schemas:
+    Logout:
+      type: object
+      required: [redirectUrl]
+      properties:
+        redirectUrl:
+          type: string
     Me:
       type: object
       required: [displayName]

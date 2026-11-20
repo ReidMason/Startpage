@@ -44,6 +44,13 @@ func New(ctx context.Context, cfg Config) (http.Handler, func(), error) {
 		pool.Close()
 		return nil, nil, fmt.Errorf("OIDC discovery failed for OIDC_ISSUER_URL %q (see README): %w", cfg.Env.OIDCIssuerURL, err)
 	}
+	var discovered struct {
+		EndSessionEndpoint string `json:"end_session_endpoint"`
+	}
+	if err := provider.Claims(&discovered); err != nil {
+		pool.Close()
+		return nil, nil, fmt.Errorf("reading OIDC discovery document: %w", err)
+	}
 	logger.Info("OIDC ready", "redirect_uri", cfg.Env.RedirectURI())
 	a := &auth{
 		oauth: &oauth2.Config{
@@ -56,6 +63,9 @@ func New(ctx context.Context, cfg Config) (http.Handler, func(), error) {
 		verifier: provider.Verifier(&oidc.Config{ClientID: cfg.Env.OIDCClientID}),
 		queries:  dbgen.New(pool),
 		logger:   logger,
+
+		endSessionEndpoint: discovered.EndSessionEndpoint,
+		postLogoutURL:      strings.TrimRight(cfg.Env.PublicBaseURL, "/") + "/",
 	}
 	mux := http.NewServeMux()
 	a.register(mux)

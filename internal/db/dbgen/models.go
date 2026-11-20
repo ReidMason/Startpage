@@ -14,6 +14,7 @@ type Session struct {
 	CreatedAt pgtype.Timestamptz
 	ExpiresAt pgtype.Timestamptz
 	RevokedAt pgtype.Timestamptz
+	IDToken   pgtype.Text
 }
 
 type User struct {
