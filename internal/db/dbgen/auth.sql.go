@@ -27,22 +27,47 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) er
 	return err
 }
 
+const deleteSession = `-- name: DeleteSession :exec
+DELETE FROM sessions WHERE id_hash = $1
+`
+
+func (q *Queries) DeleteSession(ctx context.Context, idHash []byte) error {
+	_, err := q.db.Exec(ctx, deleteSession, idHash)
+	return err
+}
+
+const extendSession = `-- name: ExtendSession :exec
+UPDATE sessions SET expires_at = $2
+WHERE id_hash = $1 AND revoked_at IS NULL AND expires_at > now() AND expires_at < $2
+`
+
+type ExtendSessionParams struct {
+	IDHash    []byte
+	ExpiresAt pgtype.Timestamptz
+}
+
+func (q *Queries) ExtendSession(ctx context.Context, arg ExtendSessionParams) error {
+	_, err := q.db.Exec(ctx, extendSession, arg.IDHash, arg.ExpiresAt)
+	return err
+}
+
 const getUserBySessionHash = `-- name: GetUserBySessionHash :one
-SELECT u.id, u.display_name
+SELECT u.id, u.display_name, s.expires_at
 FROM sessions s
 JOIN users u ON u.id = s.user_id
-WHERE s.id_hash = $1 AND s.expires_at > now()
+WHERE s.id_hash = $1 AND s.expires_at > now() AND s.revoked_at IS NULL
 `
 
 type GetUserBySessionHashRow struct {
 	ID          int64
 	DisplayName string
+	ExpiresAt   pgtype.Timestamptz
 }
 
 func (q *Queries) GetUserBySessionHash(ctx context.Context, idHash []byte) (GetUserBySessionHashRow, error) {
 	row := q.db.QueryRow(ctx, getUserBySessionHash, idHash)
 	var i GetUserBySessionHashRow
-	err := row.Scan(&i.ID, &i.DisplayName)
+	err := row.Scan(&i.ID, &i.DisplayName, &i.ExpiresAt)
 	return i, err
 }
 
