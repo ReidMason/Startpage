@@ -66,6 +66,10 @@ func New(ctx context.Context, cfg Config) (http.Handler, func(), error) {
 func staticHandler(assets fs.FS) http.Handler {
 	hashed := http.FileServerFS(assets)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if isServerPath(r.URL.Path) {
+			http.NotFound(w, r)
+			return
+		}
 		if strings.HasPrefix(r.URL.Path, "/assets/") {
 			w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
 			hashed.ServeHTTP(w, r)
@@ -85,4 +89,13 @@ func staticHandler(assets fs.FS) http.Handler {
 		w.Header().Set("Cache-Control", "no-cache")
 		http.ServeContent(w, r, name, time.Time{}, bytes.NewReader(data))
 	})
+}
+
+func isServerPath(p string) bool {
+	for _, prefix := range []string{"/api", "/auth"} {
+		if p == prefix || strings.HasPrefix(p, prefix+"/") {
+			return true
+		}
+	}
+	return false
 }

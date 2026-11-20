@@ -225,3 +225,31 @@ func TestStartupLogsRedirectURIWithoutSecret(t *testing.T) {
 		t.Error("log leaks the client secret")
 	}
 }
+
+func TestUnknownAPIAndAuthPathsAreNotServedTheShell(t *testing.T) {
+	ts, _ := startServer(t)
+
+	for _, path := range []string{"/api/nope", "/api/", "/auth/nope", "/auth"} {
+		resp, err := http.Get(ts.URL + path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		resp.Body.Close()
+		if resp.StatusCode != 404 {
+			t.Errorf("%s: status %d, want 404", path, resp.StatusCode)
+		}
+	}
+}
+
+func TestClientRoutesFallBackToShell(t *testing.T) {
+	ts, _ := startServer(t)
+
+	resp, err := http.Get(ts.URL + "/some/route")
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp.Body.Close()
+	if resp.StatusCode != 200 {
+		t.Errorf("status %d, want 200", resp.StatusCode)
+	}
+}

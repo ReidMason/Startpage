@@ -1,0 +1,33 @@
+openapi: 3.0.3
+info:
+  title: Startpage API
+  version: 0.1.0
+paths:
+  /api/me:
+    get:
+      operationId: getMe
+      summary: The signed-in User
+      responses:
+        "200":
+          description: The signed-in User
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Me"
+        "401":
+          description: Missing, expired or revoked Session
+  /auth/logout:
+    post:
+      operationId: logout
+      summary: End the current Session
+      responses:
+        "204":
+          description: Session ended
+components:
+  schemas:
+    Me:
+      type: object
+      required: [displayName]
+      properties:
+        displayName:
+          type: string
