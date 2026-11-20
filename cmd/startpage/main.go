@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/ReidMason/startpage/internal/config"
 	"github.com/ReidMason/startpage/internal/server"
 	"github.com/ReidMason/startpage/web"
 )
@@ -22,9 +23,9 @@ func main() {
 }
 
 func run() error {
-	dbURL := os.Getenv("DATABASE_URL")
-	if dbURL == "" {
-		return errors.New("DATABASE_URL is not set (see README)")
+	cfg, err := config.Load(os.Getenv)
+	if err != nil {
+		return err
 	}
 	addr := ":8080"
 	if v := os.Getenv("LISTEN_ADDR"); v != "" {
@@ -34,7 +35,7 @@ func run() error {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	handler, cleanup, err := server.New(ctx, server.Config{DatabaseURL: dbURL, Assets: web.Assets()})
+	handler, cleanup, err := server.New(ctx, server.Config{App: cfg, Assets: web.Assets()})
 	if err != nil {
 		return err
 	}

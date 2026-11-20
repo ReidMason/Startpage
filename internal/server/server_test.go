@@ -1,11 +1,14 @@
 package server_test
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 	"sync/atomic"
 	"testing"
 	"testing/fstest"
@@ -14,6 +17,8 @@ import (
 	"github.com/testcontainers/testcontainers-go"
 	tcpostgres "github.com/testcontainers/testcontainers-go/modules/postgres"
 
+	"github.com/ReidMason/startpage/internal/config"
+	"github.com/ReidMason/startpage/internal/oidctest"
 	"github.com/ReidMason/startpage/internal/server"
 )
 
@@ -61,14 +66,25 @@ func newDatabase(t *testing.T) string {
 	return cfg.ConnString()
 }
 
+func testConfig(dbURL, issuer string) config.Config {
+	return config.Config{
+		DatabaseURL:      dbURL,
+		PublicBaseURL:    "https://start.example.com",
+		OIDCIssuerURL:    issuer,
+		OIDCClientID:     "startpage",
+		OIDCClientSecret: "super-secret-value",
+	}
+}
+
 func startServer(t *testing.T) (*httptest.Server, string) {
 	t.Helper()
 	dbURL := newDatabase(t)
+	issuer := oidctest.New(t)
 	assets := fstest.MapFS{
 		"index.html":          {Data: []byte("<!doctype html><title>startpage</title>")},
 		"assets/index-abc.js": {Data: []byte("console.log(1)")},
 	}
-	h, closeFn, err := server.New(context.Background(), server.Config{DatabaseURL: dbURL, Assets: assets})
+	h, closeFn, err := server.New(context.Background(), server.Config{App: testConfig(dbURL, issuer.URL), Assets: assets})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -135,8 +151,8 @@ func TestMigrationsApplyAtStartup(t *testing.T) {
 
 func TestStartupFailsWhenDatabaseUnreachable(t *testing.T) {
 	_, _, err := server.New(context.Background(), server.Config{
-		DatabaseURL: "postgres://x:x@127.0.0.1:1/x?sslmode=disable&connect_timeout=1",
-		Assets:      fstest.MapFS{},
+		App:    testConfig("postgres://x:x@127.0.0.1:1/x?sslmode=disable&connect_timeout=1", oidctest.New(t).URL),
+		Assets: fstest.MapFS{},
 	})
 	if err == nil {
 		t.Fatal("expected error")
@@ -160,5 +176,42 @@ func TestShellAnswersConditionalRequestWith304(t *testing.T) {
 	resp.Body.Close()
 	if resp.StatusCode != http.StatusNotModified {
 		t.Errorf("status = %d, want 304", resp.StatusCode)
+	}
+}
+
+func TestStartupFailsWhenOIDCDiscoveryFails(t *testing.T) {
+	issuer := oidctest.New(t)
+	issuer.Close()
+
+	_, _, err := server.New(context.Background(), server.Config{
+		App:    testConfig(newDatabase(t), issuer.URL),
+		Assets: fstest.MapFS{},
+	})
+	if err == nil {
+		t.Fatal("expected error")
+	}
+	if !strings.Contains(err.Error(), "OIDC_ISSUER_URL") || !strings.Contains(err.Error(), "README") {
+		t.Errorf("error %q should name OIDC_ISSUER_URL and reference the README", err)
+	}
+}
+
+func TestStartupLogsRedirectURIWithoutSecret(t *testing.T) {
+	var logs bytes.Buffer
+	cfg := testConfig(newDatabase(t), oidctest.New(t).URL)
+	_, closeFn, err := server.New(context.Background(), server.Config{
+		App:    cfg,
+		Assets: fstest.MapFS{},
+		Logger: slog.New(slog.NewTextHandler(&logs, nil)),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(closeFn)
+
+	if !strings.Contains(logs.String(), "https://start.example.com/auth/callback") {
+		t.Errorf("log should contain the redirect URI, got %q", logs.String())
+	}
+	if strings.Contains(logs.String(), cfg.OIDCClientSecret) {
+		t.Error("log leaks the client secret")
 	}
 }
