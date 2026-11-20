@@ -4,11 +4,11 @@
 
 **Blocked by:** 02
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Unauthenticated request redirects to the provider
-- [ ] Callback creates a User and Session cookie on first login
-- [ ] A second login reuses the same User
-- [ ] `/api/me` returns the display name with a Session and 401 without
-- [ ] Only a hash of the Session ID is stored
-- [ ] Handler-level tests with stub OIDC and real Postgres cover the above
+- [x] Unauthenticated request redirects to the provider
+- [x] Callback creates a User and Session cookie on first login
+- [x] A second login reuses the same User
+- [x] `/api/me` returns the display name with a Session and 401 without
+- [x] Only a hash of the Session ID is stored
+- [x] Handler-level tests with stub OIDC and real Postgres cover the above
