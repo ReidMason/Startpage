@@ -3,7 +3,7 @@ name: publish
 on:
   push:
     branches: [main]
-    tags: ["v*"]
+    tags: ["v[0-9]+.[0-9]+.[0-9]+*"]
 
 env:
   IMAGE: ghcr.io/reidmason/startpage
@@ -50,6 +50,7 @@ jobs:
         uses: docker/metadata-action@v6
         with:
           images: ${{ env.IMAGE }}
+          flavor: latest=auto
           tags: |
             type=edge,branch=main
             type=semver,pattern={{version}}
