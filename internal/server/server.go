@@ -5,26 +5,43 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"io/fs"
+	"log/slog"
 	"net/http"
 	"path"
 	"strings"
 	"time"
 
+	"github.com/coreos/go-oidc/v3/oidc"
+
+	"github.com/ReidMason/startpage/internal/config"
 	"github.com/ReidMason/startpage/internal/db"
 )
 
 type Config struct {
-	DatabaseURL string
-	Assets      fs.FS
+	App    config.Config
+	Assets fs.FS
+	Logger *slog.Logger
 }
 
-// New opens the database, applies migrations and returns the HTTP handler plus a cleanup func.
+// New opens the database, applies migrations, discovers the OIDC provider and returns the HTTP handler plus a cleanup func.
 func New(ctx context.Context, cfg Config) (http.Handler, func(), error) {
-	pool, err := db.Open(ctx, cfg.DatabaseURL)
+	logger := cfg.Logger
+	if logger == nil {
+		logger = slog.Default()
+	}
+	pool, err := db.Open(ctx, cfg.App.DatabaseURL)
 	if err != nil {
 		return nil, nil, err
 	}
+	discoverCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+	if _, err := oidc.NewProvider(discoverCtx, cfg.App.OIDCIssuerURL); err != nil {
+		pool.Close()
+		return nil, nil, fmt.Errorf("OIDC discovery failed for OIDC_ISSUER_URL %q (see README): %w", cfg.App.OIDCIssuerURL, err)
+	}
+	logger.Info("OIDC ready", "redirect_uri", cfg.App.RedirectURI())
 	return staticHandler(cfg.Assets), pool.Close, nil
 }
 
