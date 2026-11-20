@@ -40,6 +40,7 @@ Create these once in the Authentik admin interface.
 1. **Applications > Providers > Create > OAuth2/OpenID Provider.**
    - Client type: `Confidential`.
    - Redirect URIs/Origins: strict match on `<PUBLIC_BASE_URL>/auth/callback`, e.g. `https://start.example.com/auth/callback`. The app logs the expected value at startup.
+   - Also add `<PUBLIC_BASE_URL>/` as a post-logout redirect URI (strict match) so Sign out can end the Authentik session and return here.
 2. **Applications > Applications > New Application dropdown > With existing provider.** Set a name and slug (e.g. `startpage`) and select the provider above.
 3. Optionally bind a policy or group to the application to restrict who can sign in. The app has no group handling; Authentik decides who is admitted.
 4. From the provider page, copy the client ID and client secret into `OIDC_CLIENT_ID` and `OIDC_CLIENT_SECRET`. Set `OIDC_ISSUER_URL` to the provider's issuer, normally `https://<authentik-host>/application/o/<slug>/`.

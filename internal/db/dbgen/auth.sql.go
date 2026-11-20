@@ -12,28 +12,37 @@ import (
 )
 
 const createSession = `-- name: CreateSession :exec
-INSERT INTO sessions (id_hash, user_id, expires_at)
-VALUES ($1, $2, $3)
+INSERT INTO sessions (id_hash, user_id, expires_at, id_token)
+VALUES ($1, $2, $3, $4)
 `
 
 type CreateSessionParams struct {
 	IDHash    []byte
 	UserID    int64
 	ExpiresAt pgtype.Timestamptz
+	IDToken   pgtype.Text
 }
 
 func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) error {
-	_, err := q.db.Exec(ctx, createSession, arg.IDHash, arg.UserID, arg.ExpiresAt)
+	_, err := q.db.Exec(ctx, createSession,
+		arg.IDHash,
+		arg.UserID,
+		arg.ExpiresAt,
+		arg.IDToken,
+	)
 	return err
 }
 
-const deleteSession = `-- name: DeleteSession :exec
+const deleteSession = `-- name: DeleteSession :one
 DELETE FROM sessions WHERE id_hash = $1
+RETURNING id_token
 `
 
-func (q *Queries) DeleteSession(ctx context.Context, idHash []byte) error {
-	_, err := q.db.Exec(ctx, deleteSession, idHash)
-	return err
+func (q *Queries) DeleteSession(ctx context.Context, idHash []byte) (pgtype.Text, error) {
+	row := q.db.QueryRow(ctx, deleteSession, idHash)
+	var id_token pgtype.Text
+	err := row.Scan(&id_token)
+	return id_token, err
 }
 
 const extendSession = `-- name: ExtendSession :exec

@@ -10,6 +10,7 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
@@ -35,6 +36,9 @@ type auth struct {
 	verifier *oidc.IDTokenVerifier
 	queries  *dbgen.Queries
 	logger   *slog.Logger
+
+	endSessionEndpoint string
+	postLogoutURL      string
 }
 
 func (a *auth) register(mux *http.ServeMux) {
@@ -100,6 +104,7 @@ func (a *auth) callback(w http.ResponseWriter, r *http.Request) {
 	expires := time.Now().Add(sessionTTL)
 	if err := a.queries.CreateSession(r.Context(), dbgen.CreateSessionParams{
 		IDHash: hashID(sessionID), UserID: userID, ExpiresAt: pgTime(expires),
+		IDToken: pgtype.Text{String: rawID, Valid: true},
 	}); err != nil {
 		a.internalError(w, err)
 		return
@@ -109,14 +114,36 @@ func (a *auth) callback(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *auth) logout(w http.ResponseWriter, r *http.Request) {
+	var idToken string
 	if c, err := r.Cookie(sessionCookie); err == nil && c.Value != "" {
-		if err := a.queries.DeleteSession(r.Context(), hashID(c.Value)); err != nil {
+		stored, err := a.queries.DeleteSession(r.Context(), hashID(c.Value))
+		if err != nil && !errors.Is(err, pgx.ErrNoRows) {
 			a.internalError(w, err)
 			return
 		}
+		idToken = stored.String
 	}
 	http.SetCookie(w, clearedCookie(sessionCookie, "/"))
-	w.WriteHeader(http.StatusNoContent)
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(map[string]string{"redirectUrl": a.postLogoutTarget(idToken)})
+}
+
+// postLogoutTarget is the provider's end-session URL when it has one, so the provider's own SSO session ends too.
+func (a *auth) postLogoutTarget(idToken string) string {
+	if a.endSessionEndpoint == "" {
+		return a.postLogoutURL
+	}
+	u, err := url.Parse(a.endSessionEndpoint)
+	if err != nil {
+		return a.postLogoutURL
+	}
+	q := u.Query()
+	q.Set("post_logout_redirect_uri", a.postLogoutURL)
+	if idToken != "" {
+		q.Set("id_token_hint", idToken)
+	}
+	u.RawQuery = q.Encode()
+	return u.String()
 }
 
 func setSessionCookie(w http.ResponseWriter, id string, expires time.Time) {

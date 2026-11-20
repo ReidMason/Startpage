@@ -42,10 +42,11 @@ export async function fetchDisplayName(): Promise<string> {
 }
 
 export async function signOut() {
+  let destination: string | undefined;
   try {
-    await logout();
+    destination = (await logout()).data?.redirectUrl;
   } finally {
     clearCachedName();
-    goToLogin();
+    window.location.assign(destination ?? "/");
   }
 }

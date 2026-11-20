@@ -4,6 +4,10 @@ export type ClientOptions = {
     baseUrl: `${string}://${string}` | (string & {});
 };
 
+export type Logout = {
+    redirectUrl: string;
+};
+
 export type Me = {
     displayName: string;
 };
@@ -40,9 +44,9 @@ export type LogoutData = {
 
 export type LogoutResponses = {
     /**
-     * Session ended
+     * Session ended; navigate to redirectUrl to finish signing out
      */
-    204: void;
+    200: Logout;
 };
 
 export type LogoutResponse = LogoutResponses[keyof LogoutResponses];
