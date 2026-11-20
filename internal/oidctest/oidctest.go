@@ -33,6 +33,7 @@ type Provider struct {
 	mu       sync.Mutex
 	identity identity
 	codes    map[string]grant
+	tokens   int
 }
 
 // New starts a stub provider with discovery, JWKS, authorize and token endpoints.
@@ -95,8 +96,16 @@ func (p *Provider) authorize(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, redirect.String(), http.StatusFound)
 }
 
+// TokenRequests reports how many requests the token endpoint has received.
+func (p *Provider) TokenRequests() int {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	return p.tokens
+}
+
 func (p *Provider) token(w http.ResponseWriter, r *http.Request) {
 	p.mu.Lock()
+	p.tokens++
 	g, ok := p.codes[r.FormValue("code")]
 	delete(p.codes, r.FormValue("code"))
 	p.mu.Unlock()

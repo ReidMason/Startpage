@@ -205,6 +205,74 @@ func TestCallbackRejectsBadState(t *testing.T) {
 	}
 }
 
+func TestCallbackWithProviderErrorIs400AndCreatesNoSession(t *testing.T) {
+	app, dbURL, provider := startWithProvider(t)
+	b := newBrowser(t, app)
+	login := b.get(app.URL + "/auth/login")
+	state := mustParse(t, login.Header.Get("Location")).Query().Get("state")
+
+	resp := b.get(app.URL + "/auth/callback?error=access_denied&state=" + url.QueryEscape(state))
+
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Errorf("status = %d, want 400", resp.StatusCode)
+	}
+	if got := queryInt(t, dbURL, "SELECT count(*) FROM sessions"); got != 0 {
+		t.Errorf("sessions = %d, want 0", got)
+	}
+	if provider.TokenRequests() != 0 {
+		t.Error("code exchange attempted despite provider error")
+	}
+}
+
+func TestCallbackRejectsNonceMismatch(t *testing.T) {
+	app, dbURL, _ := startWithProvider(t)
+	b := newBrowser(t, app)
+	login := b.get(app.URL + "/auth/login")
+	authorize := mustParse(t, login.Header.Get("Location"))
+	q := authorize.Query()
+	q.Set("nonce", "tampered")
+	authorize.RawQuery = q.Encode()
+	authorized := b.get(authorize.String())
+	callback := mustParse(t, authorized.Header.Get("Location"))
+
+	resp := b.get(app.URL + callback.Path + "?" + callback.RawQuery)
+
+	if resp.StatusCode != http.StatusUnauthorized {
+		t.Errorf("status = %d, want 401", resp.StatusCode)
+	}
+	if got := queryInt(t, dbURL, "SELECT count(*) FROM sessions"); got != 0 {
+		t.Errorf("sessions = %d, want 0", got)
+	}
+	if b.cookies[sessionCookie] != nil && b.cookies[sessionCookie].Value != "" {
+		t.Error("session cookie issued")
+	}
+}
+
+func TestMeIsNotCacheable(t *testing.T) {
+	b, _ := signedIn(t)
+
+	req, _ := http.NewRequest(http.MethodGet, b.app.URL+"/api/me", nil)
+	req.AddCookie(b.cookies[sessionCookie])
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp.Body.Close()
+
+	if got := resp.Header.Get("Cache-Control"); got != "no-store" {
+		t.Errorf("Cache-Control = %q, want no-store", got)
+	}
+}
+
+func mustParse(t *testing.T, raw string) *url.URL {
+	t.Helper()
+	u, err := url.Parse(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return u
+}
+
 func (b *browser) post(rawURL string) *http.Response {
 	b.t.Helper()
 	req, _ := http.NewRequest(http.MethodPost, rawURL, nil)

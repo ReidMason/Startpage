@@ -4,28 +4,24 @@ const NAME_KEY = "startpage:displayName";
 
 export const meQueryKey = ["me"] as const;
 
-export function readCachedName(): string | undefined {
+function withStorage<T>(fallback: T, op: (storage: Storage) => T): T {
   try {
-    return localStorage.getItem(NAME_KEY) ?? undefined;
+    return op(localStorage);
   } catch {
-    return undefined;
+    return fallback;
   }
+}
+
+export function readCachedName(): string | undefined {
+  return withStorage(undefined, (s) => s.getItem(NAME_KEY) ?? undefined);
 }
 
 function writeCachedName(name: string) {
-  try {
-    localStorage.setItem(NAME_KEY, name);
-  } catch {
-    // storage unavailable; the name is simply not cached
-  }
+  withStorage(undefined, (s) => s.setItem(NAME_KEY, name));
 }
 
 function clearCachedName() {
-  try {
-    localStorage.removeItem(NAME_KEY);
-  } catch {
-    // nothing to clear
-  }
+  withStorage(undefined, (s) => s.removeItem(NAME_KEY));
 }
 
 export function goToLogin() {
@@ -37,6 +33,7 @@ export async function fetchDisplayName(): Promise<string> {
   if (response?.status === 401) {
     clearCachedName();
     goToLogin();
+    // never settles so callers don't render while the browser navigates away
     return new Promise<string>(() => {});
   }
   if (!data) throw new Error(`GET /api/me failed: ${response?.status}`);

@@ -22,7 +22,7 @@ import (
 )
 
 type Config struct {
-	App    config.Config
+	Env    config.Config
 	Assets fs.FS
 	Logger *slog.Logger
 }
@@ -33,27 +33,27 @@ func New(ctx context.Context, cfg Config) (http.Handler, func(), error) {
 	if logger == nil {
 		logger = slog.Default()
 	}
-	pool, err := db.Open(ctx, cfg.App.DatabaseURL)
+	pool, err := db.Open(ctx, cfg.Env.DatabaseURL)
 	if err != nil {
 		return nil, nil, err
 	}
 	discoverCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
-	provider, err := oidc.NewProvider(discoverCtx, cfg.App.OIDCIssuerURL)
+	provider, err := oidc.NewProvider(discoverCtx, cfg.Env.OIDCIssuerURL)
 	if err != nil {
 		pool.Close()
-		return nil, nil, fmt.Errorf("OIDC discovery failed for OIDC_ISSUER_URL %q (see README): %w", cfg.App.OIDCIssuerURL, err)
+		return nil, nil, fmt.Errorf("OIDC discovery failed for OIDC_ISSUER_URL %q (see README): %w", cfg.Env.OIDCIssuerURL, err)
 	}
-	logger.Info("OIDC ready", "redirect_uri", cfg.App.RedirectURI())
+	logger.Info("OIDC ready", "redirect_uri", cfg.Env.RedirectURI())
 	a := &auth{
 		oauth: &oauth2.Config{
-			ClientID:     cfg.App.OIDCClientID,
-			ClientSecret: cfg.App.OIDCClientSecret,
+			ClientID:     cfg.Env.OIDCClientID,
+			ClientSecret: cfg.Env.OIDCClientSecret,
 			Endpoint:     provider.Endpoint(),
-			RedirectURL:  cfg.App.RedirectURI(),
+			RedirectURL:  cfg.Env.RedirectURI(),
 			Scopes:       []string{oidc.ScopeOpenID, "profile"},
 		},
-		verifier: provider.Verifier(&oidc.Config{ClientID: cfg.App.OIDCClientID}),
+		verifier: provider.Verifier(&oidc.Config{ClientID: cfg.Env.OIDCClientID}),
 		queries:  dbgen.New(pool),
 		logger:   logger,
 	}

@@ -35,7 +35,7 @@ func run() error {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	handler, cleanup, err := server.New(ctx, server.Config{App: cfg, Assets: web.Assets()})
+	handler, cleanup, err := server.New(ctx, server.Config{Env: cfg, Assets: web.Assets()})
 	if err != nil {
 		return err
 	}
