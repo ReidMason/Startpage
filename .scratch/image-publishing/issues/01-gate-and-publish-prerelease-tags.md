@@ -7,6 +7,6 @@
 **Status:** ready-for-agent
 
 - [ ] Pushing `v4.0.0-rc.1` publishes `4.0.0-rc.1` and `sha-<short>`; no `latest`, `4.0` or `4`
-- [ ] A failing Go vet, Go test or web build publishes nothing
+- [x] A failing Go vet, Go test or web build publishes nothing (build-and-push needs: gate)
 - [ ] Image has OCI source, revision, version and created labels
-- [ ] Pull requests and non-tag branch pushes do not trigger the workflow
+- [x] Pull requests and non-tag branch pushes do not trigger the workflow (only `push: tags: v*`)
