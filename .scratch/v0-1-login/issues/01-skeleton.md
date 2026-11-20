@@ -4,10 +4,10 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Old Next.js code is removed; repo contains only the new stack
-- [ ] `docker compose up` serves the placeholder page from the single image
-- [ ] Hashed assets carry long-cache headers; the shell revalidates
-- [ ] Migrations apply automatically at startup against Postgres
-- [ ] A handler-level test runs against real Postgres via testcontainers and passes
+- [x] Old Next.js code is removed; repo contains only the new stack
+- [x] `docker compose up` serves the placeholder page from the single image
+- [x] Hashed assets carry long-cache headers; the shell revalidates
+- [x] Migrations apply automatically at startup against Postgres
+- [x] A handler-level test runs against real Postgres via testcontainers and passes
