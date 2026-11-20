@@ -142,3 +142,23 @@ func TestStartupFailsWhenDatabaseUnreachable(t *testing.T) {
 		t.Fatal("expected error")
 	}
 }
+
+func TestShellAnswersConditionalRequestWith304(t *testing.T) {
+	ts, _ := startServer(t)
+
+	first, err := http.Get(ts.URL + "/")
+	if err != nil {
+		t.Fatal(err)
+	}
+	first.Body.Close()
+	req, _ := http.NewRequest(http.MethodGet, ts.URL+"/", nil)
+	req.Header.Set("If-None-Match", first.Header.Get("ETag"))
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp.Body.Close()
+	if resp.StatusCode != http.StatusNotModified {
+		t.Errorf("status = %d, want 304", resp.StatusCode)
+	}
+}
