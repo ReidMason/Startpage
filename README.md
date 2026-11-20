@@ -66,3 +66,7 @@ cd web && pnpm dev                   # Vite on :5173, proxies /api and /auth to 
 ```
 
 Regenerate the TypeScript API client after editing `api/openapi.yaml` with `pnpm generate` in `web/`, and the database code after editing migrations or queries with `sqlc generate`.
+
+## Roadmap
+
+- Evaluate release-please for automated release tagging: `.scratch/image-publishing/issues/05-evaluate-release-please.md`
