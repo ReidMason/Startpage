@@ -94,7 +94,7 @@ func startApp(t *testing.T) (*httptest.Server, string, *oidctest.Provider) {
 		"index.html":          {Data: []byte("<!doctype html><title>startpage</title>")},
 		"assets/index-abc.js": {Data: []byte("console.log(1)")},
 	}
-	h, closeFn, err := server.New(context.Background(), server.Config{App: testConfig(dbURL, issuer.URL), Assets: assets})
+	h, closeFn, err := server.New(context.Background(), server.Config{Env: testConfig(dbURL, issuer.URL), Assets: assets})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -161,7 +161,7 @@ func TestMigrationsApplyAtStartup(t *testing.T) {
 
 func TestStartupFailsWhenDatabaseUnreachable(t *testing.T) {
 	_, _, err := server.New(context.Background(), server.Config{
-		App:    testConfig("postgres://x:x@127.0.0.1:1/x?sslmode=disable&connect_timeout=1", oidctest.New(t).URL),
+		Env:    testConfig("postgres://x:x@127.0.0.1:1/x?sslmode=disable&connect_timeout=1", oidctest.New(t).URL),
 		Assets: fstest.MapFS{},
 	})
 	if err == nil {
@@ -194,7 +194,7 @@ func TestStartupFailsWhenOIDCDiscoveryFails(t *testing.T) {
 	issuer.Close()
 
 	_, _, err := server.New(context.Background(), server.Config{
-		App:    testConfig(newDatabase(t), issuer.URL),
+		Env:    testConfig(newDatabase(t), issuer.URL),
 		Assets: fstest.MapFS{},
 	})
 	if err == nil {
@@ -209,7 +209,7 @@ func TestStartupLogsRedirectURIWithoutSecret(t *testing.T) {
 	var logs bytes.Buffer
 	cfg := testConfig(newDatabase(t), oidctest.New(t).URL)
 	_, closeFn, err := server.New(context.Background(), server.Config{
-		App:    cfg,
+		Env:    cfg,
 		Assets: fstest.MapFS{},
 		Logger: slog.New(slog.NewTextHandler(&logs, nil)),
 	})

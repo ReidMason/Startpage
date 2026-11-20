@@ -14,7 +14,7 @@ type Config struct {
 	OIDCClientSecret string
 }
 
-// Load reads configuration through getenv and names the first missing or invalid variable.
+// Load reads configuration through getenv and names every missing variable, or the first invalid one.
 func Load(getenv func(string) string) (Config, error) {
 	var cfg Config
 	fields := []struct {
@@ -27,12 +27,16 @@ func Load(getenv func(string) string) (Config, error) {
 		{"OIDC_CLIENT_ID", &cfg.OIDCClientID},
 		{"OIDC_CLIENT_SECRET", &cfg.OIDCClientSecret},
 	}
+	var missing []string
 	for _, f := range fields {
 		v := getenv(f.name)
 		if v == "" {
-			return Config{}, fmt.Errorf("%s is not set (see README)", f.name)
+			missing = append(missing, f.name)
 		}
 		*f.dst = v
+	}
+	if len(missing) > 0 {
+		return Config{}, fmt.Errorf("missing required environment variables: %s (see README)", strings.Join(missing, ", "))
 	}
 	u, err := url.Parse(cfg.PublicBaseURL)
 	if err != nil || u.Scheme == "" || u.Host == "" {

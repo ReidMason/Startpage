@@ -55,3 +55,22 @@ func TestLoadRejectsInvalidPublicBaseURL(t *testing.T) {
 		t.Errorf("err = %v, want one naming PUBLIC_BASE_URL", err)
 	}
 }
+
+func TestLoadReportsAllMissingVariables(t *testing.T) {
+	env := validEnv()
+	delete(env, "DATABASE_URL")
+	delete(env, "OIDC_CLIENT_ID")
+	delete(env, "OIDC_CLIENT_SECRET")
+	_, err := config.Load(func(k string) string { return env[k] })
+	if err == nil {
+		t.Fatal("expected error")
+	}
+	for _, name := range []string{"DATABASE_URL", "OIDC_CLIENT_ID", "OIDC_CLIENT_SECRET", "README"} {
+		if !strings.Contains(err.Error(), name) {
+			t.Errorf("error %q should mention %s", err, name)
+		}
+	}
+	if strings.Contains(err.Error(), "PUBLIC_BASE_URL") {
+		t.Errorf("error %q names a variable that is set", err)
+	}
+}

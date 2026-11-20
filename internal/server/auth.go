@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/rand"
 	"crypto/sha256"
+	"crypto/subtle"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -45,21 +46,25 @@ func (a *auth) register(mux *http.ServeMux) {
 
 func (a *auth) login(w http.ResponseWriter, r *http.Request) {
 	state, nonce := randomID(), randomID()
-	http.SetCookie(w, &http.Cookie{
-		Name: loginCookie, Value: state + "." + nonce, Path: "/auth",
-		MaxAge: int(loginStateTTL.Seconds()), HttpOnly: true, Secure: true, SameSite: http.SameSiteLaxMode,
-	})
+	loginState := secureCookie(loginCookie, state+"."+nonce, "/auth")
+	loginState.MaxAge = int(loginStateTTL.Seconds())
+	http.SetCookie(w, loginState)
 	http.Redirect(w, r, a.oauth.AuthCodeURL(state, oidc.Nonce(nonce)), http.StatusFound)
 }
 
 func (a *auth) callback(w http.ResponseWriter, r *http.Request) {
 	c, err := r.Cookie(loginCookie)
-	state, nonce, ok := strings.Cut(valueOf(c), ".")
-	if err != nil || !ok || state == "" || r.URL.Query().Get("state") != state {
+	state, nonce, ok := strings.Cut(cookieValue(c), ".")
+	if err != nil || !ok || state == "" || subtle.ConstantTimeCompare([]byte(r.URL.Query().Get("state")), []byte(state)) != 1 {
 		http.Error(w, "invalid login state", http.StatusBadRequest)
 		return
 	}
-	http.SetCookie(w, &http.Cookie{Name: loginCookie, Path: "/auth", MaxAge: -1, HttpOnly: true, Secure: true, SameSite: http.SameSiteLaxMode})
+	http.SetCookie(w, clearedCookie(loginCookie, "/auth"))
+	if providerErr := r.URL.Query().Get("error"); providerErr != "" {
+		a.logger.Warn("provider returned error", "error", providerErr, "description", r.URL.Query().Get("error_description"))
+		http.Error(w, "sign-in was not completed by the identity provider", http.StatusBadRequest)
+		return
+	}
 
 	token, err := a.oauth.Exchange(r.Context(), r.URL.Query().Get("code"))
 	if err != nil {
@@ -110,18 +115,24 @@ func (a *auth) logout(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	http.SetCookie(w, &http.Cookie{
-		Name: sessionCookie, Path: "/", MaxAge: -1,
-		HttpOnly: true, Secure: true, SameSite: http.SameSiteLaxMode,
-	})
+	http.SetCookie(w, clearedCookie(sessionCookie, "/"))
 	w.WriteHeader(http.StatusNoContent)
 }
 
 func setSessionCookie(w http.ResponseWriter, id string, expires time.Time) {
-	http.SetCookie(w, &http.Cookie{
-		Name: sessionCookie, Value: id, Path: "/", Expires: expires,
-		HttpOnly: true, Secure: true, SameSite: http.SameSiteLaxMode,
-	})
+	c := secureCookie(sessionCookie, id, "/")
+	c.Expires = expires
+	http.SetCookie(w, c)
+}
+
+func secureCookie(name, value, path string) *http.Cookie {
+	return &http.Cookie{Name: name, Value: value, Path: path, HttpOnly: true, Secure: true, SameSite: http.SameSiteLaxMode}
+}
+
+func clearedCookie(name, path string) *http.Cookie {
+	c := secureCookie(name, "", path)
+	c.MaxAge = -1
+	return c
 }
 
 func (a *auth) me(w http.ResponseWriter, r *http.Request) {
@@ -188,7 +199,7 @@ func hashID(id string) []byte {
 	return sum[:]
 }
 
-func valueOf(c *http.Cookie) string {
+func cookieValue(c *http.Cookie) string {
 	if c == nil {
 		return ""
 	}
