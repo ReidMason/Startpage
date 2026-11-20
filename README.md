@@ -4,11 +4,23 @@ Self-hosted browser new-tab page. Go backend serving an embedded Vite/React SPA,
 
 ## Run locally
 
+Set up the Authentik provider first (see [Authentik setup](#authentik-setup)). Use `http://localhost:8080/auth/callback` as the redirect URI.
+
+Create a `.env` file (git-ignored) next to `docker-compose.yml`:
+
+```sh
+OIDC_ISSUER_URL=https://auth.example.com/application/o/startpage/
+OIDC_CLIENT_ID=...
+OIDC_CLIENT_SECRET=...
+```
+
+Then:
+
 ```sh
 docker compose up --build
 ```
 
-Then open <http://localhost:8080>.
+Open <http://localhost:8080>. `PUBLIC_BASE_URL` defaults to `http://localhost:8080`; override it in `.env` if you change the port.
 
 ## Configuration
 
@@ -42,3 +54,16 @@ Startup exits non-zero naming the problem if a required variable is missing, `PU
 cd web && npm ci && npm run build   # builds the SPA into web/dist for embedding
 go test ./...                       # needs Docker (Postgres via testcontainers)
 ```
+
+Run the Go server against the compose Postgres, with the SPA hot-reloading:
+
+```sh
+docker compose up -d postgres
+export DATABASE_URL=postgres://startpage:startpage@localhost:5432/startpage?sslmode=disable
+export PUBLIC_BASE_URL=http://localhost:8080
+export OIDC_ISSUER_URL=... OIDC_CLIENT_ID=... OIDC_CLIENT_SECRET=...
+go run ./cmd/startpage              # API and built SPA on :8080
+cd web && npm run dev               # Vite on :5173, proxies /api and /auth to :8080
+```
+
+Regenerate the TypeScript API client after editing `api/openapi.yaml` with `npm run generate` in `web/`, and the database code after editing migrations or queries with `sqlc generate`.

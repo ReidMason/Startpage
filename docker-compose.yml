@@ -5,6 +5,8 @@ services:
       POSTGRES_USER: startpage
       POSTGRES_PASSWORD: startpage
       POSTGRES_DB: startpage
+    ports:
+      - 127.0.0.1:5432:5432
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U startpage"]
       interval: 2s
