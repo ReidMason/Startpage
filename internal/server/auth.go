@@ -26,6 +26,7 @@ const (
 	sessionTTL     = 30 * 24 * time.Hour
 	loginStateTTL  = 10 * time.Minute
 	randomIDLength = 32
+	slideThreshold = time.Hour
 )
 
 type auth struct {
@@ -39,6 +40,7 @@ func (a *auth) register(mux *http.ServeMux) {
 	mux.HandleFunc("GET /auth/login", a.login)
 	mux.HandleFunc("GET /auth/callback", a.callback)
 	mux.HandleFunc("GET /api/me", a.me)
+	mux.HandleFunc("POST /auth/logout", a.logout)
 }
 
 func (a *auth) login(w http.ResponseWriter, r *http.Request) {
@@ -97,15 +99,36 @@ func (a *auth) callback(w http.ResponseWriter, r *http.Request) {
 		a.internalError(w, err)
 		return
 	}
+	setSessionCookie(w, sessionID, expires)
+	http.Redirect(w, r, "/", http.StatusFound)
+}
+
+func (a *auth) logout(w http.ResponseWriter, r *http.Request) {
+	if c, err := r.Cookie(sessionCookie); err == nil && c.Value != "" {
+		if err := a.queries.DeleteSession(r.Context(), hashID(c.Value)); err != nil {
+			a.internalError(w, err)
+			return
+		}
+	}
 	http.SetCookie(w, &http.Cookie{
-		Name: sessionCookie, Value: sessionID, Path: "/", Expires: expires,
+		Name: sessionCookie, Path: "/", MaxAge: -1,
 		HttpOnly: true, Secure: true, SameSite: http.SameSiteLaxMode,
 	})
-	http.Redirect(w, r, "/", http.StatusFound)
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func setSessionCookie(w http.ResponseWriter, id string, expires time.Time) {
+	http.SetCookie(w, &http.Cookie{
+		Name: sessionCookie, Value: id, Path: "/", Expires: expires,
+		HttpOnly: true, Secure: true, SameSite: http.SameSiteLaxMode,
+	})
 }
 
 func (a *auth) me(w http.ResponseWriter, r *http.Request) {
 	user, err := a.currentUser(r.Context(), r)
+	if err == nil {
+		err = a.slide(w, r, user.ExpiresAt.Time)
+	}
 	if errors.Is(err, errUnauthenticated) {
 		http.Error(w, "unauthenticated", http.StatusUnauthorized)
 		return
@@ -131,6 +154,20 @@ func (a *auth) currentUser(ctx context.Context, r *http.Request) (dbgen.GetUserB
 		return dbgen.GetUserBySessionHashRow{}, errUnauthenticated
 	}
 	return user, err
+}
+
+// slide extends the Session only once a meaningful slice of the TTL has elapsed, so most requests do not write.
+func (a *auth) slide(w http.ResponseWriter, r *http.Request, current time.Time) error {
+	next := time.Now().Add(sessionTTL)
+	if next.Sub(current) < slideThreshold {
+		return nil
+	}
+	c, _ := r.Cookie(sessionCookie)
+	if err := a.queries.ExtendSession(r.Context(), dbgen.ExtendSessionParams{IDHash: hashID(c.Value), ExpiresAt: pgTime(next)}); err != nil {
+		return err
+	}
+	setSessionCookie(w, c.Value, next)
+	return nil
 }
 
 func (a *auth) internalError(w http.ResponseWriter, err error) {

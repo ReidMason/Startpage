@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/jackc/pgx/v5"
 
@@ -201,5 +202,139 @@ func TestCallbackRejectsBadState(t *testing.T) {
 	}
 	if got := queryInt(t, dbURL, "SELECT count(*) FROM sessions"); got != 0 {
 		t.Errorf("sessions = %d, want 0", got)
+	}
+}
+
+func (b *browser) post(rawURL string) *http.Response {
+	b.t.Helper()
+	req, _ := http.NewRequest(http.MethodPost, rawURL, nil)
+	for _, c := range b.cookies {
+		req.AddCookie(c)
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		b.t.Fatal(err)
+	}
+	resp.Body.Close()
+	for _, c := range resp.Cookies() {
+		b.cookies[c.Name] = c
+	}
+	return resp
+}
+
+func execSQL(t *testing.T, dbURL, sql string, args ...any) {
+	t.Helper()
+	ctx := context.Background()
+	conn, err := pgx.Connect(ctx, dbURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer conn.Close(ctx)
+	if _, err := conn.Exec(ctx, sql, args...); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func signedIn(t *testing.T) (*browser, string) {
+	app, dbURL, provider := startWithProvider(t)
+	provider.SignInAs("sub-alice", "Alice")
+	b := newBrowser(t, app)
+	b.signIn()
+	return b, dbURL
+}
+
+func TestUsingSessionExtendsExpiry(t *testing.T) {
+	b, dbURL := signedIn(t)
+	execSQL(t, dbURL, "UPDATE sessions SET expires_at = now() + interval '5 days'")
+
+	if status, _ := b.me(); status != 200 {
+		t.Fatalf("status = %d, want 200", status)
+	}
+
+	if got := queryInt(t, dbURL, "SELECT count(*) FROM sessions WHERE expires_at > now() + interval '29 days'"); got != 1 {
+		t.Error("expiry was not extended to ~30 days")
+	}
+}
+
+func TestSlidingExpiryReissuesCookie(t *testing.T) {
+	b, dbURL := signedIn(t)
+	execSQL(t, dbURL, "UPDATE sessions SET expires_at = now() + interval '5 days'")
+	b.cookies[sessionCookie].Expires = time.Now().Add(5 * 24 * time.Hour)
+
+	b.get(b.app.URL + "/api/me")
+
+	c := b.cookies[sessionCookie]
+	if !c.Expires.After(time.Now().Add(29*24*time.Hour)) || !c.HttpOnly || !c.Secure || c.SameSite != http.SameSiteLaxMode {
+		t.Errorf("cookie = %+v, want re-issued with ~30 day expiry and original flags", c)
+	}
+}
+
+func TestFreshSessionIsNotRewritten(t *testing.T) {
+	b, dbURL := signedIn(t)
+	execSQL(t, dbURL, "UPDATE sessions SET expires_at = now() + interval '30 days' - interval '1 minute'")
+	before := queryInt(t, dbURL, "SELECT extract(epoch FROM expires_at)::bigint FROM sessions")
+
+	b.me()
+
+	if after := queryInt(t, dbURL, "SELECT extract(epoch FROM expires_at)::bigint FROM sessions"); after != before {
+		t.Errorf("expires_at changed from %d to %d, want untouched", before, after)
+	}
+}
+
+func TestExpiredSessionIs401(t *testing.T) {
+	b, dbURL := signedIn(t)
+	execSQL(t, dbURL, "UPDATE sessions SET expires_at = now() - interval '1 second'")
+
+	if status, _ := b.me(); status != http.StatusUnauthorized {
+		t.Errorf("status = %d, want 401", status)
+	}
+	if got := queryInt(t, dbURL, "SELECT count(*) FROM sessions WHERE expires_at > now()"); got != 0 {
+		t.Error("expired session was revived")
+	}
+}
+
+func TestRevokedSessionIs401(t *testing.T) {
+	b, dbURL := signedIn(t)
+	execSQL(t, dbURL, "UPDATE sessions SET revoked_at = now()")
+
+	if status, _ := b.me(); status != http.StatusUnauthorized {
+		t.Errorf("status = %d, want 401", status)
+	}
+}
+
+func TestSignOutInvalidatesSessionAndClearsCookie(t *testing.T) {
+	b, dbURL := signedIn(t)
+	old := b.cookies[sessionCookie].Value
+
+	resp := b.post(b.app.URL + "/auth/logout")
+
+	if resp.StatusCode != http.StatusNoContent {
+		t.Fatalf("status = %d, want 204", resp.StatusCode)
+	}
+	if c := b.cookies[sessionCookie]; c == nil || c.MaxAge >= 0 || c.Value != "" {
+		t.Errorf("cookie = %+v, want cleared (Max-Age<=0)", c)
+	}
+	if got := queryInt(t, dbURL, "SELECT count(*) FROM sessions"); got != 0 {
+		t.Errorf("sessions = %d, want 0", got)
+	}
+	b.cookies[sessionCookie] = &http.Cookie{Name: sessionCookie, Value: old}
+	if status, _ := b.me(); status != http.StatusUnauthorized {
+		t.Errorf("replayed cookie status = %d, want 401", status)
+	}
+}
+
+func TestSignOutWithoutSessionIsHarmless(t *testing.T) {
+	app, _, _ := startWithProvider(t)
+
+	if resp := newBrowser(t, app).post(app.URL + "/auth/logout"); resp.StatusCode != http.StatusNoContent {
+		t.Errorf("status = %d, want 204", resp.StatusCode)
+	}
+}
+
+func TestSignOutRejectsGET(t *testing.T) {
+	app, _, _ := startWithProvider(t)
+
+	if resp := newBrowser(t, app).get(app.URL + "/auth/logout"); resp.StatusCode == http.StatusNoContent {
+		t.Error("GET must not sign out")
 	}
 }

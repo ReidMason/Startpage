@@ -13,6 +13,7 @@ type Session struct {
 	UserID    int64
 	CreatedAt pgtype.Timestamptz
 	ExpiresAt pgtype.Timestamptz
+	RevokedAt pgtype.Timestamptz
 }
 
 type User struct {
