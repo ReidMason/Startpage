@@ -1,4 +1,4 @@
-Status: ready-for-agent
+Status: resolved
 
 # v0.1: Authentik login and display name
 

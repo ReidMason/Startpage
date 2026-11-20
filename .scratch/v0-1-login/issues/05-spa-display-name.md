@@ -4,10 +4,10 @@
 
 **Blocked by:** 03, 04
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] OpenAPI spec exists and the TS client is generated from it
-- [ ] Repeat visits paint the cached name before any network response
-- [ ] The name is refreshed from the API after paint
-- [ ] A 401 sends the browser through login
-- [ ] Sign-out ends the Session and returns to login
+- [x] OpenAPI spec exists and the TS client is generated from it
+- [x] Repeat visits paint the cached name before any network response
+- [x] The name is refreshed from the API after paint
+- [x] A 401 sends the browser through login
+- [x] Sign-out ends the Session and returns to login
