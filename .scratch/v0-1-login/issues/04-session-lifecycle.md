@@ -4,10 +4,10 @@
 
 **Blocked by:** 03
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Using a Session extends its expiry
-- [ ] Expired Sessions get 401
-- [ ] Revoked Sessions get 401
-- [ ] Sign-out invalidates the Session and clears the cookie
-- [ ] Handler-level tests cover expiry, revocation and sign-out
+- [x] Using a Session extends its expiry
+- [x] Expired Sessions get 401
+- [x] Revoked Sessions get 401
+- [x] Sign-out invalidates the Session and clears the cookie
+- [x] Handler-level tests cover expiry, revocation and sign-out
