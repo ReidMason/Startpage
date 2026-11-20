@@ -1,10 +1,15 @@
 package server
 
 import (
+	"bytes"
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"io/fs"
 	"net/http"
+	"path"
 	"strings"
+	"time"
 
 	"github.com/ReidMason/startpage/internal/db"
 )
@@ -24,20 +29,25 @@ func New(ctx context.Context, cfg Config) (http.Handler, func(), error) {
 }
 
 func staticHandler(assets fs.FS) http.Handler {
-	files := http.FileServerFS(assets)
+	hashed := http.FileServerFS(assets)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasPrefix(r.URL.Path, "/assets/") {
 			w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
-			files.ServeHTTP(w, r)
+			hashed.ServeHTTP(w, r)
 			return
 		}
-		w.Header().Set("Cache-Control", "no-cache")
-		if r.URL.Path != "/" && r.URL.Path != "/index.html" {
-			if _, err := fs.Stat(assets, strings.TrimPrefix(r.URL.Path, "/")); err != nil {
-				r = r.Clone(r.Context())
-				r.URL.Path = "/"
-			}
+		name := strings.TrimPrefix(path.Clean(r.URL.Path), "/")
+		if info, err := fs.Stat(assets, name); err != nil || info.IsDir() {
+			name = "index.html"
 		}
-		files.ServeHTTP(w, r)
+		data, err := fs.ReadFile(assets, name)
+		if err != nil {
+			http.NotFound(w, r)
+			return
+		}
+		sum := sha256.Sum256(data)
+		w.Header().Set("ETag", `"`+hex.EncodeToString(sum[:16])+`"`)
+		w.Header().Set("Cache-Control", "no-cache")
+		http.ServeContent(w, r, name, time.Time{}, bytes.NewReader(data))
 	})
 }
