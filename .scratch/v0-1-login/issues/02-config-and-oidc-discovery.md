@@ -4,10 +4,10 @@
 
 **Blocked by:** 01
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Each missing env var produces an error naming it and referencing the README
-- [ ] Failed OIDC discovery exits non-zero with a clear error
-- [ ] Successful start logs the expected redirect URI and never the secret
-- [ ] Stub OIDC provider available to tests
-- [ ] Tests cover missing config, failed discovery and successful start
+- [x] Each missing env var produces an error naming it and referencing the README
+- [x] Failed OIDC discovery exits non-zero with a clear error
+- [x] Successful start logs the expected redirect URI and never the secret
+- [x] Stub OIDC provider available to tests
+- [x] Tests cover missing config, failed discovery and successful start
