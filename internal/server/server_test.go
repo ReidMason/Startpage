@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"os"
 	"strings"
 	"sync/atomic"
@@ -61,9 +62,12 @@ func newDatabase(t *testing.T) string {
 	if _, err := conn.Exec(ctx, "CREATE DATABASE "+name); err != nil {
 		t.Fatal(err)
 	}
-	cfg := conn.Config().Copy()
-	cfg.Database = name
-	return cfg.ConnString()
+	u, err := url.Parse(adminURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	u.Path = "/" + name
+	return u.String()
 }
 
 func testConfig(dbURL, issuer string) config.Config {
@@ -78,6 +82,12 @@ func testConfig(dbURL, issuer string) config.Config {
 
 func startServer(t *testing.T) (*httptest.Server, string) {
 	t.Helper()
+	ts, dbURL, _ := startApp(t)
+	return ts, dbURL
+}
+
+func startApp(t *testing.T) (*httptest.Server, string, *oidctest.Provider) {
+	t.Helper()
 	dbURL := newDatabase(t)
 	issuer := oidctest.New(t)
 	assets := fstest.MapFS{
@@ -91,7 +101,7 @@ func startServer(t *testing.T) (*httptest.Server, string) {
 	t.Cleanup(closeFn)
 	ts := httptest.NewServer(h)
 	t.Cleanup(ts.Close)
-	return ts, dbURL
+	return ts, dbURL, issuer
 }
 
 func TestShellRevalidates(t *testing.T) {
