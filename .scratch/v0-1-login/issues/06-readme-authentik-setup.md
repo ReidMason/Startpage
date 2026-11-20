@@ -4,9 +4,9 @@
 
 **Blocked by:** 02
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Steps to create the provider and application in Authentik
-- [ ] Redirect URI format documented
-- [ ] All five env vars documented
-- [ ] Startup errors reference this section
+- [x] Steps to create the provider and application in Authentik
+- [x] Redirect URI format documented
+- [x] All five env vars documented
+- [x] Startup errors reference this section
