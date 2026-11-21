@@ -22,7 +22,13 @@ const ordinal = (day: number) => {
 const formatDate = (now: Date) => {
   const weekday = now.toLocaleDateString("en-GB", { weekday: "long" });
   const month = now.toLocaleDateString("en-GB", { month: "long" });
-  return `${weekday}, ${ordinal(now.getDate())} ${month} ${now.getFullYear()}`;
+  const day = now.getDate();
+  return (
+    <>
+      {weekday}, {day}
+      <sup>{ordinal(day).slice(String(day).length)}</sup> {month} {now.getFullYear()}
+    </>
+  );
 };
 
 type Props = {
@@ -63,7 +69,7 @@ export function Welcome({ editMode, searchEngine, showName, query, onQueryChange
   }, [editMode]);
 
   return (
-    <div className="mb-12">
+    <div className="flex flex-col gap-8">
       <form
         onSubmit={(e) => e.preventDefault()}
       >
@@ -87,13 +93,15 @@ export function Welcome({ editMode, searchEngine, showName, query, onQueryChange
           autoFocus={!editMode}
           disabled={editMode}
           autoComplete="off"
-          placeholder="Search"
+          placeholder="Search..."
           aria-label="Search"
-          className="w-full border-0 border-b border-[#374151] bg-transparent pb-3 text-2xl text-[#c7d2fe] outline-none placeholder:text-[#6b7aa6] focus:border-[#c7d2fe] disabled:opacity-40"
+          className="w-full border-0 border-b-2 border-[#c7d2fe]/40 bg-transparent pt-2 pb-4 text-3xl text-[#c7d2fe] outline-none placeholder:text-[#c7d2fe]/80 focus:border-[#c7d2fe]/60 disabled:opacity-40"
         />
       </form>
-      <div className="mt-10 text-lg text-[#9aa5c9]">{formatDate(now)}</div>
-      <div className="mt-2 text-5xl font-bold">{showName && name ? `${greetingFor(now)}, ${name}` : greetingFor(now)}</div>
+      <div>
+        <div className="mb-3 text-xl font-semibold">{formatDate(now)}</div>
+        <div className="text-4xl font-bold md:text-5xl">{showName && name ? `${greetingFor(now)}, ${name}` : greetingFor(now)}</div>
+      </div>
     </div>
   );
 }
