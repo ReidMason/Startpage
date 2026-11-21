@@ -23,3 +23,11 @@ _Avoid_: Section, folder, category
 **Session**:
 A signed-in browser's long-lived, revocable authorisation to act as a User.
 _Avoid_: Login, token
+
+**Setting**:
+A per-User preference on a Startpage, changed from the Settings drawer in edit mode.
+_Avoid_: Option, preference, config
+
+**Search engine**:
+The web search a Startpage's search bar sends queries to, chosen by the User from presets or entered as a custom address.
+_Avoid_: Provider, search URL
