@@ -4,7 +4,7 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] Groups and Apps persist in Postgres with ordering, a soft-delete timestamp and stored icon SVG
 - [ ] A new User's Startpage response contains one empty first Group

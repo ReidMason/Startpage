@@ -4,7 +4,7 @@
 
 **Blocked by:** 01
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] Clicking a label toggles its Group; the chevron shows only on label hover
 - [ ] All Groups are expanded for a new User

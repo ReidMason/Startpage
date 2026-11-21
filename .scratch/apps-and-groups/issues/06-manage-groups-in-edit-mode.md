@@ -4,7 +4,7 @@
 
 **Blocked by:** 02
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] "Add group" creates an empty Group that appears at the end
 - [ ] Group names are editable inline in edit mode

@@ -4,7 +4,7 @@
 
 **Blocked by:** 01
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] Edit/Done toggles edit mode; outside edit mode the grid stays fully read-only
 - [ ] Clicking a tile in edit mode opens the modal and does not navigate

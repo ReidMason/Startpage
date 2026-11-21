@@ -4,7 +4,7 @@
 
 **Blocked by:** 02
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] Delete takes effect immediately with no confirm prompt and is independent of Save
 - [ ] A deleted App no longer appears in the Startpage response

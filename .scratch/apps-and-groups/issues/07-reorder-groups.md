@@ -4,7 +4,7 @@
 
 **Blocked by:** 04, 06
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] Each Group in edit mode has a drag handle; only the handle starts a Group drag
 - [ ] Dragging a Group reorders Groups without moving Apps between them

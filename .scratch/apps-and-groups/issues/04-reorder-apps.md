@@ -4,7 +4,7 @@
 
 **Blocked by:** 02
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] Tiles can be dragged within a Group and across Groups, including into an empty Group
 - [ ] A drag never registers as a click, so the modal doesn't open after a drop

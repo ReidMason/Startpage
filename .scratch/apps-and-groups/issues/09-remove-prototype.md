@@ -4,7 +4,7 @@
 
 **Blocked by:** 02, 03, 04, 06, 07, 08
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] The prototype components and the `/proto` route switch are removed
 - [ ] Nothing in the real app imports from the prototype

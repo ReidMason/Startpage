@@ -4,7 +4,7 @@
 
 **Blocked by:** 02
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] The drawer appears on entering edit mode and disappears on Done
 - [ ] The page content is pushed over, not covered

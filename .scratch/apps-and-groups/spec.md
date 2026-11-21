@@ -1,4 +1,4 @@
-Status: ready-for-agent
+Status: resolved
 
 # Apps and Groups: display and in-place editing
 
