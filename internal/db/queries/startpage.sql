@@ -37,3 +37,21 @@ WHERE apps.id = @id AND apps.deleted_at IS NULL
 RETURNING id, name, url, icon_name, icon_svg;
 -- name: SetGroupCollapsed :execrows
 UPDATE groups SET collapsed = @collapsed WHERE id = @id AND user_id = @user_id;
+
+-- name: DeleteApp :execrows
+UPDATE apps SET deleted_at = now()
+WHERE apps.id = @id AND apps.deleted_at IS NULL
+  AND apps.group_id IN (SELECT g.id FROM groups g WHERE g.user_id = @user_id);
+
+-- name: ShiftSiblingsForRestore :exec
+UPDATE apps SET position = position + 1
+WHERE deleted_at IS NULL
+  AND apps.id <> @id
+  AND group_id = (SELECT d.group_id FROM apps d WHERE d.id = @id)
+  AND position >= (SELECT d.position FROM apps d WHERE d.id = @id);
+
+-- name: RestoreApp :one
+UPDATE apps SET deleted_at = NULL
+WHERE apps.id = @id AND apps.deleted_at IS NOT NULL
+  AND apps.group_id IN (SELECT g.id FROM groups g WHERE g.user_id = @user_id)
+RETURNING id, name, url, icon_name, icon_svg;

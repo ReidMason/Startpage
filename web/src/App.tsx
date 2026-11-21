@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { createApp, updateApp, type App as AppModel } from "@/api";
+import { createApp, deleteApp, restoreApp, updateApp, type App as AppModel } from "@/api";
 import { AppModal, type AppDraft } from "@/components/AppModal";
 
 import { CollapsibleGroup } from "@/components/CollapsibleGroup";
@@ -28,6 +28,34 @@ export function App() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: startpageQueryKey });
       setEditing(null);
+    },
+  });
+  const [undoable, setUndoable] = useState<AppModel | null>(null);
+  useEffect(() => {
+    if (!undoable) return;
+    const t = setTimeout(() => setUndoable(null), 6000);
+    return () => clearTimeout(t);
+  }, [undoable]);
+  const remove = useMutation({
+    mutationFn: async (app: AppModel) => {
+      const res = await deleteApp({ path: { id: app.id } });
+      if (res.error) throw new Error(`deleting app failed: ${res.response?.status}`);
+      return app;
+    },
+    onSuccess: async (app) => {
+      setEditing(null);
+      setUndoable(app);
+      await queryClient.invalidateQueries({ queryKey: startpageQueryKey });
+    },
+  });
+  const undo = useMutation({
+    mutationFn: async (app: AppModel) => {
+      const res = await restoreApp({ path: { id: app.id } });
+      if (res.error) throw new Error(`restoring app failed: ${res.response?.status}`);
+    },
+    onSuccess: async () => {
+      setUndoable(null);
+      await queryClient.invalidateQueries({ queryKey: startpageQueryKey });
     },
   });
   const { data: name } = useQuery({
@@ -89,8 +117,20 @@ export function App() {
           initial={editing.kind === "new" ? blankDraft : editing.app}
           saving={save.isPending}
           onSave={(draft) => save.mutate({ target: editing, draft })}
+          onDelete={editing.kind === "existing" ? () => remove.mutate(editing.app) : undefined}
           onCancel={() => setEditing(null)}
         />
+      )}
+      {undoable && (
+        <div
+          role="status"
+          className="fixed bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-4 rounded-full bg-[#1f2937] px-5 py-2 text-sm"
+        >
+          Deleted {undoable.name}
+          <button onClick={() => undo.mutate(undoable)} disabled={undo.isPending} className="font-semibold text-white">
+            Undo
+          </button>
+        </div>
       )}
       <button
         onClick={() => void signOut()}

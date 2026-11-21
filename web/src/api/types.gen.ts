@@ -156,6 +156,35 @@ export type CreateAppResponses = {
 
 export type CreateAppResponse = CreateAppResponses[keyof CreateAppResponses];
 
+export type DeleteAppData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/apps/{id}';
+};
+
+export type DeleteAppErrors = {
+    /**
+     * Missing, expired or revoked Session
+     */
+    401: unknown;
+    /**
+     * The App does not exist, is already deleted, or belongs to another User
+     */
+    404: unknown;
+};
+
+export type DeleteAppResponses = {
+    /**
+     * The App is deleted
+     */
+    204: void;
+};
+
+export type DeleteAppResponse = DeleteAppResponses[keyof DeleteAppResponses];
+
 export type UpdateAppData = {
     body: AppFields;
     path: {
@@ -188,6 +217,35 @@ export type UpdateAppResponses = {
 };
 
 export type UpdateAppResponse = UpdateAppResponses[keyof UpdateAppResponses];
+
+export type RestoreAppData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/apps/{id}/restore';
+};
+
+export type RestoreAppErrors = {
+    /**
+     * Missing, expired or revoked Session
+     */
+    401: unknown;
+    /**
+     * The App does not exist, is not deleted, or belongs to another User
+     */
+    404: unknown;
+};
+
+export type RestoreAppResponses = {
+    /**
+     * The restored App
+     */
+    200: App;
+};
+
+export type RestoreAppResponse = RestoreAppResponses[keyof RestoreAppResponses];
 
 export type UpdateGroupData = {
     body: GroupUpdate;

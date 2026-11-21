@@ -281,3 +281,114 @@ func TestUsersCannotUpdateEachOthersApps(t *testing.T) {
 		t.Errorf("alice's app changed to %q", got)
 	}
 }
+
+func (b *browser) deleteApp(id int64) int {
+	b.t.Helper()
+	resp, _ := b.do(http.MethodDelete, fmt.Sprintf("/api/apps/%d", id), nil)
+	return resp.StatusCode
+}
+
+func (b *browser) restoreApp(id int64) (int, appJSON) {
+	b.t.Helper()
+	resp, data := b.do(http.MethodPost, fmt.Sprintf("/api/apps/%d/restore", id), nil)
+	var restored appJSON
+	_ = json.Unmarshal(data, &restored)
+	return resp.StatusCode, restored
+}
+
+func appNames(apps []appJSON) []string {
+	names := []string{}
+	for _, a := range apps {
+		names = append(names, a.Name)
+	}
+	return names
+}
+
+func TestDeletedAppDisappearsFromStartpage(t *testing.T) {
+	b, _ := signedIn(t)
+	_, plex := b.createApp(plexApp(nil))
+	b.createApp(plexApp(map[string]any{"name": "Sonarr"}))
+
+	if status := b.deleteApp(plex.ID); status != http.StatusNoContent {
+		t.Fatalf("delete status %d, want 204", status)
+	}
+	if got := appNames(b.startpage().Groups[0].Apps); len(got) != 1 || got[0] != "Sonarr" {
+		t.Errorf("apps = %v, want [Sonarr]", got)
+	}
+	if status := b.deleteApp(plex.ID); status != http.StatusNotFound {
+		t.Errorf("deleting twice: status %d, want 404", status)
+	}
+	if status, _ := b.updateApp(plex.ID, plexApp(nil)); status != http.StatusNotFound {
+		t.Errorf("updating deleted app: status %d, want 404", status)
+	}
+}
+
+func TestRestoreReturnsAppToOriginalPositionShiftingSiblings(t *testing.T) {
+	b, _ := signedIn(t)
+	b.createApp(plexApp(map[string]any{"name": "A"}))
+	_, bApp := b.createApp(plexApp(map[string]any{"name": "B"}))
+	b.createApp(plexApp(map[string]any{"name": "C"}))
+
+	b.deleteApp(bApp.ID)
+	b.createApp(plexApp(map[string]any{"name": "D"}))
+	status, restored := b.restoreApp(bApp.ID)
+	if status != http.StatusOK || restored.ID != bApp.ID || restored.Name != "B" {
+		t.Fatalf("restore = %d %+v", status, restored)
+	}
+
+	got := appNames(b.startpage().Groups[0].Apps)
+	if want := []string{"A", "B", "C", "D"}; fmt.Sprint(got) != fmt.Sprint(want) {
+		t.Errorf("apps = %v, want %v", got, want)
+	}
+	if status, _ := b.restoreApp(bApp.ID); status != http.StatusNotFound {
+		t.Errorf("restoring a live app: status %d, want 404", status)
+	}
+}
+
+func TestRestoreReturnsAppToOriginalGroup(t *testing.T) {
+	b, dbURL := signedIn(t)
+	first := b.startpage().Groups[0]
+	execSQL(t, dbURL, "INSERT INTO groups (user_id, name, position) SELECT user_id, 'Media', 1 FROM groups WHERE id = $1", first.ID)
+	media := b.startpage().Groups[1]
+	_, plex := b.createApp(plexApp(map[string]any{"groupId": media.ID}))
+
+	b.deleteApp(plex.ID)
+	b.restoreApp(plex.ID)
+
+	sp := b.startpage()
+	if len(sp.Groups[0].Apps) != 0 || len(sp.Groups[1].Apps) != 1 || sp.Groups[1].Apps[0].ID != plex.ID {
+		t.Errorf("groups = %+v, want app back in Media", sp.Groups)
+	}
+}
+
+func TestDeleteAndRestoreRequireSignIn(t *testing.T) {
+	ts, _ := startServer(t)
+	b := newBrowser(t, ts)
+	if resp, _ := b.do(http.MethodDelete, "/api/apps/1", nil); resp.StatusCode != http.StatusUnauthorized {
+		t.Errorf("delete: status %d, want 401", resp.StatusCode)
+	}
+	if resp, _ := b.do(http.MethodPost, "/api/apps/1/restore", nil); resp.StatusCode != http.StatusUnauthorized {
+		t.Errorf("restore: status %d, want 401", resp.StatusCode)
+	}
+}
+
+func TestUsersCannotDeleteOrRestoreEachOthersApps(t *testing.T) {
+	ts, _, provider := startApp(t)
+	alice := signInAs(t, ts, provider, "sub-alice", "Alice")
+	bob := signInAs(t, ts, provider, "sub-bob", "Bob")
+	_, plex := alice.createApp(plexApp(nil))
+
+	if status := bob.deleteApp(plex.ID); status != http.StatusNotFound {
+		t.Errorf("delete: status %d, want 404", status)
+	}
+	if n := len(alice.startpage().Groups[0].Apps); n != 1 {
+		t.Fatalf("alice has %d apps, want 1", n)
+	}
+	alice.deleteApp(plex.ID)
+	if status, _ := bob.restoreApp(plex.ID); status != http.StatusNotFound {
+		t.Errorf("restore: status %d, want 404", status)
+	}
+	if n := len(alice.startpage().Groups[0].Apps); n != 0 {
+		t.Errorf("bob restored alice's app")
+	}
+}

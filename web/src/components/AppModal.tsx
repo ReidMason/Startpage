@@ -13,12 +13,14 @@ export function AppModal({
   title,
   saving,
   onSave,
+  onDelete,
   onCancel,
 }: {
   initial: AppDraft;
   title: string;
   saving: boolean;
   onSave: (draft: AppDraft) => void;
+  onDelete?: () => void;
   onCancel: () => void;
 }) {
   const [draft, setDraft] = useState(initial);
@@ -125,6 +127,11 @@ export function AppModal({
           </div>
         </div>
         <div className="flex justify-end gap-2">
+          {onDelete && (
+            <button type="button" onClick={onDelete} className="mr-auto rounded px-4 py-2 text-sm text-red-400 hover:text-red-300">
+              Delete
+            </button>
+          )}
           <button type="button" onClick={onCancel} className="rounded px-4 py-2 text-sm text-[#9aa5c9] hover:text-white">
             Cancel
           </button>
