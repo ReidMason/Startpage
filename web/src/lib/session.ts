@@ -1,4 +1,5 @@
 import { getMe, logout } from "@/api";
+import { clearCachedStartpage } from "@/lib/startpage";
 
 const NAME_KEY = "startpage:displayName";
 
@@ -47,6 +48,7 @@ export async function signOut() {
     destination = (await logout()).data?.redirectUrl;
   } finally {
     clearCachedName();
+    clearCachedStartpage();
     window.location.assign(destination ?? "/");
   }
 }
