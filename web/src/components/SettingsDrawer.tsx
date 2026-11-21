@@ -51,6 +51,18 @@ export function SettingsDrawer({ draft, dirty, saving, error, onChange, onSave, 
             {!valid && <p className="text-sm text-red-400">Enter a valid http or https address.</p>}
           </section>
         )}
+        {draft && (
+          <label className="flex items-center justify-between gap-4 text-sm font-semibold">
+            Show name in greeting
+            <input
+              type="checkbox"
+              role="switch"
+              checked={draft.showNameInGreeting}
+              onChange={(e) => onChange({ ...draft, showNameInGreeting: e.target.checked })}
+              className="size-4 accent-[#c7d2fe]"
+            />
+          </label>
+        )}
       </div>
       {dirty && (
         <div className="sticky bottom-0 space-y-2 bg-[#0b1020] p-4">
