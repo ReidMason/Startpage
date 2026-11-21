@@ -5,6 +5,7 @@ import { createApp, createGroup, deleteApp, restoreApp, updateApp, type App as A
 import { AppModal, type AppDraft } from "@/components/AppModal";
 
 import { CollapsibleGroup } from "@/components/CollapsibleGroup";
+import { ReorderContext } from "@/components/ReorderContext";
 import { SettingsDrawer } from "@/components/SettingsDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchDisplayName, meQueryKey, readCachedName, signOut } from "@/lib/session";
@@ -90,6 +91,7 @@ export function App() {
           {name ? `Hello, ${name}` : <Skeleton className="h-12 w-72" />}
         </div>
         {startpage ? (
+          <ReorderContext>
           <div className="space-y-10">
             {startpage.groups.map((group, i) => (
               <CollapsibleGroup
@@ -118,6 +120,7 @@ export function App() {
               </button>
             )}
           </div>
+          </ReorderContext>
         ) : (
           <Skeleton className="h-24 w-full" />
         )}

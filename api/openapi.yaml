@@ -40,6 +40,25 @@ paths:
                 $ref: "#/components/schemas/Startpage"
         "401":
           description: Missing, expired or revoked Session
+  /api/startpage/arrangement:
+    put:
+      operationId: arrangeStartpage
+      summary: Atomically set the Group order and each Group's App order, moving Apps between Groups
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Arrangement"
+      responses:
+        "204":
+          description: Applied
+        "400":
+          description: Invalid body
+        "401":
+          description: Missing, expired or revoked Session
+        "409":
+          description: The arrangement does not list exactly the User's current Groups and live Apps, each once
   /api/apps:
     post:
       operationId: createApp
@@ -269,6 +288,25 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Group"
+    Arrangement:
+      type: object
+      required: [groups]
+      properties:
+        groups:
+          type: array
+          description: Every Group in desired order, each with its App ids in desired order
+          items:
+            type: object
+            required: [id, appIds]
+            properties:
+              id:
+                type: integer
+                format: int64
+              appIds:
+                type: array
+                items:
+                  type: integer
+                  format: int64
     Logout:
       type: object
       required: [redirectUrl]

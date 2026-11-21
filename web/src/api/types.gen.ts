@@ -61,6 +61,16 @@ export type Startpage = {
     groups: Array<Group>;
 };
 
+export type Arrangement = {
+    /**
+     * Every Group in desired order, each with its App ids in desired order
+     */
+    groups: Array<{
+        id: number;
+        appIds: Array<number>;
+    }>;
+};
+
 export type Logout = {
     redirectUrl: string;
 };
@@ -130,6 +140,37 @@ export type GetStartpageResponses = {
 };
 
 export type GetStartpageResponse = GetStartpageResponses[keyof GetStartpageResponses];
+
+export type ArrangeStartpageData = {
+    body: Arrangement;
+    path?: never;
+    query?: never;
+    url: '/api/startpage/arrangement';
+};
+
+export type ArrangeStartpageErrors = {
+    /**
+     * Invalid body
+     */
+    400: unknown;
+    /**
+     * Missing, expired or revoked Session
+     */
+    401: unknown;
+    /**
+     * The arrangement does not list exactly the User's current Groups and live Apps, each once
+     */
+    409: unknown;
+};
+
+export type ArrangeStartpageResponses = {
+    /**
+     * Applied
+     */
+    204: void;
+};
+
+export type ArrangeStartpageResponse = ArrangeStartpageResponses[keyof ArrangeStartpageResponses];
 
 export type CreateAppData = {
     body: NewApp;
