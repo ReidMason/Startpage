@@ -2,18 +2,33 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useEffect, useState } from "react";
 
-import { createApp, createGroup, deleteApp, restoreApp, updateApp, type App as AppModel } from "@/api";
+import {
+  createApp,
+  createGroup,
+  deleteApp,
+  restoreApp,
+  updateApp,
+  updateSettings,
+  type App as AppModel,
+  type Settings,
+  type SettingsUpdate,
+  type Startpage,
+} from "@/api";
 import { AppModal, type AppDraft } from "@/components/AppModal";
 import { CollapsibleGroup } from "@/components/CollapsibleGroup";
 import { groupSortId, ReorderContext } from "@/components/ReorderContext";
 import { SettingsDrawer } from "@/components/SettingsDrawer";
+import { UnsavedChangesPrompt } from "@/components/UnsavedChangesPrompt";
 import { Skeleton } from "@/components/ui/skeleton";
-import { fetchDisplayName, meQueryKey, readCachedName, signOut } from "@/lib/session";
+import { Welcome } from "@/components/Welcome";
+import { signOut } from "@/lib/session";
+import { changedSettings, defaultSearchEngine, isDirty, isValidSearchEngine } from "@/lib/settings";
 import {
   fetchStartpage,
   optimisticStartpage,
   readCachedStartpage,
   rollbackStartpage,
+  setStartpage,
   startpageQueryKey,
 } from "@/lib/startpage";
 
@@ -41,6 +56,7 @@ export function App() {
     onMutate: ({ target, draft }) =>
       target.kind === "existing"
         ? optimisticStartpage(queryClient, (page) => ({
+            ...page,
             groups: page.groups.map((g) => ({
               ...g,
               apps: g.apps.map((a) => (a.id === target.app.id ? { ...a, ...draft } : a)),
@@ -64,6 +80,7 @@ export function App() {
     },
     onMutate: async (app) => {
       const context = await optimisticStartpage(queryClient, (page) => ({
+        ...page,
         groups: page.groups.map((g) => ({ ...g, apps: g.apps.filter((a) => a.id !== app.id) })),
       }));
       const group = context.previous?.groups.find((g) => g.apps.some((a) => a.id === app.id));
@@ -85,6 +102,7 @@ export function App() {
     onMutate: ({ app, groupId, index }) => {
       setUndoable(null);
       return optimisticStartpage(queryClient, (page) => ({
+        ...page,
         groups: page.groups.map((g) => {
           if (g.id !== groupId) return g;
           const apps = [...g.apps];
@@ -103,13 +121,6 @@ export function App() {
     },
     onSuccess: refresh,
   });
-  const { data: name } = useQuery({
-    queryKey: meQueryKey,
-    queryFn: fetchDisplayName,
-    initialData: readCachedName,
-    initialDataUpdatedAt: 0,
-    retry: false,
-  });
   const { data: startpage } = useQuery({
     queryKey: startpageQueryKey,
     queryFn: fetchStartpage,
@@ -117,15 +128,66 @@ export function App() {
     initialDataUpdatedAt: 0,
     retry: false,
   });
+  const [settingsDraft, setSettingsDraft] = useState<Settings | null>(null);
+  const saved = startpage?.settings;
+  const draft = settingsDraft ?? saved;
+  const dirty = !!saved && !!draft && isDirty(saved, draft);
+  const [confirmingDone, setConfirmingDone] = useState(false);
+  const discardDraft = () => {
+    saveSettings.reset();
+    setSettingsDraft(null);
+  };
+  const exitEditMode = () => {
+    setConfirmingDone(false);
+    setEditMode(false);
+    setEditing(null);
+  };
+  useEffect(() => {
+    if (!dirty) return;
+    const warn = (e: BeforeUnloadEvent) => e.preventDefault();
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [dirty]);
+  const saveSettings = useMutation({
+    mutationFn: async ({ changes }: { changes: SettingsUpdate; next: Settings; exit?: boolean }) => {
+      const res = await updateSettings({ body: changes });
+      if (res.error) throw new Error(`saving settings failed: ${res.response?.status}`);
+    },
+    onSuccess: (_data, { next, exit }) => {
+      if (exit) exitEditMode();
+      const page = queryClient.getQueryData<Startpage>(startpageQueryKey);
+      if (page) setStartpage(queryClient, { ...page, settings: next });
+      setSettingsDraft(null);
+      refresh();
+    },
+  });
+  const pageSettings = editMode ? draft : saved;
 
   return (
     <div className="flex min-h-screen bg-[#1f2937] font-sans text-[#c7d2fe]">
-      {editMode && <SettingsDrawer />}
+      {editMode && (
+        <SettingsDrawer
+          draft={draft}
+          dirty={dirty}
+          saving={saveSettings.isPending}
+          error={saveSettings.isError}
+          onChange={(next) => {
+            saveSettings.reset();
+            setSettingsDraft(next);
+          }}
+          onSave={() => {
+            if (saved && draft) saveSettings.mutate({ changes: changedSettings(saved, draft), next: draft });
+          }}
+          onDiscard={discardDraft}
+        />
+      )}
       <div className="min-w-0 flex-1 p-8">
         <main className="mx-auto max-w-6xl rounded-3xl bg-[#111827] p-16">
-          <div className="mb-12 text-5xl font-bold">
-            {name ? `Hello, ${name}` : <Skeleton className="h-12 w-72" />}
-          </div>
+          <Welcome
+            editMode={editMode}
+            searchEngine={pageSettings?.searchEngine ?? defaultSearchEngine}
+            showName={pageSettings?.showNameInGreeting ?? false}
+          />
           {startpage ? (
             <ReorderContext>
               <SortableContext items={startpage.groups.map((g) => groupSortId(g.id))} strategy={verticalListSortingStrategy}>
@@ -166,13 +228,27 @@ export function App() {
       </div>
       <button
         onClick={() => {
-          setEditMode((m) => !m);
-          setEditing(null);
+          if (!editMode) setEditMode(true);
+          else if (dirty) setConfirmingDone(true);
+          else exitEditMode();
         }}
         className="fixed bottom-6 left-6 rounded-full bg-[#1f2937] px-4 py-2 text-sm text-[#9aa5c9] hover:text-white"
       >
         {editMode ? "Done" : "Edit"}
       </button>
+      {confirmingDone && saved && draft && (
+        <UnsavedChangesPrompt
+          saving={saveSettings.isPending}
+          canSave={isValidSearchEngine(draft.searchEngine)}
+          onSave={() => saveSettings.mutate({ changes: changedSettings(saved, draft), next: draft, exit: true })}
+          error={saveSettings.isError}
+          onDiscard={() => {
+            discardDraft();
+            exitEditMode();
+          }}
+          onKeepEditing={() => setConfirmingDone(false)}
+        />
+      )}
       {editing && (
         <AppModal
           key={editing.kind === "new" ? `new-${editing.groupId}` : editing.app.id}
