@@ -5,6 +5,7 @@ import { createApp, deleteApp, restoreApp, updateApp, type App as AppModel } fro
 import { AppModal, type AppDraft } from "@/components/AppModal";
 
 import { CollapsibleGroup } from "@/components/CollapsibleGroup";
+import { SettingsDrawer } from "@/components/SettingsDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchDisplayName, meQueryKey, readCachedName, signOut } from "@/lib/session";
 import { fetchStartpage, readCachedStartpage, startpageQueryKey } from "@/lib/startpage";
@@ -74,7 +75,9 @@ export function App() {
   });
 
   return (
-    <div className="min-h-screen bg-[#1f2937] p-8 font-sans text-[#c7d2fe]">
+    <div className="flex min-h-screen bg-[#1f2937] font-sans text-[#c7d2fe]">
+      {editMode && <SettingsDrawer />}
+      <div className="min-w-0 flex-1 p-8">
       <main className="mx-auto max-w-6xl rounded-3xl bg-[#111827] p-16">
         <div className="mb-12 text-5xl font-bold">
           {name ? `Hello, ${name}` : <Skeleton className="h-12 w-72" />}
@@ -101,6 +104,7 @@ export function App() {
           <Skeleton className="h-24 w-full" />
         )}
       </main>
+      </div>
       <button
         onClick={() => {
           setEditMode((m) => !m);
