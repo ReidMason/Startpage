@@ -204,8 +204,8 @@ export function App() {
           onDiscard={discardDraft}
         />
       )}
-      <div className="min-w-0 flex-1 p-8">
-        <main className="mx-auto max-w-6xl rounded-3xl bg-[#111827] p-16">
+      <div className="min-w-0 flex-1 px-8 py-[5%]">
+        <main className="mx-auto flex max-w-screen-2xl flex-col gap-8 rounded-2xl bg-[#111827] p-8 sm:p-16">
           <Welcome
             editMode={editMode}
             searchEngine={pageSettings?.searchEngine ?? defaultSearchEngine}

@@ -19,17 +19,17 @@ export function AppTile({ app, style }: { app: App; style: Group["style"] }) {
   if (style === "compact") return <>{app.name}</>;
   return (
     <>
-      <AppIcon app={app} className={`size-12 shrink-0 ${accent}`} />
+      <AppIcon app={app} className={`size-9 shrink-0 ${accent}`} />
       <span className="min-w-0">
-        <span className={`block truncate text-2xl ${accent}`}>{app.name}</span>
-        <span className="block truncate text-base text-[#9aa5c9]">{displayUrl(app.url)}</span>
+        <span className={`block truncate ${accent}`}>{app.name}</span>
+        <span className="block truncate text-xs text-[#9aa5c9]">{displayUrl(app.url)}</span>
       </span>
     </>
   );
 }
 
 export function tileClass(style: Group["style"]) {
-  return style === "compact" ? `text-lg hover:text-white ${accent}` : "flex min-w-0 items-center gap-4 hover:text-white";
+  return style === "compact" ? `text-lg hover:text-white ${accent}` : "flex min-w-0 items-center gap-2 rounded-lg p-2 transition duration-200 hover:scale-105 hover:bg-[#b9c9f5]/30 hover:shadow-lg";
 }
 
 function EditItem({ app, index, group, edit }: { app: App; index: number; group: Group; edit: GridEdit }) {
@@ -71,7 +71,7 @@ export function Grid({ group, edit, highlightFirst }: { group: Group; edit?: Gri
       </a>
     ),
   );
-  const layout = group.style === "compact" ? "flex flex-wrap gap-x-8 gap-y-2" : "grid grid-cols-4 gap-x-8 gap-y-8";
+  const layout = group.style === "compact" ? "flex flex-wrap gap-x-8 gap-y-2" : "grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4";
   return (
     <div ref={ref} className={`${layout} ${edit ? "min-h-16" : ""}`}>
       {items}
