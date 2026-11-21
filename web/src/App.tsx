@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   createApp,
@@ -22,7 +22,7 @@ import { SettingsDrawer } from "@/components/SettingsDrawer";
 import { UnsavedChangesPrompt } from "@/components/UnsavedChangesPrompt";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Welcome } from "@/components/Welcome";
-import { rankApps } from "@/lib/filter";
+import { isFilterQuery, rankApps } from "@/lib/filter";
 import { signOut } from "@/lib/session";
 import { changedSettings, defaultSearchEngine, isDirty, isValidSearchEngine } from "@/lib/settings";
 import {
@@ -42,9 +42,17 @@ const blankDraft: AppDraft = { name: "", url: "", iconName: "", iconSvg: "" };
 
 const draftOf = ({ name, url, iconName, iconSvg }: AppModel): AppDraft => ({ name, url, iconName, iconSvg });
 
-function FilterResults({ apps }: { apps: AppModel[] }) {
+function FilterResults({ apps, ringFirst, onEscape }: { apps: AppModel[]; ringFirst: boolean; onEscape: () => void }) {
   if (apps.length === 0) return <p className="text-lg text-[#9aa5c9]">No matching apps</p>;
-  return <Grid group={{ id: 0, name: "", style: "tiles", collapsed: false, apps }} />;
+  return (
+    <div
+      onKeyDown={(e) => {
+        if (e.key === "Escape") onEscape();
+      }}
+    >
+      <Grid group={{ id: 0, name: "", style: "tiles", collapsed: false, apps }} ringFirst={ringFirst} />
+    </div>
+  );
 }
 
 export function App() {
@@ -52,7 +60,9 @@ export function App() {
   const refresh = () => queryClient.invalidateQueries({ queryKey: startpageQueryKey });
   const [editMode, setEditMode] = useState(false);
   const [query, setQuery] = useState("");
-  const filtering = !editMode && query.startsWith("/") && query.length > 1;
+  const filtering = !editMode && isFilterQuery(query);
+  const searchInput = useRef<HTMLInputElement>(null);
+  const [barFocused, setBarFocused] = useState(false);
   const [editing, setEditing] = useState<Editing | null>(null);
   const save = useMutation({
     mutationFn: async ({ target, draft }: { target: Editing; draft: AppDraft }) => {
@@ -171,6 +181,7 @@ export function App() {
     },
   });
   const pageSettings = editMode ? draft : saved;
+  const filterResults = startpage && filtering ? rankApps(startpage.groups.flatMap((g) => g.apps), query.slice(1)) : [];
 
   return (
     <div className="flex min-h-screen bg-[#1f2937] font-sans text-[#c7d2fe]">
@@ -198,9 +209,19 @@ export function App() {
             showName={pageSettings?.showNameInGreeting ?? false}
             query={query}
             onQueryChange={setQuery}
+            bestMatch={filtering ? filterResults[0] : undefined}
+            inputRef={searchInput}
+            onFocusChange={setBarFocused}
           />
           {startpage && filtering ? (
-            <FilterResults apps={rankApps(startpage.groups.flatMap((g) => g.apps), query.slice(1))} />
+            <FilterResults
+              apps={filterResults}
+              ringFirst={barFocused}
+              onEscape={() => {
+                setQuery("");
+                searchInput.current?.focus();
+              }}
+            />
           ) : startpage ? (
             <ReorderContext>
               <SortableContext items={startpage.groups.map((g) => groupSortId(g.id))} strategy={verticalListSortingStrategy}>

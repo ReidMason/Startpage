@@ -1,5 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type RefObject } from "react";
+
+import type { App } from "@/api";
+import { submitTarget } from "@/lib/filter";
 
 import { fetchDisplayName, meQueryKey, readCachedName } from "@/lib/session";
 
@@ -21,9 +24,18 @@ const formatDate = (now: Date) => {
   return `${weekday}, ${ordinal(now.getDate())} ${month} ${now.getFullYear()}`;
 };
 
-type Props = { editMode: boolean; searchEngine: string; showName: boolean; query: string; onQueryChange: (query: string) => void };
+type Props = {
+  editMode: boolean;
+  searchEngine: string;
+  showName: boolean;
+  query: string;
+  onQueryChange: (query: string) => void;
+  bestMatch: App | undefined;
+  inputRef: RefObject<HTMLInputElement | null>;
+  onFocusChange: (focused: boolean) => void;
+};
 
-export function Welcome({ editMode, searchEngine, showName, query, onQueryChange }: Props) {
+export function Welcome({ editMode, searchEngine, showName, query, onQueryChange, bestMatch, inputRef, onFocusChange }: Props) {
   const { data: name } = useQuery({
     queryKey: meQueryKey,
     queryFn: fetchDisplayName,
@@ -41,17 +53,25 @@ export function Welcome({ editMode, searchEngine, showName, query, onQueryChange
   return (
     <div className="mb-12">
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          const trimmed = query.trim();
-          if (trimmed) window.location.assign(searchEngine + encodeURIComponent(trimmed));
-        }}
+        onSubmit={(e) => e.preventDefault()}
       >
         <input
+          ref={inputRef}
           name="query"
           type="text"
           value={query}
           onChange={(e) => onQueryChange(e.target.value)}
+          onFocus={() => onFocusChange(true)}
+          onBlur={() => onFocusChange(false)}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") {
+              onQueryChange("");
+            } else if (e.key === "Enter") {
+              e.preventDefault();
+              const target = submitTarget({ query, searchEngine, best: bestMatch, forceSearch: e.shiftKey });
+              if (target) window.location.assign(target);
+            }
+          }}
           autoFocus={!editMode}
           disabled={editMode}
           autoComplete="off"
