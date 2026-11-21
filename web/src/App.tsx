@@ -5,7 +5,8 @@ import { createApp, createGroup, deleteApp, restoreApp, updateApp, type App as A
 import { AppModal, type AppDraft } from "@/components/AppModal";
 
 import { CollapsibleGroup } from "@/components/CollapsibleGroup";
-import { ReorderContext } from "@/components/ReorderContext";
+import { groupSortId, ReorderContext } from "@/components/ReorderContext";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { SettingsDrawer } from "@/components/SettingsDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchDisplayName, meQueryKey, readCachedName, signOut } from "@/lib/session";
@@ -92,6 +93,7 @@ export function App() {
         </div>
         {startpage ? (
           <ReorderContext>
+          <SortableContext items={startpage.groups.map((g) => groupSortId(g.id))} strategy={verticalListSortingStrategy}>
           <div className="space-y-10">
             {startpage.groups.map((group, i) => (
               <CollapsibleGroup
@@ -120,6 +122,7 @@ export function App() {
               </button>
             )}
           </div>
+          </SortableContext>
           </ReorderContext>
         ) : (
           <Skeleton className="h-24 w-full" />
