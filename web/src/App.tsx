@@ -2,7 +2,18 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useEffect, useState } from "react";
 
-import { createApp, createGroup, deleteApp, restoreApp, updateApp, type App as AppModel } from "@/api";
+import {
+  createApp,
+  createGroup,
+  deleteApp,
+  restoreApp,
+  updateApp,
+  updateSettings,
+  type App as AppModel,
+  type Settings,
+  type SettingsUpdate,
+  type Startpage,
+} from "@/api";
 import { AppModal, type AppDraft } from "@/components/AppModal";
 import { CollapsibleGroup } from "@/components/CollapsibleGroup";
 import { groupSortId, ReorderContext } from "@/components/ReorderContext";
@@ -10,11 +21,13 @@ import { SettingsDrawer } from "@/components/SettingsDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Welcome } from "@/components/Welcome";
 import { signOut } from "@/lib/session";
+import { changedSettings, isDirty } from "@/lib/settings";
 import {
   fetchStartpage,
   optimisticStartpage,
   readCachedStartpage,
   rollbackStartpage,
+  setStartpage,
   startpageQueryKey,
 } from "@/lib/startpage";
 
@@ -114,13 +127,48 @@ export function App() {
     initialDataUpdatedAt: 0,
     retry: false,
   });
+  const [settingsDraft, setSettingsDraft] = useState<Settings | null>(null);
+  const saved = startpage?.settings;
+  const draft = settingsDraft ?? saved;
+  const dirty = !!saved && !!draft && isDirty(saved, draft);
+  const saveSettings = useMutation({
+    mutationFn: async ({ changes }: { changes: SettingsUpdate; next: Settings }) => {
+      const res = await updateSettings({ body: changes });
+      if (res.error) throw new Error(`saving settings failed: ${res.response?.status}`);
+    },
+    onSuccess: (_data, { next }) => {
+      const page = queryClient.getQueryData<Startpage>(startpageQueryKey);
+      if (page) setStartpage(queryClient, { ...page, settings: next });
+      setSettingsDraft(null);
+      refresh();
+    },
+  });
+  const pageSettings = editMode ? draft : saved;
 
   return (
     <div className="flex min-h-screen bg-[#1f2937] font-sans text-[#c7d2fe]">
-      {editMode && <SettingsDrawer />}
+      {editMode && (
+        <SettingsDrawer
+          draft={draft}
+          dirty={dirty}
+          saving={saveSettings.isPending}
+          error={saveSettings.isError}
+          onChange={(next) => {
+            saveSettings.reset();
+            setSettingsDraft(next);
+          }}
+          onSave={() => {
+            if (saved && draft) saveSettings.mutate({ changes: changedSettings(saved, draft), next: draft });
+          }}
+          onDiscard={() => {
+            saveSettings.reset();
+            setSettingsDraft(null);
+          }}
+        />
+      )}
       <div className="min-w-0 flex-1 p-8">
         <main className="mx-auto max-w-6xl rounded-3xl bg-[#111827] p-16">
-          <Welcome editMode={editMode} />
+          <Welcome editMode={editMode} searchEngine={pageSettings?.searchEngine ?? ""} />
           {startpage ? (
             <ReorderContext>
               <SortableContext items={startpage.groups.map((g) => groupSortId(g.id))} strategy={verticalListSortingStrategy}>

@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 
-const searchEngine = "https://duckduckgo.com/?q=";
-
 const greetingFor = (now: Date) => {
   const hour = now.getHours();
   if (hour < 12) return "Good Morning";
@@ -20,7 +18,7 @@ const formatDate = (now: Date) => {
   return `${weekday}, ${ordinal(now.getDate())} ${month} ${now.getFullYear()}`;
 };
 
-export function Welcome({ editMode }: { editMode: boolean }) {
+export function Welcome({ editMode, searchEngine }: { editMode: boolean; searchEngine: string }) {
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 60_000);
