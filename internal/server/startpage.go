@@ -63,6 +63,10 @@ func (s *startpage) updateSettings(w http.ResponseWriter, r *http.Request, userI
 	if !decodeJSON(w, r, &in) {
 		return
 	}
+	if in.SearchEngine == nil && in.ShowNameInGreeting == nil {
+		http.Error(w, "at least one setting is required", http.StatusBadRequest)
+		return
+	}
 	params := dbgen.UpdateSettingsParams{UserID: userID}
 	if in.SearchEngine != nil {
 		address := strings.TrimSpace(*in.SearchEngine)

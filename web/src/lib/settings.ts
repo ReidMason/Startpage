@@ -8,10 +8,12 @@ export const searchEnginePresets = [
   { name: "Kagi", url: "https://kagi.com/search?q=" },
 ] as const;
 
+export const defaultSearchEngine = searchEnginePresets[0].url;
+
 export function isValidSearchEngine(address: string): boolean {
   try {
-    const { protocol } = new URL(address);
-    return protocol === "http:" || protocol === "https:";
+    const { protocol, host } = new URL(address.trim());
+    return (protocol === "http:" || protocol === "https:") && host !== "";
   } catch {
     return false;
   }

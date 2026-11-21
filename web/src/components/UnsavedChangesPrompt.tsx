@@ -1,17 +1,19 @@
 type Props = {
   saving: boolean;
   canSave: boolean;
+  error: boolean;
   onSave: () => void;
   onDiscard: () => void;
   onKeepEditing: () => void;
 };
 
-export function UnsavedChangesPrompt({ saving, canSave, onSave, onDiscard, onKeepEditing }: Props) {
+export function UnsavedChangesPrompt({ saving, canSave, error, onSave, onDiscard, onKeepEditing }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
       <div role="alertdialog" aria-label="Unsaved changes" className="w-96 space-y-4 rounded-2xl bg-[#111827] p-6">
         <h2 className="text-lg font-semibold">Unsaved changes</h2>
         <p className="text-sm text-[#9aa5c9]">You have unsaved settings changes.</p>
+        {error && <p className="text-sm text-red-400">Could not save. Try again.</p>}
         <div className="flex gap-2">
           <button
             type="button"

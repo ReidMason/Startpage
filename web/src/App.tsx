@@ -22,7 +22,7 @@ import { UnsavedChangesPrompt } from "@/components/UnsavedChangesPrompt";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Welcome } from "@/components/Welcome";
 import { signOut } from "@/lib/session";
-import { changedSettings, isDirty, isValidSearchEngine } from "@/lib/settings";
+import { changedSettings, defaultSearchEngine, isDirty, isValidSearchEngine } from "@/lib/settings";
 import {
   fetchStartpage,
   optimisticStartpage,
@@ -133,6 +133,10 @@ export function App() {
   const draft = settingsDraft ?? saved;
   const dirty = !!saved && !!draft && isDirty(saved, draft);
   const [confirmingDone, setConfirmingDone] = useState(false);
+  const discardDraft = () => {
+    saveSettings.reset();
+    setSettingsDraft(null);
+  };
   const exitEditMode = () => {
     setConfirmingDone(false);
     setEditMode(false);
@@ -174,17 +178,14 @@ export function App() {
           onSave={() => {
             if (saved && draft) saveSettings.mutate({ changes: changedSettings(saved, draft), next: draft });
           }}
-          onDiscard={() => {
-            saveSettings.reset();
-            setSettingsDraft(null);
-          }}
+          onDiscard={discardDraft}
         />
       )}
       <div className="min-w-0 flex-1 p-8">
         <main className="mx-auto max-w-6xl rounded-3xl bg-[#111827] p-16">
           <Welcome
             editMode={editMode}
-            searchEngine={pageSettings?.searchEngine ?? ""}
+            searchEngine={pageSettings?.searchEngine ?? defaultSearchEngine}
             showName={pageSettings?.showNameInGreeting ?? false}
           />
           {startpage ? (
@@ -240,9 +241,9 @@ export function App() {
           saving={saveSettings.isPending}
           canSave={isValidSearchEngine(draft.searchEngine)}
           onSave={() => saveSettings.mutate({ changes: changedSettings(saved, draft), next: draft, exit: true })}
+          error={saveSettings.isError}
           onDiscard={() => {
-            saveSettings.reset();
-            setSettingsDraft(null);
+            discardDraft();
             exitEditMode();
           }}
           onKeepEditing={() => setConfirmingDone(false)}

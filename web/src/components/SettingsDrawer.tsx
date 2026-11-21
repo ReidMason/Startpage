@@ -43,7 +43,7 @@ export function SettingsDrawer({ draft, dirty, saving, error, onChange, onSave, 
               id="search-engine"
               type="text"
               value={draft.searchEngine}
-              onChange={(e) => onChange({ ...draft, searchEngine: e.target.value })}
+              onChange={(e) => onChange({ ...draft, searchEngine: e.target.value.trim() })}
               aria-invalid={!valid}
               autoComplete="off"
               className="w-full rounded-lg bg-[#1f2937] px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#c7d2fe]"
