@@ -132,10 +132,31 @@ paths:
           description: Missing, expired or revoked Session
         "404":
           description: The App does not exist, is not deleted, or belongs to another User
+  /api/groups:
+    post:
+      operationId: createGroup
+      summary: Add an empty tiles Group, appended at the end
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewGroup"
+      responses:
+        "201":
+          description: The created Group
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Group"
+        "400":
+          description: Invalid body
+        "401":
+          description: Missing, expired or revoked Session
   /api/groups/{id}:
     patch:
       operationId: updateGroup
-      summary: Update a Group's collapsed state
+      summary: Update a Group's name, style and/or collapsed state; at least one field is required
       parameters:
         - name: id
           in: path
@@ -224,10 +245,20 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/App"
+    NewGroup:
+      type: object
+      properties:
+        name:
+          type: string
     GroupUpdate:
       type: object
-      required: [collapsed]
+      minProperties: 1
       properties:
+        name:
+          type: string
+        style:
+          type: string
+          enum: [tiles, compact]
         collapsed:
           type: boolean
     Startpage:

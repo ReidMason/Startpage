@@ -47,8 +47,14 @@ export type Group = {
     apps: Array<App>;
 };
 
+export type NewGroup = {
+    name?: string;
+};
+
 export type GroupUpdate = {
-    collapsed: boolean;
+    name?: string;
+    style?: 'tiles' | 'compact';
+    collapsed?: boolean;
 };
 
 export type Startpage = {
@@ -246,6 +252,33 @@ export type RestoreAppResponses = {
 };
 
 export type RestoreAppResponse = RestoreAppResponses[keyof RestoreAppResponses];
+
+export type CreateGroupData = {
+    body: NewGroup;
+    path?: never;
+    query?: never;
+    url: '/api/groups';
+};
+
+export type CreateGroupErrors = {
+    /**
+     * Invalid body
+     */
+    400: unknown;
+    /**
+     * Missing, expired or revoked Session
+     */
+    401: unknown;
+};
+
+export type CreateGroupResponses = {
+    /**
+     * The created Group
+     */
+    201: Group;
+};
+
+export type CreateGroupResponse = CreateGroupResponses[keyof CreateGroupResponses];
 
 export type UpdateGroupData = {
     body: GroupUpdate;

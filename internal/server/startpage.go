@@ -40,6 +40,7 @@ func (s *startpage) register(mux *http.ServeMux) {
 	mux.HandleFunc("PUT /api/apps/{id}", s.authed(s.updateApp))
 	mux.HandleFunc("DELETE /api/apps/{id}", s.authed(s.deleteApp))
 	mux.HandleFunc("POST /api/apps/{id}/restore", s.authed(s.restoreApp))
+	mux.HandleFunc("POST /api/groups", s.authed(s.createGroup))
 	mux.HandleFunc("PATCH /api/groups/{id}", s.authed(s.updateGroup))
 }
 

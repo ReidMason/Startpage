@@ -7,6 +7,8 @@ package dbgen
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createApp = `-- name: CreateApp :one
@@ -64,6 +66,36 @@ WHERE NOT EXISTS (SELECT 1 FROM groups WHERE user_id = $1)
 func (q *Queries) CreateFirstGroupIfNone(ctx context.Context, userID int64) error {
 	_, err := q.db.Exec(ctx, createFirstGroupIfNone, userID)
 	return err
+}
+
+const createGroup = `-- name: CreateGroup :one
+INSERT INTO groups (user_id, name, position)
+VALUES ($1, $2, COALESCE((SELECT max(position) + 1 FROM groups WHERE user_id = $1), 0))
+RETURNING id, name, style, collapsed
+`
+
+type CreateGroupParams struct {
+	UserID int64
+	Name   string
+}
+
+type CreateGroupRow struct {
+	ID        int64
+	Name      string
+	Style     string
+	Collapsed bool
+}
+
+func (q *Queries) CreateGroup(ctx context.Context, arg CreateGroupParams) (CreateGroupRow, error) {
+	row := q.db.QueryRow(ctx, createGroup, arg.UserID, arg.Name)
+	var i CreateGroupRow
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Style,
+		&i.Collapsed,
+	)
+	return i, err
 }
 
 const deleteApp = `-- name: DeleteApp :execrows
@@ -221,24 +253,6 @@ func (q *Queries) RestoreApp(ctx context.Context, arg RestoreAppParams) (Restore
 	return i, err
 }
 
-const setGroupCollapsed = `-- name: SetGroupCollapsed :execrows
-UPDATE groups SET collapsed = $1 WHERE id = $2 AND user_id = $3
-`
-
-type SetGroupCollapsedParams struct {
-	Collapsed bool
-	ID        int64
-	UserID    int64
-}
-
-func (q *Queries) SetGroupCollapsed(ctx context.Context, arg SetGroupCollapsedParams) (int64, error) {
-	result, err := q.db.Exec(ctx, setGroupCollapsed, arg.Collapsed, arg.ID, arg.UserID)
-	if err != nil {
-		return 0, err
-	}
-	return result.RowsAffected(), nil
-}
-
 const shiftSiblingsForRestore = `-- name: ShiftSiblingsForRestore :exec
 UPDATE apps SET position = position + 1
 WHERE deleted_at IS NULL
@@ -294,4 +308,34 @@ func (q *Queries) UpdateApp(ctx context.Context, arg UpdateAppParams) (UpdateApp
 		&i.IconSvg,
 	)
 	return i, err
+}
+
+const updateGroup = `-- name: UpdateGroup :execrows
+UPDATE groups SET
+    name = COALESCE($1, name),
+    style = COALESCE($2, style),
+    collapsed = COALESCE($3, collapsed)
+WHERE id = $4 AND user_id = $5
+`
+
+type UpdateGroupParams struct {
+	Name      pgtype.Text
+	Style     pgtype.Text
+	Collapsed pgtype.Bool
+	ID        int64
+	UserID    int64
+}
+
+func (q *Queries) UpdateGroup(ctx context.Context, arg UpdateGroupParams) (int64, error) {
+	result, err := q.db.Exec(ctx, updateGroup,
+		arg.Name,
+		arg.Style,
+		arg.Collapsed,
+		arg.ID,
+		arg.UserID,
+	)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
 }

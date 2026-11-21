@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
-import { createApp, deleteApp, restoreApp, updateApp, type App as AppModel } from "@/api";
+import { createApp, createGroup, deleteApp, restoreApp, updateApp, type App as AppModel } from "@/api";
 import { AppModal, type AppDraft } from "@/components/AppModal";
 
 import { CollapsibleGroup } from "@/components/CollapsibleGroup";
@@ -59,6 +59,13 @@ export function App() {
       await queryClient.invalidateQueries({ queryKey: startpageQueryKey });
     },
   });
+  const addGroup = useMutation({
+    mutationFn: async () => {
+      const res = await createGroup({ body: { name: "New group" } });
+      if (res.error) throw new Error(`creating group failed: ${res.response?.status}`);
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: startpageQueryKey }),
+  });
   const { data: name } = useQuery({
     queryKey: meQueryKey,
     queryFn: fetchDisplayName,
@@ -89,6 +96,7 @@ export function App() {
                 key={group.id}
                 group={group}
                 labelled={i > 0 && !!group.name}
+                first={i === 0}
                 edit={
                   editMode
                     ? {
@@ -99,6 +107,16 @@ export function App() {
                 }
               />
             ))}
+            {editMode && (
+              <button
+                type="button"
+                onClick={() => addGroup.mutate()}
+                disabled={addGroup.isPending}
+                className="text-sm text-[#6b7aa6] hover:text-white"
+              >
+                + Add group
+              </button>
+            )}
           </div>
         ) : (
           <Skeleton className="h-24 w-full" />
