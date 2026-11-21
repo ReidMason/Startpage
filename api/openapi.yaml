@@ -198,6 +198,23 @@ paths:
           description: Missing, expired or revoked Session
         "404":
           description: The Group does not exist or belongs to another User
+  /api/settings:
+    patch:
+      operationId: updateSettings
+      summary: Update the signed-in User's Settings; omitted fields are unchanged
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SettingsUpdate"
+      responses:
+        "204":
+          description: Updated
+        "400":
+          description: Invalid body, or Search engine address that is not an http or https URL
+        "401":
+          description: Missing, expired or revoked Session
 components:
   schemas:
     App:
@@ -280,14 +297,34 @@ components:
           enum: [tiles, compact]
         collapsed:
           type: boolean
+    Settings:
+      type: object
+      required: [searchEngine, showNameInGreeting]
+      properties:
+        searchEngine:
+          type: string
+          description: Address the query is appended to; defaults to DuckDuckGo
+        showNameInGreeting:
+          type: boolean
+    SettingsUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        searchEngine:
+          type: string
+          description: Must be an http or https URL
+        showNameInGreeting:
+          type: boolean
     Startpage:
       type: object
-      required: [groups]
+      required: [groups, settings]
       properties:
         groups:
           type: array
           items:
             $ref: "#/components/schemas/Group"
+        settings:
+          $ref: "#/components/schemas/Settings"
     Arrangement:
       type: object
       required: [groups]

@@ -28,8 +28,14 @@ type groupJSON struct {
 	Apps      []appJSON `json:"apps"`
 }
 
+type settingsJSON struct {
+	SearchEngine       string `json:"searchEngine"`
+	ShowNameInGreeting bool   `json:"showNameInGreeting"`
+}
+
 type startpageJSON struct {
-	Groups []groupJSON `json:"groups"`
+	Groups   []groupJSON  `json:"groups"`
+	Settings settingsJSON `json:"settings"`
 }
 
 func (b *browser) do(method, path string, body any) (*http.Response, []byte) {

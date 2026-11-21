@@ -4,12 +4,12 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] A User with no stored Settings gets defaults in the Startpage payload
-- [ ] The partial-update endpoint changes only the fields supplied
-- [ ] Updated Settings appear in the next Startpage read
-- [ ] A Search engine address that is not a valid http or https URL returns 400 and changes nothing
-- [ ] One User's Settings never affect another's
-- [ ] The OpenAPI contract is updated and the web client regenerated
-- [ ] Integration tests in the existing server test seam cover the above
+- [x] A User with no stored Settings gets defaults in the Startpage payload
+- [x] The partial-update endpoint changes only the fields supplied
+- [x] Updated Settings appear in the next Startpage read
+- [x] A Search engine address that is not a valid http or https URL returns 400 and changes nothing
+- [x] One User's Settings never affect another's
+- [x] The OpenAPI contract is updated and the web client regenerated
+- [x] Integration tests in the existing server test seam cover the above
