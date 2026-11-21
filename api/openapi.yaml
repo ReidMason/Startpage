@@ -303,7 +303,7 @@ components:
       properties:
         searchEngine:
           type: string
-          description: Address the query is appended to; defaults to DuckDuckGo
+          description: Address the query is appended to; defaults to Google
         showNameInGreeting:
           type: boolean
     SettingsUpdate:

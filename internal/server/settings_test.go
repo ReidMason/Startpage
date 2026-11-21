@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-const duckDuckGo = "https://duckduckgo.com/?q="
+const defaultEngine = "https://www.google.com/search?q="
 
 func (b *browser) patchSettings(body map[string]any) int {
 	b.t.Helper()
@@ -17,8 +17,8 @@ func TestNewUserGetsDefaultSettings(t *testing.T) {
 	b, _ := signedIn(t)
 
 	s := b.startpage().Settings
-	if s.SearchEngine != duckDuckGo || s.ShowNameInGreeting {
-		t.Errorf("settings = %+v, want DuckDuckGo and name hidden", s)
+	if s.SearchEngine != defaultEngine || s.ShowNameInGreeting {
+		t.Errorf("settings = %+v, want Google and name hidden", s)
 	}
 }
 
@@ -28,7 +28,7 @@ func TestPartialUpdateChangesOnlySuppliedFieldsAndShowsInStartpage(t *testing.T)
 	if status := b.patchSettings(map[string]any{"showNameInGreeting": true}); status != http.StatusNoContent {
 		t.Fatalf("status %d, want 204", status)
 	}
-	if s := b.startpage().Settings; s.SearchEngine != duckDuckGo || !s.ShowNameInGreeting {
+	if s := b.startpage().Settings; s.SearchEngine != defaultEngine || !s.ShowNameInGreeting {
 		t.Errorf("after name toggle: %+v", s)
 	}
 
@@ -79,7 +79,7 @@ func TestSettingsRequireSignInAndAreIsolatedBetweenUsers(t *testing.T) {
 
 	alice.patchSettings(map[string]any{"searchEngine": "https://kagi.com/search?q=", "showNameInGreeting": true})
 
-	if s := bob.startpage().Settings; s.SearchEngine != duckDuckGo || s.ShowNameInGreeting {
+	if s := bob.startpage().Settings; s.SearchEngine != defaultEngine || s.ShowNameInGreeting {
 		t.Errorf("bob sees alice's settings: %+v", s)
 	}
 	if s := alice.startpage().Settings; s.SearchEngine != "https://kagi.com/search?q=" || !s.ShowNameInGreeting {
