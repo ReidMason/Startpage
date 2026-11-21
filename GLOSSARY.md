@@ -31,3 +31,7 @@ _Avoid_: Option, preference, config
 **Search engine**:
 The web search a Startpage's search bar sends queries to, chosen by the User from presets or entered as a custom address.
 _Avoid_: Provider, search URL
+
+**Filter mode**:
+What the search bar does when its query starts with `/`: the Startpage narrows to Apps matching the rest of the query instead of going to the Search engine.
+_Avoid_: Command mode, quick find
