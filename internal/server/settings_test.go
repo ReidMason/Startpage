@@ -61,6 +61,14 @@ func TestInvalidSearchEngineIsRejectedAndChangesNothing(t *testing.T) {
 	}
 }
 
+func TestEmptySettingsUpdateIsRejected(t *testing.T) {
+	b, _ := signedIn(t)
+
+	if status := b.patchSettings(map[string]any{}); status != http.StatusBadRequest {
+		t.Errorf("status %d, want 400", status)
+	}
+}
+
 func TestSettingsRequireSignInAndAreIsolatedBetweenUsers(t *testing.T) {
 	ts, _, provider := startApp(t)
 	if status := newBrowser(t, ts).patchSettings(map[string]any{"showNameInGreeting": true}); status != http.StatusUnauthorized {
