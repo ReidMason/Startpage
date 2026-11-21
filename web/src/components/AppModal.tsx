@@ -2,16 +2,17 @@ import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
 
 import { fetchIconBody, searchIcons } from "@/lib/iconify";
+import { accent } from "@/lib/utils";
 
 export type AppDraft = { name: string; url: string; iconName: string; iconSvg: string };
 
 const field = "w-full rounded bg-[#111827] px-3 py-2 outline-none focus:ring-1 focus:ring-[#4b5d8a]";
-const accent = "text-[#b9c9f5]";
 
 export function AppModal({
   initial,
   title,
   saving,
+  error,
   onSave,
   onDelete,
   onCancel,
@@ -19,6 +20,7 @@ export function AppModal({
   initial: AppDraft;
   title: string;
   saving: boolean;
+  error?: string;
   onSave: (draft: AppDraft) => void;
   onDelete?: () => void;
   onCancel: () => void;
@@ -126,6 +128,11 @@ export function AppModal({
             ))}
           </div>
         </div>
+        {error && (
+          <p role="alert" className="text-sm text-red-400">
+            {error}
+          </p>
+        )}
         <div className="flex justify-end gap-2">
           {onDelete && (
             <button type="button" onClick={onDelete} className="mr-auto rounded px-4 py-2 text-sm text-red-400 hover:text-red-300">

@@ -17,7 +17,7 @@ import { createContext, useContext, useRef, useState, type ReactNode } from "rea
 
 import { arrangeStartpage, type App, type Group, type Startpage } from "@/api";
 import { AppTile } from "@/components/Grid";
-import { startpageQueryKey, writeCachedStartpage } from "@/lib/startpage";
+import { setStartpage, startpageQueryKey, updateStartpage } from "@/lib/startpage";
 
 export const groupDropId = (groupId: number) => `group:${groupId}`;
 
@@ -60,19 +60,21 @@ export function ReorderContext({ children }: { children: ReactNode }) {
   const arrange = useArrange();
   const [active, setActive] = useState<{ app: App; style: Group["style"] } | null>(null);
   const dragged = useRef(false);
+  const dragStart = useRef<Startpage | undefined>(undefined);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
   const page = () => queryClient.getQueryData<Startpage>(startpageQueryKey);
-  const update = (change: (p: Startpage) => Startpage) =>
-    queryClient.setQueryData<Startpage>(startpageQueryKey, (old) => {
-      if (!old) return old;
-      const next = change(old);
-      writeCachedStartpage(next);
-      return next;
-    });
+  const update = (change: (p: Startpage) => Startpage) => {
+    updateStartpage(queryClient, change);
+  };
+  const endDrag = () => {
+    setActive(null);
+    window.setTimeout(() => (dragged.current = false), 0);
+  };
 
   const onStart = (e: DragStartEvent) => {
     dragged.current = true;
+    dragStart.current = page();
     if (isGroupSort(e.active.id)) return;
     const p = page();
     const group = p?.groups.find((g) => g.apps.some((a) => a.id === e.active.id));
@@ -101,9 +103,13 @@ export function ReorderContext({ children }: { children: ReactNode }) {
     });
   };
 
+  const onCancel = () => {
+    endDrag();
+    if (dragStart.current) setStartpage(queryClient, dragStart.current);
+  };
+
   const onEnd = ({ active, over }: DragEndEvent) => {
-    setActive(null);
-    window.setTimeout(() => (dragged.current = false), 0);
+    endDrag();
     const p = page();
     if (!p || !over) {
       if (p) void queryClient.invalidateQueries({ queryKey: startpageQueryKey });
@@ -127,7 +133,7 @@ export function ReorderContext({ children }: { children: ReactNode }) {
 
   return (
     <DragGuardContext.Provider value={() => dragged.current}>
-      <DndContext sensors={sensors} collisionDetection={collision} onDragStart={onStart} onDragOver={onOver} onDragEnd={onEnd}>
+      <DndContext sensors={sensors} collisionDetection={collision} onDragStart={onStart} onDragOver={onOver} onDragEnd={onEnd} onDragCancel={onCancel}>
         {children}
         <DragOverlay>{active && <AppTile app={active.app} style={active.style} />}</DragOverlay>
       </DndContext>
