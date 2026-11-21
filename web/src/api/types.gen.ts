@@ -29,6 +29,13 @@ export type NewApp = {
     iconSvg?: string;
 };
 
+export type AppFields = {
+    name: string;
+    url: string;
+    iconName?: string;
+    iconSvg?: string;
+};
+
 export type Group = {
     id: number;
     /**
@@ -148,6 +155,39 @@ export type CreateAppResponses = {
 };
 
 export type CreateAppResponse = CreateAppResponses[keyof CreateAppResponses];
+
+export type UpdateAppData = {
+    body: AppFields;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/apps/{id}';
+};
+
+export type UpdateAppErrors = {
+    /**
+     * Name or URL missing
+     */
+    400: unknown;
+    /**
+     * Missing, expired or revoked Session
+     */
+    401: unknown;
+    /**
+     * The App does not exist, is deleted, or belongs to another User
+     */
+    404: unknown;
+};
+
+export type UpdateAppResponses = {
+    /**
+     * The updated App
+     */
+    200: App;
+};
+
+export type UpdateAppResponse = UpdateAppResponses[keyof UpdateAppResponses];
 
 export type UpdateGroupData = {
     body: GroupUpdate;

@@ -30,5 +30,10 @@ FROM groups g
 WHERE g.id = @group_id AND g.user_id = @user_id
 RETURNING id, name, url, icon_name, icon_svg;
 
+-- name: UpdateApp :one
+UPDATE apps SET name = @name, url = @url, icon_name = @icon_name, icon_svg = @icon_svg
+WHERE apps.id = @id AND apps.deleted_at IS NULL
+  AND apps.group_id IN (SELECT g.id FROM groups g WHERE g.user_id = @user_id)
+RETURNING id, name, url, icon_name, icon_svg;
 -- name: SetGroupCollapsed :execrows
 UPDATE groups SET collapsed = @collapsed WHERE id = @id AND user_id = @user_id;

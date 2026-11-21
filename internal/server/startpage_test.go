@@ -3,6 +3,7 @@ package server_test
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -76,6 +77,14 @@ func (b *browser) createApp(body map[string]any) (int, appJSON) {
 	var created appJSON
 	_ = json.Unmarshal(data, &created)
 	return resp.StatusCode, created
+}
+
+func (b *browser) updateApp(id int64, body map[string]any) (int, appJSON) {
+	b.t.Helper()
+	resp, data := b.do(http.MethodPut, fmt.Sprintf("/api/apps/%d", id), body)
+	var updated appJSON
+	_ = json.Unmarshal(data, &updated)
+	return resp.StatusCode, updated
 }
 
 func plexApp(extra map[string]any) map[string]any {
@@ -213,4 +222,62 @@ func signInAs(t *testing.T, ts *httptest.Server, p *oidctest.Provider, sub, name
 	b := newBrowser(t, ts)
 	b.signIn()
 	return b
+}
+
+func TestUpdateAppChangesFieldsKeepingGroupAndPosition(t *testing.T) {
+	b, _ := signedIn(t)
+	_, plex := b.createApp(plexApp(nil))
+	b.createApp(plexApp(map[string]any{"name": "Sonarr"}))
+
+	status, updated := b.updateApp(plex.ID, map[string]any{"name": "Jellyfin", "url": "jf.example.com", "iconName": "simple-icons:jellyfin", "iconSvg": "<g/>"})
+	if status != http.StatusOK {
+		t.Fatalf("update status %d, want 200", status)
+	}
+	if updated.ID != plex.ID || updated.Name != "Jellyfin" || updated.URL != "jf.example.com" || updated.IconName != "simple-icons:jellyfin" || updated.IconSvg != "<g/>" {
+		t.Errorf("updated = %+v", updated)
+	}
+	apps := b.startpage().Groups[0].Apps
+	if len(apps) != 2 || apps[0].ID != plex.ID || apps[0].Name != "Jellyfin" || apps[1].Name != "Sonarr" {
+		t.Errorf("apps = %+v, want edited app still first", apps)
+	}
+}
+
+func TestUpdateAppRejectsInvalidInputAndUnknownApp(t *testing.T) {
+	b, _ := signedIn(t)
+	_, plex := b.createApp(plexApp(nil))
+
+	if status, _ := b.updateApp(plex.ID, plexApp(map[string]any{"name": " "})); status != http.StatusBadRequest {
+		t.Errorf("blank name: status %d, want 400", status)
+	}
+	if status, _ := b.updateApp(plex.ID, plexApp(map[string]any{"url": ""})); status != http.StatusBadRequest {
+		t.Errorf("blank url: status %d, want 400", status)
+	}
+	if status, _ := b.updateApp(plex.ID+999, plexApp(nil)); status != http.StatusNotFound {
+		t.Errorf("unknown app: status %d, want 404", status)
+	}
+	if got := b.startpage().Groups[0].Apps[0].Name; got != "Plex" {
+		t.Errorf("rejected update changed app: %q", got)
+	}
+}
+
+func TestUpdateAppRequiresSignIn(t *testing.T) {
+	ts, _ := startServer(t)
+	b := newBrowser(t, ts)
+	if resp, _ := b.do(http.MethodPut, "/api/apps/1", plexApp(nil)); resp.StatusCode != http.StatusUnauthorized {
+		t.Errorf("status %d, want 401", resp.StatusCode)
+	}
+}
+
+func TestUsersCannotUpdateEachOthersApps(t *testing.T) {
+	ts, _, provider := startApp(t)
+	alice := signInAs(t, ts, provider, "sub-alice", "Alice")
+	bob := signInAs(t, ts, provider, "sub-bob", "Bob")
+	_, plex := alice.createApp(plexApp(nil))
+
+	if status, _ := bob.updateApp(plex.ID, plexApp(map[string]any{"name": "Hacked"})); status != http.StatusNotFound {
+		t.Errorf("status %d, want 404", status)
+	}
+	if got := alice.startpage().Groups[0].Apps[0].Name; got != "Plex" {
+		t.Errorf("alice's app changed to %q", got)
+	}
 }

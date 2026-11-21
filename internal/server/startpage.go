@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/jackc/pgx/v5"
@@ -36,6 +37,7 @@ type groupResponse struct {
 func (s *startpage) register(mux *http.ServeMux) {
 	mux.HandleFunc("GET /api/startpage", s.authed(s.get))
 	mux.HandleFunc("POST /api/apps", s.authed(s.createApp))
+	mux.HandleFunc("PUT /api/apps/{id}", s.authed(s.updateApp))
 	mux.HandleFunc("PATCH /api/groups/{id}", s.authed(s.updateGroup))
 }
 
@@ -145,6 +147,41 @@ func (s *startpage) createApp(w http.ResponseWriter, r *http.Request, userID int
 		return
 	}
 	writeJSON(w, http.StatusCreated, appResponse{ID: created.ID, Name: created.Name, URL: created.Url, IconName: created.IconName, IconSvg: created.IconSvg})
+}
+
+func (s *startpage) updateApp(w http.ResponseWriter, r *http.Request, userID int64) {
+	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
+	if err != nil {
+		http.Error(w, "app not found", http.StatusNotFound)
+		return
+	}
+	var in struct {
+		Name     string `json:"name"`
+		URL      string `json:"url"`
+		IconName string `json:"iconName"`
+		IconSvg  string `json:"iconSvg"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&in); err != nil {
+		http.Error(w, "invalid JSON body", http.StatusBadRequest)
+		return
+	}
+	in.Name, in.URL = strings.TrimSpace(in.Name), strings.TrimSpace(in.URL)
+	if in.Name == "" || in.URL == "" {
+		http.Error(w, "name and url are required", http.StatusBadRequest)
+		return
+	}
+	updated, err := s.auth.queries.UpdateApp(r.Context(), dbgen.UpdateAppParams{
+		ID: id, Name: in.Name, Url: in.URL, IconName: in.IconName, IconSvg: in.IconSvg, UserID: userID,
+	})
+	if errors.Is(err, pgx.ErrNoRows) {
+		http.Error(w, "app not found", http.StatusNotFound)
+		return
+	}
+	if err != nil {
+		s.auth.internalError(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, appResponse{ID: updated.ID, Name: updated.Name, URL: updated.Url, IconName: updated.IconName, IconSvg: updated.IconSvg})
 }
 
 func writeJSON(w http.ResponseWriter, status int, v any) {

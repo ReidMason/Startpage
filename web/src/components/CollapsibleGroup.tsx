@@ -2,7 +2,7 @@ import { Icon } from "@iconify/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { updateGroup, type Group, type Startpage } from "@/api";
-import { Grid } from "@/components/Grid";
+import { Grid, type GridEdit } from "@/components/Grid";
 import { startpageQueryKey, writeCachedStartpage } from "@/lib/startpage";
 
 function useToggleCollapsed() {
@@ -25,7 +25,7 @@ function useToggleCollapsed() {
   });
 }
 
-export function CollapsibleGroup({ group, labelled }: { group: Group; labelled: boolean }) {
+export function CollapsibleGroup({ group, labelled, edit }: { group: Group; labelled: boolean; edit?: GridEdit }) {
   const toggle = useToggleCollapsed();
   return (
     <section>
@@ -41,7 +41,7 @@ export function CollapsibleGroup({ group, labelled }: { group: Group; labelled: 
           />
         </button>
       )}
-      {!group.collapsed && <Grid group={group} />}
+      {!group.collapsed && <Grid group={group} edit={edit} />}
     </section>
   );
 }

@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateAppData, CreateAppErrors, CreateAppResponses, GetMeData, GetMeErrors, GetMeResponses, GetStartpageData, GetStartpageErrors, GetStartpageResponses, LogoutData, LogoutResponses, UpdateGroupData, UpdateGroupErrors, UpdateGroupResponses } from './types.gen';
+import type { CreateAppData, CreateAppErrors, CreateAppResponses, GetMeData, GetMeErrors, GetMeResponses, GetStartpageData, GetStartpageErrors, GetStartpageResponses, LogoutData, LogoutResponses, UpdateAppData, UpdateAppErrors, UpdateAppResponses, UpdateGroupData, UpdateGroupErrors, UpdateGroupResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -38,6 +38,18 @@ export const getStartpage = <ThrowOnError extends boolean = false>(options?: Opt
  */
 export const createApp = <ThrowOnError extends boolean = false>(options: Options<CreateAppData, ThrowOnError>): RequestResult<CreateAppResponses, CreateAppErrors, ThrowOnError> => (options.client ?? client).post<CreateAppResponses, CreateAppErrors, ThrowOnError>({
     url: '/api/apps',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Replace an App's name, URL and icon, keeping its Group and position
+ */
+export const updateApp = <ThrowOnError extends boolean = false>(options: Options<UpdateAppData, ThrowOnError>): RequestResult<UpdateAppResponses, UpdateAppErrors, ThrowOnError> => (options.client ?? client).put<UpdateAppResponses, UpdateAppErrors, ThrowOnError>({
+    url: '/api/apps/{id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
