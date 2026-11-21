@@ -2,6 +2,7 @@ import { useDroppable } from "@dnd-kit/core";
 import { rectSortingStrategy, SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Icon } from "@iconify/react";
+import { Icon as InlineSvgIcon } from "@iconify/react/offline";
 
 import type { App, Group } from "@/api";
 import { groupDropId, useJustDragged } from "@/components/ReorderContext";
@@ -10,7 +11,7 @@ import { accent } from "@/lib/utils";
 
 function AppIcon({ app, className }: { app: App; className: string }) {
   if (!app.iconSvg) return <span className={className} />;
-  return <Icon icon={{ body: app.iconSvg, width: 24, height: 24 }} className={className} />;
+  return <InlineSvgIcon icon={{ body: app.iconSvg, width: 24, height: 24 }} className={className} />;
 }
 
 export type GridEdit = { onSelect: (app: App) => void; onAdd: () => void };
