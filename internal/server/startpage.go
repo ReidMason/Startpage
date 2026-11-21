@@ -39,6 +39,8 @@ func (s *startpage) register(mux *http.ServeMux) {
 	mux.HandleFunc("PUT /api/startpage/arrangement", s.authed(s.arrange))
 	mux.HandleFunc("POST /api/apps", s.authed(s.createApp))
 	mux.HandleFunc("PUT /api/apps/{id}", s.authed(s.updateApp))
+	mux.HandleFunc("DELETE /api/apps/{id}", s.authed(s.deleteApp))
+	mux.HandleFunc("POST /api/apps/{id}/restore", s.authed(s.restoreApp))
 	mux.HandleFunc("PATCH /api/groups/{id}", s.authed(s.updateGroup))
 }
 
@@ -183,6 +185,59 @@ func (s *startpage) updateApp(w http.ResponseWriter, r *http.Request, userID int
 		return
 	}
 	writeJSON(w, http.StatusOK, appResponse{ID: updated.ID, Name: updated.Name, URL: updated.Url, IconName: updated.IconName, IconSvg: updated.IconSvg})
+}
+
+func (s *startpage) deleteApp(w http.ResponseWriter, r *http.Request, userID int64) {
+	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
+	if err != nil {
+		http.Error(w, "app not found", http.StatusNotFound)
+		return
+	}
+	n, err := s.auth.queries.DeleteApp(r.Context(), dbgen.DeleteAppParams{ID: id, UserID: userID})
+	if err != nil {
+		s.auth.internalError(w, err)
+		return
+	}
+	if n == 0 {
+		http.Error(w, "app not found", http.StatusNotFound)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// restoreApp makes room at the App's stored position before reinstating it, in one transaction.
+func (s *startpage) restoreApp(w http.ResponseWriter, r *http.Request, userID int64) {
+	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
+	if err != nil {
+		http.Error(w, "app not found", http.StatusNotFound)
+		return
+	}
+	ctx := r.Context()
+	tx, err := s.pool.Begin(ctx)
+	if err != nil {
+		s.auth.internalError(w, err)
+		return
+	}
+	defer tx.Rollback(ctx) //nolint:errcheck // no-op after commit
+	q := s.auth.queries.WithTx(tx)
+	restored, err := q.RestoreApp(ctx, dbgen.RestoreAppParams{ID: id, UserID: userID})
+	if errors.Is(err, pgx.ErrNoRows) {
+		http.Error(w, "app not found", http.StatusNotFound)
+		return
+	}
+	if err != nil {
+		s.auth.internalError(w, err)
+		return
+	}
+	if err := q.ShiftSiblingsForRestore(ctx, id); err != nil {
+		s.auth.internalError(w, err)
+		return
+	}
+	if err := tx.Commit(ctx); err != nil {
+		s.auth.internalError(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, appResponse{ID: restored.ID, Name: restored.Name, URL: restored.Url, IconName: restored.IconName, IconSvg: restored.IconSvg})
 }
 
 func writeJSON(w http.ResponseWriter, status int, v any) {

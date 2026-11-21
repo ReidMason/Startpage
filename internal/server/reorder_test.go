@@ -16,14 +16,6 @@ func (b *browser) reorder(groups ...groupArrangement) int {
 	return resp.StatusCode
 }
 
-func appNames(g groupJSON) []string {
-	names := []string{}
-	for _, a := range g.Apps {
-		names = append(names, a.Name)
-	}
-	return names
-}
-
 func sameStrings(a, b []string) bool {
 	if len(a) != len(b) {
 		return false
@@ -55,7 +47,7 @@ func TestReorderAppsWithinGroup(t *testing.T) {
 		t.Fatalf("status %d, want 204", status)
 	}
 
-	if got := appNames(b.startpage().Groups[0]); !sameStrings(got, []string{"Radarr", "Plex", "Sonarr"}) {
+	if got := appNames(b.startpage().Groups[0].Apps); !sameStrings(got, []string{"Radarr", "Plex", "Sonarr"}) {
 		t.Errorf("order = %v", got)
 	}
 }
@@ -68,10 +60,10 @@ func TestMoveAppToAnotherGroupIncludingEmptyOne(t *testing.T) {
 	}
 
 	sp := b.startpage()
-	if got := appNames(sp.Groups[0]); !sameStrings(got, []string{"Plex", "Radarr"}) {
+	if got := appNames(sp.Groups[0].Apps); !sameStrings(got, []string{"Plex", "Radarr"}) {
 		t.Errorf("group 1 = %v", got)
 	}
-	if got := appNames(sp.Groups[1]); !sameStrings(got, []string{"Sonarr"}) {
+	if got := appNames(sp.Groups[1].Apps); !sameStrings(got, []string{"Sonarr"}) {
 		t.Errorf("group 2 = %v", got)
 	}
 }
@@ -107,7 +99,7 @@ func TestInvalidArrangementChangesNothing(t *testing.T) {
 	}
 
 	sp := b.startpage()
-	if got := appNames(sp.Groups[0]); !sameStrings(got, []string{"Plex", "Sonarr", "Radarr"}) || len(sp.Groups[1].Apps) != 0 {
+	if got := appNames(sp.Groups[0].Apps); !sameStrings(got, []string{"Plex", "Sonarr", "Radarr"}) || len(sp.Groups[1].Apps) != 0 {
 		t.Errorf("rejected arrangements changed the page: %+v", sp.Groups)
 	}
 }
@@ -135,7 +127,7 @@ func TestUsersCannotReorderEachOthersApps(t *testing.T) {
 		t.Errorf("bob stealing alice's app: status %d, want 409", status)
 	}
 
-	if got := appNames(alice.startpage().Groups[0]); !sameStrings(got, []string{"Plex"}) {
+	if got := appNames(alice.startpage().Groups[0].Apps); !sameStrings(got, []string{"Plex"}) {
 		t.Errorf("alice's page changed: %v", got)
 	}
 	if n := len(bob.startpage().Groups[0].Apps); n != 0 {

@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ArrangeStartpageData, ArrangeStartpageErrors, ArrangeStartpageResponses, CreateAppData, CreateAppErrors, CreateAppResponses, GetMeData, GetMeErrors, GetMeResponses, GetStartpageData, GetStartpageErrors, GetStartpageResponses, LogoutData, LogoutResponses, UpdateAppData, UpdateAppErrors, UpdateAppResponses, UpdateGroupData, UpdateGroupErrors, UpdateGroupResponses } from './types.gen';
+import type { ArrangeStartpageData, ArrangeStartpageErrors, ArrangeStartpageResponses, CreateAppData, CreateAppErrors, CreateAppResponses, DeleteAppData, DeleteAppErrors, DeleteAppResponses, GetMeData, GetMeErrors, GetMeResponses, GetStartpageData, GetStartpageErrors, GetStartpageResponses, LogoutData, LogoutResponses, RestoreAppData, RestoreAppErrors, RestoreAppResponses, UpdateAppData, UpdateAppErrors, UpdateAppResponses, UpdateGroupData, UpdateGroupErrors, UpdateGroupResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -58,6 +58,11 @@ export const createApp = <ThrowOnError extends boolean = false>(options: Options
 });
 
 /**
+ * Soft-delete an App, keeping its Group and position so it can be restored
+ */
+export const deleteApp = <ThrowOnError extends boolean = false>(options: Options<DeleteAppData, ThrowOnError>): RequestResult<DeleteAppResponses, DeleteAppErrors, ThrowOnError> => (options.client ?? client).delete<DeleteAppResponses, DeleteAppErrors, ThrowOnError>({ url: '/api/apps/{id}', ...options });
+
+/**
  * Replace an App's name, URL and icon, keeping its Group and position
  */
 export const updateApp = <ThrowOnError extends boolean = false>(options: Options<UpdateAppData, ThrowOnError>): RequestResult<UpdateAppResponses, UpdateAppErrors, ThrowOnError> => (options.client ?? client).put<UpdateAppResponses, UpdateAppErrors, ThrowOnError>({
@@ -68,6 +73,11 @@ export const updateApp = <ThrowOnError extends boolean = false>(options: Options
         ...options.headers
     }
 });
+
+/**
+ * Restore a deleted App to its original Group and position, shifting siblings
+ */
+export const restoreApp = <ThrowOnError extends boolean = false>(options: Options<RestoreAppData, ThrowOnError>): RequestResult<RestoreAppResponses, RestoreAppErrors, ThrowOnError> => (options.client ?? client).post<RestoreAppResponses, RestoreAppErrors, ThrowOnError>({ url: '/api/apps/{id}/restore', ...options });
 
 /**
  * Update a Group's collapsed state
