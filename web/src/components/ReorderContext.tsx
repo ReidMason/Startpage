@@ -1,45 +1,23 @@
-import {
-  closestCenter,
-  closestCorners,
-  DndContext,
-  DragOverlay,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  type CollisionDetection,
-  type DragEndEvent,
-  type DragOverEvent,
-  type DragStartEvent,
-} from "@dnd-kit/core";
-import { arrayMove } from "@dnd-kit/sortable";
+import { DragDropProvider } from "@dnd-kit/react";
+import { move } from "@dnd-kit/helpers";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createContext, useContext, useRef, useState, type ReactNode } from "react";
+import { createContext, useContext, useRef, type ComponentProps, type ReactNode } from "react";
 
-import { arrangeStartpage, type App, type Group, type Startpage } from "@/api";
-import { AppTile } from "@/components/Grid";
+import { arrangeStartpage, type Startpage } from "@/api";
 import { setStartpage, startpageQueryKey, updateStartpage } from "@/lib/startpage";
+
+type Events = ComponentProps<typeof DragDropProvider>;
+type DragOverEvent = Parameters<NonNullable<Events["onDragOver"]>>[0];
+type DragEndEvent = Parameters<NonNullable<Events["onDragEnd"]>>[0];
 
 export const groupDropId = (groupId: number) => `group:${groupId}`;
 
 export const groupSortId = (groupId: number) => `groupsort:${groupId}`;
 
-const isGroupSort = (id: string | number) => typeof id === "string" && id.startsWith("groupsort:");
-
-const collision: CollisionDetection = (args) => {
-  const containers = args.droppableContainers;
-  if (isGroupSort(args.active.id)) return closestCenter({ ...args, droppableContainers: containers.filter((c) => isGroupSort(c.id)) });
-  return closestCorners({ ...args, droppableContainers: containers.filter((c) => !isGroupSort(c.id)) });
-};
-
 const DragGuardContext = createContext<() => boolean>(() => false);
 
 export function useJustDragged() {
   return useContext(DragGuardContext);
-}
-
-function findGroupIndex(page: Startpage, id: string | number) {
-  if (typeof id === "string" && id.startsWith("group:")) return page.groups.findIndex((g) => groupDropId(g.id) === id);
-  return page.groups.findIndex((g) => g.apps.some((a) => a.id === id));
 }
 
 function useArrange() {
@@ -58,75 +36,38 @@ function useArrange() {
 export function ReorderContext({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const arrange = useArrange();
-  const [active, setActive] = useState<{ app: App; style: Group["style"] } | null>(null);
   const dragged = useRef(false);
   const dragStart = useRef<Startpage | undefined>(undefined);
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
   const page = () => queryClient.getQueryData<Startpage>(startpageQueryKey);
-  const update = (change: (p: Startpage) => Startpage) => {
-    updateStartpage(queryClient, change);
-  };
-  const endDrag = () => {
-    setActive(null);
-    window.setTimeout(() => (dragged.current = false), 0);
-  };
 
-  const onStart = (e: DragStartEvent) => {
+  const onStart = () => {
     dragged.current = true;
     dragStart.current = page();
-    if (isGroupSort(e.active.id)) return;
-    const p = page();
-    const group = p?.groups.find((g) => g.apps.some((a) => a.id === e.active.id));
-    const app = group?.apps.find((a) => a.id === e.active.id);
-    setActive(group && app ? { app, style: group.style } : null);
   };
 
-  const onOver = ({ active, over }: DragOverEvent) => {
-    const p = page();
-    if (!p || !over || isGroupSort(active.id)) return;
-    const from = findGroupIndex(p, active.id);
-    const to = findGroupIndex(p, over.id);
-    if (from < 0 || to < 0 || from === to) return;
-    update((old) => {
-      const moving = old.groups[from].apps.find((a) => a.id === active.id)!;
-      const overIndex = old.groups[to].apps.findIndex((a) => a.id === over.id);
-      return {
-        ...old,
-        groups: old.groups.map((g, i) => {
-          if (i === from) return { ...g, apps: g.apps.filter((a) => a.id !== active.id) };
-          if (i !== to) return g;
-          const apps = [...g.apps];
-          apps.splice(overIndex >= 0 ? overIndex : apps.length, 0, moving);
-          return { ...g, apps };
-        }),
-      };
+  const onOver = (event: DragOverEvent) => {
+    if (event.operation.source?.type === "group") return;
+    updateStartpage(queryClient, (old) => {
+      const apps = new Map(old.groups.flatMap((g) => g.apps.map((a) => [a.id, a] as const)));
+      const layout = Object.fromEntries(old.groups.map((g) => [groupDropId(g.id), g.apps.map((a) => a.id)]));
+      const next = move(layout, event);
+      if (next === layout) return old;
+      return { ...old, groups: old.groups.map((g) => ({ ...g, apps: next[groupDropId(g.id)].map((id) => apps.get(id)!) })) };
     });
   };
 
-  const onCancel = () => {
-    endDrag();
-    if (dragStart.current) setStartpage(queryClient, dragStart.current);
-  };
-
-  const onEnd = ({ active, over }: DragEndEvent) => {
-    endDrag();
-    const p = page();
-    if (!p || !over) {
-      if (p) void queryClient.invalidateQueries({ queryKey: startpageQueryKey });
+  const onEnd = (event: DragEndEvent) => {
+    window.setTimeout(() => (dragged.current = false), 0);
+    if (event.canceled) {
+      if (dragStart.current) setStartpage(queryClient, dragStart.current);
       return;
     }
-    if (isGroupSort(active.id)) {
-      const oldI = p.groups.findIndex((g) => groupSortId(g.id) === active.id);
-      const newI = p.groups.findIndex((g) => groupSortId(g.id) === over.id);
-      if (newI >= 0 && oldI !== newI) update((old) => ({ ...old, groups: arrayMove(old.groups, oldI, newI) }));
-    }
-    const gi = isGroupSort(active.id) ? -1 : findGroupIndex(p, active.id);
-    if (gi >= 0) {
-      const apps = p.groups[gi].apps;
-      const oldI = apps.findIndex((a) => a.id === active.id);
-      const newI = apps.findIndex((a) => a.id === over.id);
-      if (newI >= 0 && oldI !== newI) update((old) => ({ ...old, groups: old.groups.map((g, i) => (i === gi ? { ...g, apps: arrayMove(g.apps, oldI, newI) } : g)) }));
+    if (event.operation.source?.type === "group") {
+      updateStartpage(queryClient, (old) => {
+        const order = move(old.groups.map((g) => groupSortId(g.id)), event);
+        return { ...old, groups: order.map((id) => old.groups.find((g) => groupSortId(g.id) === id)!) };
+      });
     }
     const next = page();
     if (next) arrange.mutate(next);
@@ -134,10 +75,9 @@ export function ReorderContext({ children }: { children: ReactNode }) {
 
   return (
     <DragGuardContext.Provider value={() => dragged.current}>
-      <DndContext sensors={sensors} collisionDetection={collision} onDragStart={onStart} onDragOver={onOver} onDragEnd={onEnd} onDragCancel={onCancel}>
+      <DragDropProvider onDragStart={onStart} onDragOver={onOver} onDragEnd={onEnd}>
         {children}
-        <DragOverlay>{active && <AppTile app={active.app} style={active.style} />}</DragOverlay>
-      </DndContext>
+      </DragDropProvider>
     </DragGuardContext.Provider>
   );
 }

@@ -35,3 +35,11 @@ _Avoid_: Provider, search URL
 **Filter mode**:
 What the search bar does when its query starts with `/`: the Startpage narrows to Apps matching the rest of the query instead of going to the Search engine.
 _Avoid_: Command mode, quick find
+
+**Drag preview**:
+The copy of an App tile or Group that follows the cursor while the User drags it in edit mode. Looks identical to the original, which is hidden in the grid until the Drop.
+_Avoid_: Ghost, overlay, clone
+
+**Drop**:
+Releasing a drag preview. It settles from the cursor into its new position, with no detour via the old position.
+_Avoid_: Release, snap
