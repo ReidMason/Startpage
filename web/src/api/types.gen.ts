@@ -59,7 +59,7 @@ export type GroupUpdate = {
 
 export type Settings = {
     /**
-     * Address the query is appended to; defaults to DuckDuckGo
+     * Address the query is appended to; defaults to Google
      */
     searchEngine: string;
     showNameInGreeting: boolean;

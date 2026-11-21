@@ -28,7 +28,7 @@ The top of the Startpage shows a search bar (underlined, borderless, autofocused
 14. As a User, I want the matching preset highlighted when my address equals one, so that I can see what I'm using.
 15. As a User, I want no preset highlighted when I type a custom address, so that the state is honest.
 16. As a User, I want an invalid Search engine address rejected with an inline message, so that I can't break my search.
-17. As a User, I want the default Search engine to be DuckDuckGo, so that search works before I configure anything.
+17. As a User, I want the default Search engine to be Google, so that search works before I configure anything.
 18. As a User, I want a "Show name in greeting" toggle, so that I can choose "Good Evening, Reid" over "Good Evening".
 19. As a User, I want the name hidden by default, so that the page matches the plain design until I opt in.
 20. As a User, I want my Settings stored against my Startpage, so that they follow me across browsers.
@@ -47,7 +47,7 @@ The top of the Startpage shows a search bar (underlined, borderless, autofocused
 
 - **Greeting and date:** computed in the browser from local time, thresholds Morning before 12:00, Afternoon before 18:00, Evening otherwise. Refreshed about once a minute. Date format is weekday, ordinal day, month name, year.
 - **Search bar:** borderless input with a bottom rule, placed above the date and greeting inside the existing page card. Submit navigates the current tab to the Search engine address with the URL-encoded query appended to the end. Autofocused outside edit mode; disabled and dimmed in edit mode.
-- **Search engine Setting:** a free-text address; the query is always appended, with no template syntax. Preset buttons fill the text box and are not stored separately; a preset shows as selected when the box exactly equals its address. Presets: DuckDuckGo `https://duckduckgo.com/?q=`, Google `https://www.google.com/search?q=`, Bing `https://www.bing.com/search?q=`, Brave `https://search.brave.com/search?q=`, Kagi `https://kagi.com/search?q=`. Default is DuckDuckGo.
+- **Search engine Setting:** a free-text address; the query is always appended, with no template syntax. Preset buttons fill the text box and are not stored separately; a preset shows as selected when the box exactly equals its address. Presets: DuckDuckGo `https://duckduckgo.com/?q=`, Google `https://www.google.com/search?q=`, Bing `https://www.bing.com/search?q=`, Brave `https://search.brave.com/search?q=`, Kagi `https://kagi.com/search?q=`. Default is Google.
 - **Validation:** the address must be a valid http or https URL. Enforced client-side (inline message, Save disabled) and server-side (400).
 - **Show name in greeting Setting:** boolean, default off. When on, greeting reads "Good Evening, {display name}". The display-name fetch is used only when this is on.
 - **Storage:** new per-User settings table, one row per User, created lazily with defaults (no row means defaults). Settings are returned inside the existing Startpage read payload and so are covered by the existing first-paint cache.

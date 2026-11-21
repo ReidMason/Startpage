@@ -131,7 +131,7 @@ func (q *Queries) FirstGroupID(ctx context.Context, userID int64) (int64, error)
 const getSettings = `-- name: GetSettings :one
 SELECT COALESCE(s.search_engine, d.search_engine)::text AS search_engine,
        COALESCE(s.show_name_in_greeting, d.show_name_in_greeting)::boolean AS show_name_in_greeting
-FROM (SELECT 'https://duckduckgo.com/?q=' AS search_engine, false AS show_name_in_greeting) d
+FROM (SELECT 'https://www.google.com/search?q=' AS search_engine, false AS show_name_in_greeting) d
 LEFT JOIN settings s ON s.user_id = $1
 `
 
@@ -365,7 +365,7 @@ func (q *Queries) UpdateGroup(ctx context.Context, arg UpdateGroupParams) (int64
 
 const updateSettings = `-- name: UpdateSettings :exec
 INSERT INTO settings (user_id, search_engine, show_name_in_greeting)
-VALUES ($1, COALESCE($2::text, 'https://duckduckgo.com/?q='), COALESCE($3::boolean, false))
+VALUES ($1, COALESCE($2::text, 'https://www.google.com/search?q='), COALESCE($3::boolean, false))
 ON CONFLICT (user_id) DO UPDATE SET
     search_engine = COALESCE($2::text, settings.search_engine),
     show_name_in_greeting = COALESCE($3::boolean, settings.show_name_in_greeting)

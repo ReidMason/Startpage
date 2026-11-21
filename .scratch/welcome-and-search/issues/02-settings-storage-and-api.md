@@ -1,6 +1,6 @@
 # 02: Settings storage and API
 
-**What to build:** Per-User Settings are stored server-side and returned with the Startpage, with a partial-update endpoint. The first two Settings are the Search engine address (default DuckDuckGo) and whether to show the name in the greeting (default off).
+**What to build:** Per-User Settings are stored server-side and returned with the Startpage, with a partial-update endpoint. The first two Settings are the Search engine address (default Google) and whether to show the name in the greeting (default off).
 
 **Blocked by:** None (can start immediately)
 

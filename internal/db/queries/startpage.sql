@@ -73,12 +73,12 @@ WHERE id = @id AND user_id = @user_id;
 -- name: GetSettings :one
 SELECT COALESCE(s.search_engine, d.search_engine)::text AS search_engine,
        COALESCE(s.show_name_in_greeting, d.show_name_in_greeting)::boolean AS show_name_in_greeting
-FROM (SELECT 'https://duckduckgo.com/?q=' AS search_engine, false AS show_name_in_greeting) d
+FROM (SELECT 'https://www.google.com/search?q=' AS search_engine, false AS show_name_in_greeting) d
 LEFT JOIN settings s ON s.user_id = @user_id;
 
 -- name: UpdateSettings :exec
 INSERT INTO settings (user_id, search_engine, show_name_in_greeting)
-VALUES (@user_id, COALESCE(sqlc.narg('search_engine')::text, 'https://duckduckgo.com/?q='), COALESCE(sqlc.narg('show_name_in_greeting')::boolean, false))
+VALUES (@user_id, COALESCE(sqlc.narg('search_engine')::text, 'https://www.google.com/search?q='), COALESCE(sqlc.narg('show_name_in_greeting')::boolean, false))
 ON CONFLICT (user_id) DO UPDATE SET
     search_engine = COALESCE(sqlc.narg('search_engine')::text, settings.search_engine),
     show_name_in_greeting = COALESCE(sqlc.narg('show_name_in_greeting')::boolean, settings.show_name_in_greeting);

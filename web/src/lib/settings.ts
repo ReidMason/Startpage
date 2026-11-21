@@ -8,7 +8,7 @@ export const searchEnginePresets = [
   { name: "Kagi", url: "https://kagi.com/search?q=" },
 ] as const;
 
-export const defaultSearchEngine = searchEnginePresets[0].url;
+export const defaultSearchEngine = searchEnginePresets[1].url;
 
 export function isValidSearchEngine(address: string): boolean {
   try {
