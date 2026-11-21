@@ -1,5 +1,6 @@
 import { Icon } from "@iconify/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 
 import { updateGroup, type Group, type Startpage } from "@/api";
 import { Grid, type GridEdit } from "@/components/Grid";
@@ -25,11 +26,54 @@ function useToggleCollapsed() {
   });
 }
 
-export function CollapsibleGroup({ group, labelled, edit }: { group: Group; labelled: boolean; edit?: GridEdit }) {
+function GroupEditHeader({ group, first }: { group: Group; first: boolean }) {
+  const queryClient = useQueryClient();
+  const [name, setName] = useState(group.name);
+  const update = useMutation({
+    mutationFn: async (body: { name?: string; style?: Group["style"] }) => {
+      const { error } = await updateGroup({ path: { id: group.id }, body });
+      if (error) throw new Error("update group failed");
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: startpageQueryKey }),
+  });
+  return (
+    <div className="mb-4 flex items-center gap-3 text-sm">
+      <input
+        value={name}
+        placeholder={first ? "(unlabelled)" : "Group name"}
+        aria-label="Group name"
+        onChange={(e) => setName(e.target.value)}
+        onBlur={() => name.trim() !== group.name && update.mutate({ name })}
+        className="w-48 bg-transparent tracking-wide text-[#9aa5c9] uppercase outline-none placeholder:text-[#4b5d8a]"
+      />
+      <button
+        type="button"
+        aria-label="Toggle group style"
+        onClick={() => update.mutate({ style: group.style === "tiles" ? "compact" : "tiles" })}
+        className="text-xs text-[#6b7aa6] hover:text-white"
+      >
+        {group.style}
+      </button>
+    </div>
+  );
+}
+
+export function CollapsibleGroup({
+  group,
+  labelled,
+  first,
+  edit,
+}: {
+  group: Group;
+  labelled: boolean;
+  first: boolean;
+  edit?: GridEdit;
+}) {
   const toggle = useToggleCollapsed();
   return (
     <section>
-      {labelled && (
+      {edit && <GroupEditHeader group={group} first={first} />}
+      {!edit && labelled && (
         <button
           onClick={() => toggle.mutate({ id: group.id, collapsed: !group.collapsed })}
           className="group/label mb-4 flex items-center gap-1.5 text-sm tracking-wide text-[#6b7aa6] uppercase"
@@ -41,7 +85,7 @@ export function CollapsibleGroup({ group, labelled, edit }: { group: Group; labe
           />
         </button>
       )}
-      {!group.collapsed && <Grid group={group} edit={edit} />}
+      {(edit || !group.collapsed) && <Grid group={group} edit={edit} />}
     </section>
   );
 }
