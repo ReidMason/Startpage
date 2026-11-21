@@ -5,11 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"net/url"
 	"regexp"
 	"strconv"
 	"strings"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/ReidMason/startpage/internal/db/dbgen"
@@ -36,6 +38,11 @@ type groupResponse struct {
 	Apps      []appResponse `json:"apps"`
 }
 
+type settingsResponse struct {
+	SearchEngine       string `json:"searchEngine"`
+	ShowNameInGreeting bool   `json:"showNameInGreeting"`
+}
+
 func (s *startpage) register(mux *http.ServeMux) {
 	mux.HandleFunc("GET /api/startpage", s.authed(s.get))
 	mux.HandleFunc("PUT /api/startpage/arrangement", s.authed(s.arrange))
@@ -45,6 +52,43 @@ func (s *startpage) register(mux *http.ServeMux) {
 	mux.HandleFunc("POST /api/apps/{id}/restore", s.authed(s.restoreApp))
 	mux.HandleFunc("POST /api/groups", s.authed(s.createGroup))
 	mux.HandleFunc("PATCH /api/groups/{id}", s.authed(s.updateGroup))
+	mux.HandleFunc("PATCH /api/settings", s.authed(s.updateSettings))
+}
+
+func (s *startpage) updateSettings(w http.ResponseWriter, r *http.Request, userID int64) {
+	var in struct {
+		SearchEngine       *string `json:"searchEngine"`
+		ShowNameInGreeting *bool   `json:"showNameInGreeting"`
+	}
+	if !decodeJSON(w, r, &in) {
+		return
+	}
+	if in.SearchEngine == nil && in.ShowNameInGreeting == nil {
+		http.Error(w, "at least one setting is required", http.StatusBadRequest)
+		return
+	}
+	params := dbgen.UpdateSettingsParams{UserID: userID}
+	if in.SearchEngine != nil {
+		address := strings.TrimSpace(*in.SearchEngine)
+		if !validSearchEngine(address) {
+			http.Error(w, "searchEngine must be an http or https URL", http.StatusBadRequest)
+			return
+		}
+		params.SearchEngine = pgtype.Text{String: address, Valid: true}
+	}
+	if in.ShowNameInGreeting != nil {
+		params.ShowNameInGreeting = pgtype.Bool{Bool: *in.ShowNameInGreeting, Valid: true}
+	}
+	if err := s.auth.queries.UpdateSettings(r.Context(), params); err != nil {
+		s.auth.internalError(w, err)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func validSearchEngine(address string) bool {
+	u, err := url.Parse(address)
+	return err == nil && (u.Scheme == "http" || u.Scheme == "https") && u.Host != ""
 }
 
 func (s *startpage) authed(h func(http.ResponseWriter, *http.Request, int64)) http.HandlerFunc {
@@ -88,7 +132,14 @@ func (s *startpage) get(w http.ResponseWriter, r *http.Request, userID int64) {
 		i := index[a.GroupID]
 		out[i].Apps = append(out[i].Apps, appResponse{ID: a.ID, Name: a.Name, URL: a.Url, IconName: a.IconName, IconSvg: a.IconSvg})
 	}
-	writeJSON(w, http.StatusOK, map[string]any{"groups": out})
+	settings, err := q.GetSettings(r.Context(), userID)
+	if err != nil {
+		s.auth.internalError(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"groups": out, "settings": settingsResponse{
+		SearchEngine: settings.SearchEngine, ShowNameInGreeting: settings.ShowNameInGreeting,
+	}})
 }
 
 // ensureFirstGroup lazily creates the first Group; the user row lock stops concurrent first requests creating two.

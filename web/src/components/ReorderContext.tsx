@@ -92,6 +92,7 @@ export function ReorderContext({ children }: { children: ReactNode }) {
       const moving = old.groups[from].apps.find((a) => a.id === active.id)!;
       const overIndex = old.groups[to].apps.findIndex((a) => a.id === over.id);
       return {
+        ...old,
         groups: old.groups.map((g, i) => {
           if (i === from) return { ...g, apps: g.apps.filter((a) => a.id !== active.id) };
           if (i !== to) return g;
@@ -118,14 +119,14 @@ export function ReorderContext({ children }: { children: ReactNode }) {
     if (isGroupSort(active.id)) {
       const oldI = p.groups.findIndex((g) => groupSortId(g.id) === active.id);
       const newI = p.groups.findIndex((g) => groupSortId(g.id) === over.id);
-      if (newI >= 0 && oldI !== newI) update((old) => ({ groups: arrayMove(old.groups, oldI, newI) }));
+      if (newI >= 0 && oldI !== newI) update((old) => ({ ...old, groups: arrayMove(old.groups, oldI, newI) }));
     }
     const gi = isGroupSort(active.id) ? -1 : findGroupIndex(p, active.id);
     if (gi >= 0) {
       const apps = p.groups[gi].apps;
       const oldI = apps.findIndex((a) => a.id === active.id);
       const newI = apps.findIndex((a) => a.id === over.id);
-      if (newI >= 0 && oldI !== newI) update((old) => ({ groups: old.groups.map((g, i) => (i === gi ? { ...g, apps: arrayMove(g.apps, oldI, newI) } : g)) }));
+      if (newI >= 0 && oldI !== newI) update((old) => ({ ...old, groups: old.groups.map((g, i) => (i === gi ? { ...g, apps: arrayMove(g.apps, oldI, newI) } : g)) }));
     }
     const next = page();
     if (next) arrange.mutate(next);

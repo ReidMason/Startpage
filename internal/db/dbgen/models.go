@@ -37,6 +37,12 @@ type Session struct {
 	IDToken   pgtype.Text
 }
 
+type Setting struct {
+	UserID             int64
+	SearchEngine       string
+	ShowNameInGreeting bool
+}
+
 type User struct {
 	ID          int64
 	OidcSubject string

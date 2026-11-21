@@ -18,6 +18,7 @@ function useUpdateGroup() {
     },
     onMutate: ({ id, ...fields }) =>
       optimisticStartpage(queryClient, (page) => ({
+        ...page,
         groups: page.groups.map((g) => (g.id === id ? { ...g, ...fields } : g)),
       })),
     onError: (_err, _vars, context) => rollbackStartpage(queryClient, context),

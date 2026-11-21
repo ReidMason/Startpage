@@ -128,6 +128,25 @@ func (q *Queries) FirstGroupID(ctx context.Context, userID int64) (int64, error)
 	return id, err
 }
 
+const getSettings = `-- name: GetSettings :one
+SELECT COALESCE(s.search_engine, d.search_engine)::text AS search_engine,
+       COALESCE(s.show_name_in_greeting, d.show_name_in_greeting)::boolean AS show_name_in_greeting
+FROM (SELECT 'https://www.google.com/search?q=' AS search_engine, false AS show_name_in_greeting) d
+LEFT JOIN settings s ON s.user_id = $1
+`
+
+type GetSettingsRow struct {
+	SearchEngine       string
+	ShowNameInGreeting bool
+}
+
+func (q *Queries) GetSettings(ctx context.Context, userID int64) (GetSettingsRow, error) {
+	row := q.db.QueryRow(ctx, getSettings, userID)
+	var i GetSettingsRow
+	err := row.Scan(&i.SearchEngine, &i.ShowNameInGreeting)
+	return i, err
+}
+
 const listGroups = `-- name: ListGroups :many
 SELECT id, name, style, collapsed
 FROM groups
@@ -342,4 +361,23 @@ func (q *Queries) UpdateGroup(ctx context.Context, arg UpdateGroupParams) (int64
 		return 0, err
 	}
 	return result.RowsAffected(), nil
+}
+
+const updateSettings = `-- name: UpdateSettings :exec
+INSERT INTO settings (user_id, search_engine, show_name_in_greeting)
+VALUES ($1, COALESCE($2::text, 'https://www.google.com/search?q='), COALESCE($3::boolean, false))
+ON CONFLICT (user_id) DO UPDATE SET
+    search_engine = COALESCE($2::text, settings.search_engine),
+    show_name_in_greeting = COALESCE($3::boolean, settings.show_name_in_greeting)
+`
+
+type UpdateSettingsParams struct {
+	UserID             int64
+	SearchEngine       pgtype.Text
+	ShowNameInGreeting pgtype.Bool
+}
+
+func (q *Queries) UpdateSettings(ctx context.Context, arg UpdateSettingsParams) error {
+	_, err := q.db.Exec(ctx, updateSettings, arg.UserID, arg.SearchEngine, arg.ShowNameInGreeting)
+	return err
 }
