@@ -241,7 +241,10 @@ export function App() {
       </div>
       <button
         onClick={() => {
-          if (!editMode) setEditMode(true);
+          if (!editMode) {
+            setQuery("");
+            setEditMode(true);
+          }
           else if (dirty) setConfirmingDone(true);
           else exitEditMode();
         }}

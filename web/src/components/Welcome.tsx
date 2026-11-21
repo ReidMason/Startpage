@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { fetchDisplayName, meQueryKey, readCachedName } from "@/lib/session";
+import { shouldFocusSearchOnSlash } from "@/lib/shortcut";
 
 const greetingFor = (now: Date) => {
   const hour = now.getHours();
@@ -38,6 +39,17 @@ export function Welcome({ editMode, searchEngine, showName, query, onQueryChange
     return () => clearInterval(t);
   }, []);
 
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (!shouldFocusSearchOnSlash(e as Parameters<typeof shouldFocusSearchOnSlash>[0], editMode)) return;
+      e.preventDefault();
+      inputRef.current?.focus();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [editMode]);
+
   return (
     <div className="mb-12">
       <form
@@ -48,6 +60,7 @@ export function Welcome({ editMode, searchEngine, showName, query, onQueryChange
         }}
       >
         <input
+          ref={inputRef}
           name="query"
           type="text"
           value={query}
