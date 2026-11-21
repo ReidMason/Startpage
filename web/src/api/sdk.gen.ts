@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateAppData, CreateAppErrors, CreateAppResponses, GetMeData, GetMeErrors, GetMeResponses, GetStartpageData, GetStartpageErrors, GetStartpageResponses, LogoutData, LogoutResponses, UpdateAppData, UpdateAppErrors, UpdateAppResponses, UpdateGroupData, UpdateGroupErrors, UpdateGroupResponses } from './types.gen';
+import type { CreateAppData, CreateAppErrors, CreateAppResponses, CreateGroupData, CreateGroupErrors, CreateGroupResponses, GetMeData, GetMeErrors, GetMeResponses, GetStartpageData, GetStartpageErrors, GetStartpageResponses, LogoutData, LogoutResponses, UpdateAppData, UpdateAppErrors, UpdateAppResponses, UpdateGroupData, UpdateGroupErrors, UpdateGroupResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -58,7 +58,19 @@ export const updateApp = <ThrowOnError extends boolean = false>(options: Options
 });
 
 /**
- * Update a Group's collapsed state
+ * Add an empty tiles Group, appended at the end
+ */
+export const createGroup = <ThrowOnError extends boolean = false>(options: Options<CreateGroupData, ThrowOnError>): RequestResult<CreateGroupResponses, CreateGroupErrors, ThrowOnError> => (options.client ?? client).post<CreateGroupResponses, CreateGroupErrors, ThrowOnError>({
+    url: '/api/groups',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Update a Group's name, style and/or collapsed state; at least one field is required
  */
 export const updateGroup = <ThrowOnError extends boolean = false>(options: Options<UpdateGroupData, ThrowOnError>): RequestResult<UpdateGroupResponses, UpdateGroupErrors, ThrowOnError> => (options.client ?? client).patch<UpdateGroupResponses, UpdateGroupErrors, ThrowOnError>({
     url: '/api/groups/{id}',
