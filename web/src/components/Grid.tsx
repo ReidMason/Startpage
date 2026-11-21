@@ -50,7 +50,7 @@ function EditItem({ app, style, edit }: { app: App; style: Group["style"]; edit:
   );
 }
 
-export function Grid({ group, edit }: { group: Group; edit?: GridEdit }) {
+export function Grid({ group, edit, ringFirst }: { group: Group; edit?: GridEdit; ringFirst?: boolean }) {
   const { setNodeRef } = useDroppable({ id: groupDropId(group.id), disabled: !edit });
   const add = edit && (
     <button
@@ -61,11 +61,15 @@ export function Grid({ group, edit }: { group: Group; edit?: GridEdit }) {
       <Icon icon="lucide:plus" className="size-8" /> Add app
     </button>
   );
-  const items = group.apps.map((app) =>
+  const items = group.apps.map((app, i) =>
     edit ? (
       <EditItem key={app.id} app={app} style={group.style} edit={edit} />
     ) : (
-      <a key={app.id} href={appHref(app.url)} className={tileClass(group.style)}>
+      <a
+        key={app.id}
+        href={appHref(app.url)}
+        className={`${tileClass(group.style)} ${ringFirst && i === 0 ? "rounded-lg ring-2 ring-[#c7d2fe] ring-offset-4 ring-offset-[#111827]" : ""}`}
+      >
         <AppTile app={app} style={group.style} />
       </a>
     ),
