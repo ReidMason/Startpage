@@ -29,3 +29,6 @@ SELECT g.id, @name, @url, @icon_name, @icon_svg,
 FROM groups g
 WHERE g.id = @group_id AND g.user_id = @user_id
 RETURNING id, name, url, icon_name, icon_svg;
+
+-- name: SetGroupCollapsed :execrows
+UPDATE groups SET collapsed = @collapsed WHERE id = @id AND user_id = @user_id;
