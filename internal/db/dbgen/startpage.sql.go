@@ -168,3 +168,47 @@ func (q *Queries) LockUser(ctx context.Context, id int64) error {
 	_, err := q.db.Exec(ctx, lockUser, id)
 	return err
 }
+
+const updateApp = `-- name: UpdateApp :one
+UPDATE apps SET name = $1, url = $2, icon_name = $3, icon_svg = $4
+WHERE apps.id = $5 AND apps.deleted_at IS NULL
+  AND apps.group_id IN (SELECT g.id FROM groups g WHERE g.user_id = $6)
+RETURNING id, name, url, icon_name, icon_svg
+`
+
+type UpdateAppParams struct {
+	Name     string
+	Url      string
+	IconName string
+	IconSvg  string
+	ID       int64
+	UserID   int64
+}
+
+type UpdateAppRow struct {
+	ID       int64
+	Name     string
+	Url      string
+	IconName string
+	IconSvg  string
+}
+
+func (q *Queries) UpdateApp(ctx context.Context, arg UpdateAppParams) (UpdateAppRow, error) {
+	row := q.db.QueryRow(ctx, updateApp,
+		arg.Name,
+		arg.Url,
+		arg.IconName,
+		arg.IconSvg,
+		arg.ID,
+		arg.UserID,
+	)
+	var i UpdateAppRow
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Url,
+		&i.IconName,
+		&i.IconSvg,
+	)
+	return i, err
+}

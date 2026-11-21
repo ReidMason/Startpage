@@ -63,6 +63,36 @@ paths:
           description: Missing, expired or revoked Session
         "404":
           description: The Group does not exist or belongs to another User
+  /api/apps/{id}:
+    put:
+      operationId: updateApp
+      summary: Replace an App's name, URL and icon, keeping its Group and position
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AppFields"
+      responses:
+        "200":
+          description: The updated App
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/App"
+        "400":
+          description: Name or URL missing
+        "401":
+          description: Missing, expired or revoked Session
+        "404":
+          description: The App does not exist, is deleted, or belongs to another User
 components:
   schemas:
     App:
@@ -90,6 +120,18 @@ components:
         groupId:
           type: integer
           format: int64
+        name:
+          type: string
+        url:
+          type: string
+        iconName:
+          type: string
+        iconSvg:
+          type: string
+    AppFields:
+      type: object
+      required: [name, url]
+      properties:
         name:
           type: string
         url:
