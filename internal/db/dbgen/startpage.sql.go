@@ -66,6 +66,25 @@ func (q *Queries) CreateFirstGroupIfNone(ctx context.Context, userID int64) erro
 	return err
 }
 
+const deleteApp = `-- name: DeleteApp :execrows
+UPDATE apps SET deleted_at = now()
+WHERE apps.id = $1 AND apps.deleted_at IS NULL
+  AND apps.group_id IN (SELECT g.id FROM groups g WHERE g.user_id = $2)
+`
+
+type DeleteAppParams struct {
+	ID     int64
+	UserID int64
+}
+
+func (q *Queries) DeleteApp(ctx context.Context, arg DeleteAppParams) (int64, error) {
+	result, err := q.db.Exec(ctx, deleteApp, arg.ID, arg.UserID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
 const firstGroupID = `-- name: FirstGroupID :one
 SELECT id FROM groups WHERE user_id = $1 ORDER BY position, id LIMIT 1
 `
@@ -169,6 +188,39 @@ func (q *Queries) LockUser(ctx context.Context, id int64) error {
 	return err
 }
 
+const restoreApp = `-- name: RestoreApp :one
+UPDATE apps SET deleted_at = NULL
+WHERE apps.id = $1 AND apps.deleted_at IS NOT NULL
+  AND apps.group_id IN (SELECT g.id FROM groups g WHERE g.user_id = $2)
+RETURNING id, name, url, icon_name, icon_svg
+`
+
+type RestoreAppParams struct {
+	ID     int64
+	UserID int64
+}
+
+type RestoreAppRow struct {
+	ID       int64
+	Name     string
+	Url      string
+	IconName string
+	IconSvg  string
+}
+
+func (q *Queries) RestoreApp(ctx context.Context, arg RestoreAppParams) (RestoreAppRow, error) {
+	row := q.db.QueryRow(ctx, restoreApp, arg.ID, arg.UserID)
+	var i RestoreAppRow
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Url,
+		&i.IconName,
+		&i.IconSvg,
+	)
+	return i, err
+}
+
 const setGroupCollapsed = `-- name: SetGroupCollapsed :execrows
 UPDATE groups SET collapsed = $1 WHERE id = $2 AND user_id = $3
 `
@@ -185,6 +237,19 @@ func (q *Queries) SetGroupCollapsed(ctx context.Context, arg SetGroupCollapsedPa
 		return 0, err
 	}
 	return result.RowsAffected(), nil
+}
+
+const shiftSiblingsForRestore = `-- name: ShiftSiblingsForRestore :exec
+UPDATE apps SET position = position + 1
+WHERE deleted_at IS NULL
+  AND apps.id <> $1
+  AND group_id = (SELECT d.group_id FROM apps d WHERE d.id = $1)
+  AND position >= (SELECT d.position FROM apps d WHERE d.id = $1)
+`
+
+func (q *Queries) ShiftSiblingsForRestore(ctx context.Context, id int64) error {
+	_, err := q.db.Exec(ctx, shiftSiblingsForRestore, id)
+	return err
 }
 
 const updateApp = `-- name: UpdateApp :one
