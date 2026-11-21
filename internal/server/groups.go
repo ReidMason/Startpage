@@ -1,9 +1,7 @@
 package server
 
 import (
-	"encoding/json"
 	"net/http"
-	"strconv"
 	"strings"
 
 	"github.com/jackc/pgx/v5/pgtype"
@@ -15,32 +13,27 @@ func (s *startpage) createGroup(w http.ResponseWriter, r *http.Request, userID i
 	var in struct {
 		Name string `json:"name"`
 	}
-	if err := json.NewDecoder(r.Body).Decode(&in); err != nil {
-		http.Error(w, "invalid JSON body", http.StatusBadRequest)
+	if !decodeJSON(w, r, &in) {
+		return
+	}
+	name := strings.TrimSpace(in.Name)
+	if name == "" {
+		http.Error(w, "name is required", http.StatusBadRequest)
 		return
 	}
 	ctx := r.Context()
-	tx, err := s.pool.Begin(ctx)
+	var g dbgen.CreateGroupRow
+	err := s.inTx(ctx, func(q *dbgen.Queries) (err error) {
+		if err = q.LockUser(ctx, userID); err != nil {
+			return err
+		}
+		if err = q.CreateFirstGroupIfNone(ctx, userID); err != nil {
+			return err
+		}
+		g, err = q.CreateGroup(ctx, dbgen.CreateGroupParams{UserID: userID, Name: name})
+		return err
+	})
 	if err != nil {
-		s.auth.internalError(w, err)
-		return
-	}
-	defer tx.Rollback(ctx) //nolint:errcheck // no-op after commit
-	q := s.auth.queries.WithTx(tx)
-	if err := q.LockUser(ctx, userID); err != nil {
-		s.auth.internalError(w, err)
-		return
-	}
-	if err := q.CreateFirstGroupIfNone(ctx, userID); err != nil {
-		s.auth.internalError(w, err)
-		return
-	}
-	g, err := q.CreateGroup(ctx, dbgen.CreateGroupParams{UserID: userID, Name: strings.TrimSpace(in.Name)})
-	if err != nil {
-		s.auth.internalError(w, err)
-		return
-	}
-	if err := tx.Commit(ctx); err != nil {
 		s.auth.internalError(w, err)
 		return
 	}
@@ -48,9 +41,8 @@ func (s *startpage) createGroup(w http.ResponseWriter, r *http.Request, userID i
 }
 
 func (s *startpage) updateGroup(w http.ResponseWriter, r *http.Request, userID int64) {
-	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
-	if err != nil {
-		http.Error(w, "invalid group id", http.StatusBadRequest)
+	id, ok := pathID(w, r, http.StatusBadRequest, "invalid group id")
+	if !ok {
 		return
 	}
 	var in struct {
@@ -58,8 +50,7 @@ func (s *startpage) updateGroup(w http.ResponseWriter, r *http.Request, userID i
 		Style     *string `json:"style"`
 		Collapsed *bool   `json:"collapsed"`
 	}
-	if err := json.NewDecoder(r.Body).Decode(&in); err != nil {
-		http.Error(w, "invalid JSON body", http.StatusBadRequest)
+	if !decodeJSON(w, r, &in) {
 		return
 	}
 	if in.Name == nil && in.Style == nil && in.Collapsed == nil {
@@ -72,7 +63,12 @@ func (s *startpage) updateGroup(w http.ResponseWriter, r *http.Request, userID i
 	}
 	params := dbgen.UpdateGroupParams{ID: id, UserID: userID}
 	if in.Name != nil {
-		params.Name = pgtype.Text{String: strings.TrimSpace(*in.Name), Valid: true}
+		name := strings.TrimSpace(*in.Name)
+		if name == "" {
+			http.Error(w, "name cannot be blank", http.StatusBadRequest)
+			return
+		}
+		params.Name = pgtype.Text{String: name, Valid: true}
 	}
 	if in.Style != nil {
 		params.Style = pgtype.Text{String: *in.Style, Valid: true}

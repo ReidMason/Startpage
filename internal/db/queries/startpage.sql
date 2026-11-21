@@ -41,12 +41,16 @@ UPDATE apps SET deleted_at = now()
 WHERE apps.id = @id AND apps.deleted_at IS NULL
   AND apps.group_id IN (SELECT g.id FROM groups g WHERE g.user_id = @user_id);
 
--- name: ShiftSiblingsForRestore :exec
-UPDATE apps SET position = position + 1
-WHERE deleted_at IS NULL
-  AND apps.id <> @id
-  AND group_id = (SELECT d.group_id FROM apps d WHERE d.id = @id)
-  AND position >= (SELECT d.position FROM apps d WHERE d.id = @id);
+-- name: RenumberGroupAppsAfterRestore :exec
+WITH ordered AS (
+    SELECT a.id, row_number() OVER (ORDER BY a.position, (a.id <> @id), a.id) - 1 AS new_position
+    FROM apps a
+    WHERE a.deleted_at IS NULL
+      AND a.group_id = (SELECT d.group_id FROM apps d WHERE d.id = @id)
+)
+UPDATE apps SET position = ordered.new_position
+FROM ordered
+WHERE apps.id = ordered.id AND apps.position <> ordered.new_position;
 
 -- name: RestoreApp :one
 UPDATE apps SET deleted_at = NULL

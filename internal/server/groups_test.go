@@ -94,7 +94,7 @@ func TestCreateGroupAppendsEmptyTilesGroupAtEnd(t *testing.T) {
 	if one.Name != "Media" || one.Style != "tiles" || one.Collapsed || len(one.Apps) != 0 {
 		t.Errorf("created = %+v", one)
 	}
-	_, two := b.createGroup(map[string]any{})
+	_, two := b.createGroup(map[string]any{"name": "Games"})
 	sp := b.startpage()
 	if len(sp.Groups) != 3 || sp.Groups[1].ID != one.ID || sp.Groups[2].ID != two.ID {
 		t.Errorf("groups = %+v, want [first, %d, %d]", sp.Groups, one.ID, two.ID)
@@ -129,11 +129,23 @@ func TestUpdateGroupRenamesAndSwitchesStyle(t *testing.T) {
 	if got.Name != "Movies" || got.Style != "tiles" {
 		t.Errorf("partial update changed other fields: %+v", got)
 	}
-	if status := b.patchGroup(g.ID, map[string]any{"name": ""}); status != http.StatusNoContent {
-		t.Fatalf("clearing name: status %d", status)
+}
+
+func TestGroupNamesCannotBeBlank(t *testing.T) {
+	b, _ := signedIn(t)
+	b.startpage()
+	_, g := b.createGroup(map[string]any{"name": "Media"})
+
+	for _, name := range []string{"", "   "} {
+		if status := b.patchGroup(g.ID, map[string]any{"name": name}); status != http.StatusBadRequest {
+			t.Errorf("rename to %q: status %d, want 400", name, status)
+		}
+		if status, _ := b.createGroup(map[string]any{"name": name}); status != http.StatusBadRequest {
+			t.Errorf("create %q: status %d, want 400", name, status)
+		}
 	}
-	if b.startpage().Groups[1].Name != "" {
-		t.Error("name should be clearable")
+	if got := b.startpage(); len(got.Groups) != 2 || got.Groups[1].Name != "Media" {
+		t.Errorf("groups = %+v, want name kept and no group created", got.Groups)
 	}
 }
 

@@ -1,9 +1,11 @@
 package server
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -92,19 +94,12 @@ func (s *startpage) get(w http.ResponseWriter, r *http.Request, userID int64) {
 // ensureFirstGroup lazily creates the first Group; the user row lock stops concurrent first requests creating two.
 func (s *startpage) ensureFirstGroup(r *http.Request, userID int64) error {
 	ctx := r.Context()
-	tx, err := s.pool.Begin(ctx)
-	if err != nil {
-		return err
-	}
-	defer tx.Rollback(ctx) //nolint:errcheck // no-op after commit
-	q := s.auth.queries.WithTx(tx)
-	if err := q.LockUser(ctx, userID); err != nil {
-		return err
-	}
-	if err := q.CreateFirstGroupIfNone(ctx, userID); err != nil {
-		return err
-	}
-	return tx.Commit(ctx)
+	return s.inTx(ctx, func(q *dbgen.Queries) error {
+		if err := q.LockUser(ctx, userID); err != nil {
+			return err
+		}
+		return q.CreateFirstGroupIfNone(ctx, userID)
+	})
 }
 
 func (s *startpage) createApp(w http.ResponseWriter, r *http.Request, userID int64) {
@@ -115,13 +110,12 @@ func (s *startpage) createApp(w http.ResponseWriter, r *http.Request, userID int
 		IconName string `json:"iconName"`
 		IconSvg  string `json:"iconSvg"`
 	}
-	if err := json.NewDecoder(r.Body).Decode(&in); err != nil {
-		http.Error(w, "invalid JSON body", http.StatusBadRequest)
+	if !decodeJSON(w, r, &in) {
 		return
 	}
 	in.Name, in.URL = strings.TrimSpace(in.Name), strings.TrimSpace(in.URL)
-	if in.Name == "" || in.URL == "" {
-		http.Error(w, "name and url are required", http.StatusBadRequest)
+	if msg := validAppFields(in.Name, in.URL); msg != "" {
+		http.Error(w, msg, http.StatusBadRequest)
 		return
 	}
 	groupID := int64(0)
@@ -154,9 +148,8 @@ func (s *startpage) createApp(w http.ResponseWriter, r *http.Request, userID int
 }
 
 func (s *startpage) updateApp(w http.ResponseWriter, r *http.Request, userID int64) {
-	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
-	if err != nil {
-		http.Error(w, "app not found", http.StatusNotFound)
+	id, ok := pathID(w, r, http.StatusNotFound, "app not found")
+	if !ok {
 		return
 	}
 	var in struct {
@@ -165,13 +158,12 @@ func (s *startpage) updateApp(w http.ResponseWriter, r *http.Request, userID int
 		IconName string `json:"iconName"`
 		IconSvg  string `json:"iconSvg"`
 	}
-	if err := json.NewDecoder(r.Body).Decode(&in); err != nil {
-		http.Error(w, "invalid JSON body", http.StatusBadRequest)
+	if !decodeJSON(w, r, &in) {
 		return
 	}
 	in.Name, in.URL = strings.TrimSpace(in.Name), strings.TrimSpace(in.URL)
-	if in.Name == "" || in.URL == "" {
-		http.Error(w, "name and url are required", http.StatusBadRequest)
+	if msg := validAppFields(in.Name, in.URL); msg != "" {
+		http.Error(w, msg, http.StatusBadRequest)
 		return
 	}
 	updated, err := s.auth.queries.UpdateApp(r.Context(), dbgen.UpdateAppParams{
@@ -189,9 +181,8 @@ func (s *startpage) updateApp(w http.ResponseWriter, r *http.Request, userID int
 }
 
 func (s *startpage) deleteApp(w http.ResponseWriter, r *http.Request, userID int64) {
-	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
-	if err != nil {
-		http.Error(w, "app not found", http.StatusNotFound)
+	id, ok := pathID(w, r, http.StatusNotFound, "app not found")
+	if !ok {
 		return
 	}
 	n, err := s.auth.queries.DeleteApp(r.Context(), dbgen.DeleteAppParams{ID: id, UserID: userID})
@@ -206,22 +197,19 @@ func (s *startpage) deleteApp(w http.ResponseWriter, r *http.Request, userID int
 	w.WriteHeader(http.StatusNoContent)
 }
 
-// restoreApp makes room at the App's stored position before reinstating it, in one transaction.
 func (s *startpage) restoreApp(w http.ResponseWriter, r *http.Request, userID int64) {
-	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
-	if err != nil {
-		http.Error(w, "app not found", http.StatusNotFound)
+	id, ok := pathID(w, r, http.StatusNotFound, "app not found")
+	if !ok {
 		return
 	}
 	ctx := r.Context()
-	tx, err := s.pool.Begin(ctx)
-	if err != nil {
-		s.auth.internalError(w, err)
-		return
-	}
-	defer tx.Rollback(ctx) //nolint:errcheck // no-op after commit
-	q := s.auth.queries.WithTx(tx)
-	restored, err := q.RestoreApp(ctx, dbgen.RestoreAppParams{ID: id, UserID: userID})
+	var restored dbgen.RestoreAppRow
+	err := s.inTx(ctx, func(q *dbgen.Queries) (err error) {
+		if restored, err = q.RestoreApp(ctx, dbgen.RestoreAppParams{ID: id, UserID: userID}); err != nil {
+			return err
+		}
+		return q.RenumberGroupAppsAfterRestore(ctx, id)
+	})
 	if errors.Is(err, pgx.ErrNoRows) {
 		http.Error(w, "app not found", http.StatusNotFound)
 		return
@@ -230,15 +218,48 @@ func (s *startpage) restoreApp(w http.ResponseWriter, r *http.Request, userID in
 		s.auth.internalError(w, err)
 		return
 	}
-	if err := q.ShiftSiblingsForRestore(ctx, id); err != nil {
-		s.auth.internalError(w, err)
-		return
-	}
-	if err := tx.Commit(ctx); err != nil {
-		s.auth.internalError(w, err)
-		return
-	}
 	writeJSON(w, http.StatusOK, appResponse{ID: restored.ID, Name: restored.Name, URL: restored.Url, IconName: restored.IconName, IconSvg: restored.IconSvg})
+}
+
+func decodeJSON(w http.ResponseWriter, r *http.Request, v any) bool {
+	if err := json.NewDecoder(r.Body).Decode(v); err != nil {
+		http.Error(w, "invalid JSON body", http.StatusBadRequest)
+		return false
+	}
+	return true
+}
+
+func pathID(w http.ResponseWriter, r *http.Request, badStatus int, msg string) (int64, bool) {
+	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
+	if err != nil {
+		http.Error(w, msg, badStatus)
+		return 0, false
+	}
+	return id, true
+}
+
+func (s *startpage) inTx(ctx context.Context, fn func(q *dbgen.Queries) error) error {
+	tx, err := s.pool.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx) //nolint:errcheck // no-op after commit
+	if err := fn(s.auth.queries.WithTx(tx)); err != nil {
+		return err
+	}
+	return tx.Commit(ctx)
+}
+
+var urlScheme = regexp.MustCompile(`^([a-zA-Z][a-zA-Z0-9+.-]*)://`)
+
+func validAppFields(name, url string) string {
+	if name == "" || url == "" {
+		return "name and url are required"
+	}
+	if m := urlScheme.FindStringSubmatch(url); m != nil && !strings.EqualFold(m[1], "http") && !strings.EqualFold(m[1], "https") {
+		return "url must be http or https"
+	}
+	return ""
 }
 
 func writeJSON(w http.ResponseWriter, status int, v any) {

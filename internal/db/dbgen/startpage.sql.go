@@ -220,6 +220,23 @@ func (q *Queries) LockUser(ctx context.Context, id int64) error {
 	return err
 }
 
+const renumberGroupAppsAfterRestore = `-- name: RenumberGroupAppsAfterRestore :exec
+WITH ordered AS (
+    SELECT a.id, row_number() OVER (ORDER BY a.position, (a.id <> $1), a.id) - 1 AS new_position
+    FROM apps a
+    WHERE a.deleted_at IS NULL
+      AND a.group_id = (SELECT d.group_id FROM apps d WHERE d.id = $1)
+)
+UPDATE apps SET position = ordered.new_position
+FROM ordered
+WHERE apps.id = ordered.id AND apps.position <> ordered.new_position
+`
+
+func (q *Queries) RenumberGroupAppsAfterRestore(ctx context.Context, id int64) error {
+	_, err := q.db.Exec(ctx, renumberGroupAppsAfterRestore, id)
+	return err
+}
+
 const restoreApp = `-- name: RestoreApp :one
 UPDATE apps SET deleted_at = NULL
 WHERE apps.id = $1 AND apps.deleted_at IS NOT NULL
@@ -251,19 +268,6 @@ func (q *Queries) RestoreApp(ctx context.Context, arg RestoreAppParams) (Restore
 		&i.IconSvg,
 	)
 	return i, err
-}
-
-const shiftSiblingsForRestore = `-- name: ShiftSiblingsForRestore :exec
-UPDATE apps SET position = position + 1
-WHERE deleted_at IS NULL
-  AND apps.id <> $1
-  AND group_id = (SELECT d.group_id FROM apps d WHERE d.id = $1)
-  AND position >= (SELECT d.position FROM apps d WHERE d.id = $1)
-`
-
-func (q *Queries) ShiftSiblingsForRestore(ctx context.Context, id int64) error {
-	_, err := q.db.Exec(ctx, shiftSiblingsForRestore, id)
-	return err
 }
 
 const updateApp = `-- name: UpdateApp :one
