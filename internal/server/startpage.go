@@ -36,6 +36,7 @@ type groupResponse struct {
 
 func (s *startpage) register(mux *http.ServeMux) {
 	mux.HandleFunc("GET /api/startpage", s.authed(s.get))
+	mux.HandleFunc("PUT /api/startpage/arrangement", s.authed(s.arrange))
 	mux.HandleFunc("POST /api/apps", s.authed(s.createApp))
 	mux.HandleFunc("PUT /api/apps/{id}", s.authed(s.updateApp))
 	mux.HandleFunc("PATCH /api/groups/{id}", s.authed(s.updateGroup))

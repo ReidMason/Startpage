@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateAppData, CreateAppErrors, CreateAppResponses, GetMeData, GetMeErrors, GetMeResponses, GetStartpageData, GetStartpageErrors, GetStartpageResponses, LogoutData, LogoutResponses, UpdateAppData, UpdateAppErrors, UpdateAppResponses, UpdateGroupData, UpdateGroupErrors, UpdateGroupResponses } from './types.gen';
+import type { ArrangeStartpageData, ArrangeStartpageErrors, ArrangeStartpageResponses, CreateAppData, CreateAppErrors, CreateAppResponses, GetMeData, GetMeErrors, GetMeResponses, GetStartpageData, GetStartpageErrors, GetStartpageResponses, LogoutData, LogoutResponses, UpdateAppData, UpdateAppErrors, UpdateAppResponses, UpdateGroupData, UpdateGroupErrors, UpdateGroupResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -32,6 +32,18 @@ export const logout = <ThrowOnError extends boolean = false>(options?: Options<L
  * The signed-in User's Groups, each with its live Apps, in order
  */
 export const getStartpage = <ThrowOnError extends boolean = false>(options?: Options<GetStartpageData, ThrowOnError>): RequestResult<GetStartpageResponses, GetStartpageErrors, ThrowOnError> => (options?.client ?? client).get<GetStartpageResponses, GetStartpageErrors, ThrowOnError>({ url: '/api/startpage', ...options });
+
+/**
+ * Atomically set the Group order and each Group's App order, moving Apps between Groups
+ */
+export const arrangeStartpage = <ThrowOnError extends boolean = false>(options: Options<ArrangeStartpageData, ThrowOnError>): RequestResult<ArrangeStartpageResponses, ArrangeStartpageErrors, ThrowOnError> => (options.client ?? client).put<ArrangeStartpageResponses, ArrangeStartpageErrors, ThrowOnError>({
+    url: '/api/startpage/arrangement',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Add an App to a Group (default the first Group), appended at the end
