@@ -13,8 +13,12 @@ A User's personal page: their Apps, search, greeting, weather and appearance set
 _Avoid_: Dashboard, homepage, config
 
 **App**:
-A named link on a Startpage, with a URL, icon and enabled flag.
-_Avoid_: Bookmark, shortcut, link
+A named link on a Startpage, with a URL and an Iconify icon. Removing one soft-deletes it so it can later be recovered.
+_Avoid_: Bookmark, shortcut, link, disabled
+
+**Group**:
+A named, ordered, collapsible set of Apps on a Startpage, shown as big tiles or compact rows. The first Group is unlabelled.
+_Avoid_: Section, folder, category
 
 **Session**:
 A signed-in browser's long-lived, revocable authorisation to act as a User.

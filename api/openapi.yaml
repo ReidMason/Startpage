@@ -27,8 +27,286 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Logout"
+  /api/startpage:
+    get:
+      operationId: getStartpage
+      summary: The signed-in User's Groups, each with its live Apps, in order
+      responses:
+        "200":
+          description: The Startpage
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Startpage"
+        "401":
+          description: Missing, expired or revoked Session
+  /api/startpage/arrangement:
+    put:
+      operationId: arrangeStartpage
+      summary: Atomically set the Group order and each Group's App order, moving Apps between Groups
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Arrangement"
+      responses:
+        "204":
+          description: Applied
+        "400":
+          description: Invalid body or blank name
+        "401":
+          description: Missing, expired or revoked Session
+        "409":
+          description: The arrangement does not list exactly the User's current Groups and live Apps, each once
+  /api/apps:
+    post:
+      operationId: createApp
+      summary: Add an App to a Group (default the first Group), appended at the end
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewApp"
+      responses:
+        "201":
+          description: The created App
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/App"
+        "400":
+          description: Name or URL missing, or URL scheme other than http or https
+        "401":
+          description: Missing, expired or revoked Session
+        "404":
+          description: The Group does not exist or belongs to another User
+  /api/apps/{id}:
+    put:
+      operationId: updateApp
+      summary: Replace an App's name, URL and icon, keeping its Group and position
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AppFields"
+      responses:
+        "200":
+          description: The updated App
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/App"
+        "400":
+          description: Name or URL missing, or URL scheme other than http or https
+        "401":
+          description: Missing, expired or revoked Session
+        "404":
+          description: The App does not exist, is deleted, or belongs to another User
+    delete:
+      operationId: deleteApp
+      summary: Soft-delete an App, keeping its Group and position so it can be restored
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: The App is deleted
+        "401":
+          description: Missing, expired or revoked Session
+        "404":
+          description: The App does not exist, is already deleted, or belongs to another User
+  /api/apps/{id}/restore:
+    post:
+      operationId: restoreApp
+      summary: Restore a deleted App at the closest valid slot to its original position in its Group, renumbering siblings densely
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: The restored App
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/App"
+        "401":
+          description: Missing, expired or revoked Session
+        "404":
+          description: The App does not exist, is not deleted, or belongs to another User
+  /api/groups:
+    post:
+      operationId: createGroup
+      summary: Add an empty tiles Group, appended at the end
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewGroup"
+      responses:
+        "201":
+          description: The created Group
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Group"
+        "400":
+          description: Invalid body or blank name
+        "401":
+          description: Missing, expired or revoked Session
+  /api/groups/{id}:
+    patch:
+      operationId: updateGroup
+      summary: Update a Group's name, style and/or collapsed state; at least one field is required
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GroupUpdate"
+      responses:
+        "204":
+          description: Updated
+        "400":
+          description: Invalid id or body, or blank name
+        "401":
+          description: Missing, expired or revoked Session
+        "404":
+          description: The Group does not exist or belongs to another User
 components:
   schemas:
+    App:
+      type: object
+      required: [id, name, url, iconName, iconSvg]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        url:
+          type: string
+          description: Stored as entered; may lack a scheme
+        iconName:
+          type: string
+          description: Iconify icon name, e.g. simple-icons:plex
+        iconSvg:
+          type: string
+          description: The icon's SVG body, rendered without calling Iconify
+    NewApp:
+      type: object
+      required: [name, url]
+      properties:
+        groupId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        url:
+          type: string
+        iconName:
+          type: string
+        iconSvg:
+          type: string
+    AppFields:
+      type: object
+      required: [name, url]
+      properties:
+        name:
+          type: string
+        url:
+          type: string
+        iconName:
+          type: string
+        iconSvg:
+          type: string
+    Group:
+      type: object
+      required: [id, name, style, collapsed, apps]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          description: Empty for the unlabelled first Group
+        style:
+          type: string
+          enum: [tiles, compact]
+        collapsed:
+          type: boolean
+        apps:
+          type: array
+          items:
+            $ref: "#/components/schemas/App"
+    NewGroup:
+      type: object
+      properties:
+        name:
+          type: string
+    GroupUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        name:
+          type: string
+        style:
+          type: string
+          enum: [tiles, compact]
+        collapsed:
+          type: boolean
+    Startpage:
+      type: object
+      required: [groups]
+      properties:
+        groups:
+          type: array
+          items:
+            $ref: "#/components/schemas/Group"
+    Arrangement:
+      type: object
+      required: [groups]
+      properties:
+        groups:
+          type: array
+          description: Every Group in desired order, each with its App ids in desired order
+          items:
+            type: object
+            required: [id, appIds]
+            properties:
+              id:
+                type: integer
+                format: int64
+              appIds:
+                type: array
+                items:
+                  type: integer
+                  format: int64
     Logout:
       type: object
       required: [redirectUrl]

@@ -4,6 +4,73 @@ export type ClientOptions = {
     baseUrl: `${string}://${string}` | (string & {});
 };
 
+export type App = {
+    id: number;
+    name: string;
+    /**
+     * Stored as entered; may lack a scheme
+     */
+    url: string;
+    /**
+     * Iconify icon name, e.g. simple-icons:plex
+     */
+    iconName: string;
+    /**
+     * The icon's SVG body, rendered without calling Iconify
+     */
+    iconSvg: string;
+};
+
+export type NewApp = {
+    groupId?: number;
+    name: string;
+    url: string;
+    iconName?: string;
+    iconSvg?: string;
+};
+
+export type AppFields = {
+    name: string;
+    url: string;
+    iconName?: string;
+    iconSvg?: string;
+};
+
+export type Group = {
+    id: number;
+    /**
+     * Empty for the unlabelled first Group
+     */
+    name: string;
+    style: 'tiles' | 'compact';
+    collapsed: boolean;
+    apps: Array<App>;
+};
+
+export type NewGroup = {
+    name?: string;
+};
+
+export type GroupUpdate = {
+    name?: string;
+    style?: 'tiles' | 'compact';
+    collapsed?: boolean;
+};
+
+export type Startpage = {
+    groups: Array<Group>;
+};
+
+export type Arrangement = {
+    /**
+     * Every Group in desired order, each with its App ids in desired order
+     */
+    groups: Array<{
+        id: number;
+        appIds: Array<number>;
+    }>;
+};
+
 export type Logout = {
     redirectUrl: string;
 };
@@ -50,3 +117,239 @@ export type LogoutResponses = {
 };
 
 export type LogoutResponse = LogoutResponses[keyof LogoutResponses];
+
+export type GetStartpageData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/startpage';
+};
+
+export type GetStartpageErrors = {
+    /**
+     * Missing, expired or revoked Session
+     */
+    401: unknown;
+};
+
+export type GetStartpageResponses = {
+    /**
+     * The Startpage
+     */
+    200: Startpage;
+};
+
+export type GetStartpageResponse = GetStartpageResponses[keyof GetStartpageResponses];
+
+export type ArrangeStartpageData = {
+    body: Arrangement;
+    path?: never;
+    query?: never;
+    url: '/api/startpage/arrangement';
+};
+
+export type ArrangeStartpageErrors = {
+    /**
+     * Invalid body
+     */
+    400: unknown;
+    /**
+     * Missing, expired or revoked Session
+     */
+    401: unknown;
+    /**
+     * The arrangement does not list exactly the User's current Groups and live Apps, each once
+     */
+    409: unknown;
+};
+
+export type ArrangeStartpageResponses = {
+    /**
+     * Applied
+     */
+    204: void;
+};
+
+export type ArrangeStartpageResponse = ArrangeStartpageResponses[keyof ArrangeStartpageResponses];
+
+export type CreateAppData = {
+    body: NewApp;
+    path?: never;
+    query?: never;
+    url: '/api/apps';
+};
+
+export type CreateAppErrors = {
+    /**
+     * Name or URL missing
+     */
+    400: unknown;
+    /**
+     * Missing, expired or revoked Session
+     */
+    401: unknown;
+    /**
+     * The Group does not exist or belongs to another User
+     */
+    404: unknown;
+};
+
+export type CreateAppResponses = {
+    /**
+     * The created App
+     */
+    201: App;
+};
+
+export type CreateAppResponse = CreateAppResponses[keyof CreateAppResponses];
+
+export type DeleteAppData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/apps/{id}';
+};
+
+export type DeleteAppErrors = {
+    /**
+     * Missing, expired or revoked Session
+     */
+    401: unknown;
+    /**
+     * The App does not exist, is already deleted, or belongs to another User
+     */
+    404: unknown;
+};
+
+export type DeleteAppResponses = {
+    /**
+     * The App is deleted
+     */
+    204: void;
+};
+
+export type DeleteAppResponse = DeleteAppResponses[keyof DeleteAppResponses];
+
+export type UpdateAppData = {
+    body: AppFields;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/apps/{id}';
+};
+
+export type UpdateAppErrors = {
+    /**
+     * Name or URL missing
+     */
+    400: unknown;
+    /**
+     * Missing, expired or revoked Session
+     */
+    401: unknown;
+    /**
+     * The App does not exist, is deleted, or belongs to another User
+     */
+    404: unknown;
+};
+
+export type UpdateAppResponses = {
+    /**
+     * The updated App
+     */
+    200: App;
+};
+
+export type UpdateAppResponse = UpdateAppResponses[keyof UpdateAppResponses];
+
+export type RestoreAppData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/apps/{id}/restore';
+};
+
+export type RestoreAppErrors = {
+    /**
+     * Missing, expired or revoked Session
+     */
+    401: unknown;
+    /**
+     * The App does not exist, is not deleted, or belongs to another User
+     */
+    404: unknown;
+};
+
+export type RestoreAppResponses = {
+    /**
+     * The restored App
+     */
+    200: App;
+};
+
+export type RestoreAppResponse = RestoreAppResponses[keyof RestoreAppResponses];
+
+export type CreateGroupData = {
+    body: NewGroup;
+    path?: never;
+    query?: never;
+    url: '/api/groups';
+};
+
+export type CreateGroupErrors = {
+    /**
+     * Invalid body
+     */
+    400: unknown;
+    /**
+     * Missing, expired or revoked Session
+     */
+    401: unknown;
+};
+
+export type CreateGroupResponses = {
+    /**
+     * The created Group
+     */
+    201: Group;
+};
+
+export type CreateGroupResponse = CreateGroupResponses[keyof CreateGroupResponses];
+
+export type UpdateGroupData = {
+    body: GroupUpdate;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/groups/{id}';
+};
+
+export type UpdateGroupErrors = {
+    /**
+     * Invalid id or body
+     */
+    400: unknown;
+    /**
+     * Missing, expired or revoked Session
+     */
+    401: unknown;
+    /**
+     * The Group does not exist or belongs to another User
+     */
+    404: unknown;
+};
+
+export type UpdateGroupResponses = {
+    /**
+     * Updated
+     */
+    204: void;
+};
+
+export type UpdateGroupResponse = UpdateGroupResponses[keyof UpdateGroupResponses];

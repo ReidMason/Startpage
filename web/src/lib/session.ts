@@ -1,4 +1,5 @@
 import { getMe, logout } from "@/api";
+import { clearCachedStartpage } from "@/lib/startpage";
 
 const NAME_KEY = "startpage:displayName";
 
@@ -25,13 +26,14 @@ function clearCachedName() {
 }
 
 export function goToLogin() {
+  clearCachedName();
+  clearCachedStartpage();
   window.location.assign("/auth/login");
 }
 
 export async function fetchDisplayName(): Promise<string> {
   const { data, response } = await getMe();
   if (response?.status === 401) {
-    clearCachedName();
     goToLogin();
     // never settles so callers don't render while the browser navigates away
     return new Promise<string>(() => {});
@@ -47,6 +49,7 @@ export async function signOut() {
     destination = (await logout()).data?.redirectUrl;
   } finally {
     clearCachedName();
+    clearCachedStartpage();
     window.location.assign(destination ?? "/");
   }
 }
