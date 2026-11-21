@@ -169,6 +169,24 @@ func (q *Queries) LockUser(ctx context.Context, id int64) error {
 	return err
 }
 
+const setGroupCollapsed = `-- name: SetGroupCollapsed :execrows
+UPDATE groups SET collapsed = $1 WHERE id = $2 AND user_id = $3
+`
+
+type SetGroupCollapsedParams struct {
+	Collapsed bool
+	ID        int64
+	UserID    int64
+}
+
+func (q *Queries) SetGroupCollapsed(ctx context.Context, arg SetGroupCollapsedParams) (int64, error) {
+	result, err := q.db.Exec(ctx, setGroupCollapsed, arg.Collapsed, arg.ID, arg.UserID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
 const updateApp = `-- name: UpdateApp :one
 UPDATE apps SET name = $1, url = $2, icon_name = $3, icon_svg = $4
 WHERE apps.id = $5 AND apps.deleted_at IS NULL

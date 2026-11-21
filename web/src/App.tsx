@@ -4,7 +4,7 @@ import { useState } from "react";
 import { createApp, updateApp, type App as AppModel } from "@/api";
 import { AppModal, type AppDraft } from "@/components/AppModal";
 
-import { Grid } from "@/components/Grid";
+import { CollapsibleGroup } from "@/components/CollapsibleGroup";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchDisplayName, meQueryKey, readCachedName, signOut } from "@/lib/session";
 import { fetchStartpage, readCachedStartpage, startpageQueryKey } from "@/lib/startpage";
@@ -54,22 +54,19 @@ export function App() {
         {startpage ? (
           <div className="space-y-10">
             {startpage.groups.map((group, i) => (
-              <section key={group.id}>
-                {i > 0 && group.name && (
-                  <h2 className="mb-4 text-sm tracking-wide text-[#6b7aa6] uppercase">{group.name}</h2>
-                )}
-                <Grid
-                  group={group}
-                  edit={
-                    editMode
-                      ? {
-                          onSelect: (app) => setEditing({ kind: "existing", app }),
-                          onAdd: () => setEditing({ kind: "new", groupId: group.id }),
-                        }
-                      : undefined
-                  }
-                />
-              </section>
+              <CollapsibleGroup
+                key={group.id}
+                group={group}
+                labelled={i > 0 && !!group.name}
+                edit={
+                  editMode
+                    ? {
+                        onSelect: (app) => setEditing({ kind: "existing", app }),
+                        onAdd: () => setEditing({ kind: "new", groupId: group.id }),
+                      }
+                    : undefined
+                }
+              />
             ))}
           </div>
         ) : (

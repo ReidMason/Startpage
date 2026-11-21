@@ -38,6 +38,7 @@ func (s *startpage) register(mux *http.ServeMux) {
 	mux.HandleFunc("GET /api/startpage", s.authed(s.get))
 	mux.HandleFunc("POST /api/apps", s.authed(s.createApp))
 	mux.HandleFunc("PUT /api/apps/{id}", s.authed(s.updateApp))
+	mux.HandleFunc("PATCH /api/groups/{id}", s.authed(s.updateGroup))
 }
 
 func (s *startpage) authed(h func(http.ResponseWriter, *http.Request, int64)) http.HandlerFunc {

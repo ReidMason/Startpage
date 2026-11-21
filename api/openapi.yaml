@@ -93,6 +93,32 @@ paths:
           description: Missing, expired or revoked Session
         "404":
           description: The App does not exist, is deleted, or belongs to another User
+  /api/groups/{id}:
+    patch:
+      operationId: updateGroup
+      summary: Update a Group's collapsed state
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GroupUpdate"
+      responses:
+        "204":
+          description: Updated
+        "400":
+          description: Invalid id or body
+        "401":
+          description: Missing, expired or revoked Session
+        "404":
+          description: The Group does not exist or belongs to another User
 components:
   schemas:
     App:
@@ -159,6 +185,12 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/App"
+    GroupUpdate:
+      type: object
+      required: [collapsed]
+      properties:
+        collapsed:
+          type: boolean
     Startpage:
       type: object
       required: [groups]
