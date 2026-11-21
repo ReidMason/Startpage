@@ -9,8 +9,9 @@ import { appHref, displayUrl } from "@/lib/startpage";
 import { accent } from "@/lib/utils";
 
 function AppIcon({ app, className }: { app: App; className: string }) {
-  if (!app.iconSvg) return <span className={className} />;
-  return <InlineSvgIcon icon={{ body: app.iconSvg, width: 24, height: 24 }} className={className} />;
+  if (app.iconName) return <Icon icon={app.iconName} width="100%" height="100%" className={className} />;
+  if (app.iconSvg) return <InlineSvgIcon icon={{ body: app.iconSvg, width: 24, height: 24 }} className={className} />;
+  return <span className={className} />;
 }
 
 export type GridEdit = { onSelect: (app: App) => void; onAdd: () => void };
