@@ -16,11 +16,13 @@ import {
 } from "@/api";
 import { AppModal, type AppDraft } from "@/components/AppModal";
 import { CollapsibleGroup } from "@/components/CollapsibleGroup";
+import { Grid } from "@/components/Grid";
 import { groupSortId, ReorderContext } from "@/components/ReorderContext";
 import { SettingsDrawer } from "@/components/SettingsDrawer";
 import { UnsavedChangesPrompt } from "@/components/UnsavedChangesPrompt";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Welcome } from "@/components/Welcome";
+import { rankApps } from "@/lib/filter";
 import { signOut } from "@/lib/session";
 import { changedSettings, defaultSearchEngine, isDirty, isValidSearchEngine } from "@/lib/settings";
 import {
@@ -40,10 +42,17 @@ const blankDraft: AppDraft = { name: "", url: "", iconName: "", iconSvg: "" };
 
 const draftOf = ({ name, url, iconName, iconSvg }: AppModel): AppDraft => ({ name, url, iconName, iconSvg });
 
+function FilterResults({ apps }: { apps: AppModel[] }) {
+  if (apps.length === 0) return <p className="text-lg text-[#9aa5c9]">No matching apps</p>;
+  return <Grid group={{ id: 0, name: "", style: "tiles", collapsed: false, apps }} />;
+}
+
 export function App() {
   const queryClient = useQueryClient();
   const refresh = () => queryClient.invalidateQueries({ queryKey: startpageQueryKey });
   const [editMode, setEditMode] = useState(false);
+  const [query, setQuery] = useState("");
+  const filtering = !editMode && query.startsWith("/") && query.length > 1;
   const [editing, setEditing] = useState<Editing | null>(null);
   const save = useMutation({
     mutationFn: async ({ target, draft }: { target: Editing; draft: AppDraft }) => {
@@ -187,8 +196,12 @@ export function App() {
             editMode={editMode}
             searchEngine={pageSettings?.searchEngine ?? defaultSearchEngine}
             showName={pageSettings?.showNameInGreeting ?? false}
+            query={query}
+            onQueryChange={setQuery}
           />
-          {startpage ? (
+          {startpage && filtering ? (
+            <FilterResults apps={rankApps(startpage.groups.flatMap((g) => g.apps), query.slice(1))} />
+          ) : startpage ? (
             <ReorderContext>
               <SortableContext items={startpage.groups.map((g) => groupSortId(g.id))} strategy={verticalListSortingStrategy}>
                 <div className="space-y-10">

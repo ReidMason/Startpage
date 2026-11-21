@@ -21,9 +21,9 @@ const formatDate = (now: Date) => {
   return `${weekday}, ${ordinal(now.getDate())} ${month} ${now.getFullYear()}`;
 };
 
-type Props = { editMode: boolean; searchEngine: string; showName: boolean };
+type Props = { editMode: boolean; searchEngine: string; showName: boolean; query: string; onQueryChange: (query: string) => void };
 
-export function Welcome({ editMode, searchEngine, showName }: Props) {
+export function Welcome({ editMode, searchEngine, showName, query, onQueryChange }: Props) {
   const { data: name } = useQuery({
     queryKey: meQueryKey,
     queryFn: fetchDisplayName,
@@ -43,13 +43,15 @@ export function Welcome({ editMode, searchEngine, showName }: Props) {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          const query = new FormData(e.currentTarget).get("query")?.toString().trim();
-          if (query) window.location.assign(searchEngine + encodeURIComponent(query));
+          const trimmed = query.trim();
+          if (trimmed) window.location.assign(searchEngine + encodeURIComponent(trimmed));
         }}
       >
         <input
           name="query"
           type="text"
+          value={query}
+          onChange={(e) => onQueryChange(e.target.value)}
           autoFocus={!editMode}
           disabled={editMode}
           autoComplete="off"
