@@ -57,8 +57,25 @@ export type GroupUpdate = {
     collapsed?: boolean;
 };
 
+export type Settings = {
+    /**
+     * Address the query is appended to; defaults to DuckDuckGo
+     */
+    searchEngine: string;
+    showNameInGreeting: boolean;
+};
+
+export type SettingsUpdate = {
+    /**
+     * Must be an http or https URL
+     */
+    searchEngine?: string;
+    showNameInGreeting?: boolean;
+};
+
 export type Startpage = {
     groups: Array<Group>;
+    settings: Settings;
 };
 
 export type Arrangement = {
@@ -150,7 +167,7 @@ export type ArrangeStartpageData = {
 
 export type ArrangeStartpageErrors = {
     /**
-     * Invalid body
+     * Invalid body or blank name
      */
     400: unknown;
     /**
@@ -181,7 +198,7 @@ export type CreateAppData = {
 
 export type CreateAppErrors = {
     /**
-     * Name or URL missing
+     * Name or URL missing, or URL scheme other than http or https
      */
     400: unknown;
     /**
@@ -243,7 +260,7 @@ export type UpdateAppData = {
 
 export type UpdateAppErrors = {
     /**
-     * Name or URL missing
+     * Name or URL missing, or URL scheme other than http or https
      */
     400: unknown;
     /**
@@ -303,7 +320,7 @@ export type CreateGroupData = {
 
 export type CreateGroupErrors = {
     /**
-     * Invalid body
+     * Invalid body or blank name
      */
     400: unknown;
     /**
@@ -332,7 +349,7 @@ export type UpdateGroupData = {
 
 export type UpdateGroupErrors = {
     /**
-     * Invalid id or body
+     * Invalid id or body, or blank name
      */
     400: unknown;
     /**
@@ -353,3 +370,30 @@ export type UpdateGroupResponses = {
 };
 
 export type UpdateGroupResponse = UpdateGroupResponses[keyof UpdateGroupResponses];
+
+export type UpdateSettingsData = {
+    body: SettingsUpdate;
+    path?: never;
+    query?: never;
+    url: '/api/settings';
+};
+
+export type UpdateSettingsErrors = {
+    /**
+     * Invalid body, or Search engine address that is not an http or https URL
+     */
+    400: unknown;
+    /**
+     * Missing, expired or revoked Session
+     */
+    401: unknown;
+};
+
+export type UpdateSettingsResponses = {
+    /**
+     * Updated
+     */
+    204: void;
+};
+
+export type UpdateSettingsResponse = UpdateSettingsResponses[keyof UpdateSettingsResponses];

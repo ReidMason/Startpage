@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ArrangeStartpageData, ArrangeStartpageErrors, ArrangeStartpageResponses, CreateAppData, CreateAppErrors, CreateAppResponses, CreateGroupData, CreateGroupErrors, CreateGroupResponses, DeleteAppData, DeleteAppErrors, DeleteAppResponses, GetMeData, GetMeErrors, GetMeResponses, GetStartpageData, GetStartpageErrors, GetStartpageResponses, LogoutData, LogoutResponses, RestoreAppData, RestoreAppErrors, RestoreAppResponses, UpdateAppData, UpdateAppErrors, UpdateAppResponses, UpdateGroupData, UpdateGroupErrors, UpdateGroupResponses } from './types.gen';
+import type { ArrangeStartpageData, ArrangeStartpageErrors, ArrangeStartpageResponses, CreateAppData, CreateAppErrors, CreateAppResponses, CreateGroupData, CreateGroupErrors, CreateGroupResponses, DeleteAppData, DeleteAppErrors, DeleteAppResponses, GetMeData, GetMeErrors, GetMeResponses, GetStartpageData, GetStartpageErrors, GetStartpageResponses, LogoutData, LogoutResponses, RestoreAppData, RestoreAppErrors, RestoreAppResponses, UpdateAppData, UpdateAppErrors, UpdateAppResponses, UpdateGroupData, UpdateGroupErrors, UpdateGroupResponses, UpdateSettingsData, UpdateSettingsErrors, UpdateSettingsResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -75,7 +75,7 @@ export const updateApp = <ThrowOnError extends boolean = false>(options: Options
 });
 
 /**
- * Restore a deleted App to its original Group and position, shifting siblings
+ * Restore a deleted App at the closest valid slot to its original position in its Group, renumbering siblings densely
  */
 export const restoreApp = <ThrowOnError extends boolean = false>(options: Options<RestoreAppData, ThrowOnError>): RequestResult<RestoreAppResponses, RestoreAppErrors, ThrowOnError> => (options.client ?? client).post<RestoreAppResponses, RestoreAppErrors, ThrowOnError>({ url: '/api/apps/{id}/restore', ...options });
 
@@ -96,6 +96,18 @@ export const createGroup = <ThrowOnError extends boolean = false>(options: Optio
  */
 export const updateGroup = <ThrowOnError extends boolean = false>(options: Options<UpdateGroupData, ThrowOnError>): RequestResult<UpdateGroupResponses, UpdateGroupErrors, ThrowOnError> => (options.client ?? client).patch<UpdateGroupResponses, UpdateGroupErrors, ThrowOnError>({
     url: '/api/groups/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Update the signed-in User's Settings; omitted fields are unchanged
+ */
+export const updateSettings = <ThrowOnError extends boolean = false>(options: Options<UpdateSettingsData, ThrowOnError>): RequestResult<UpdateSettingsResponses, UpdateSettingsErrors, ThrowOnError> => (options.client ?? client).patch<UpdateSettingsResponses, UpdateSettingsErrors, ThrowOnError>({
+    url: '/api/settings',
     ...options,
     headers: {
         'Content-Type': 'application/json',

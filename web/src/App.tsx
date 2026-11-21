@@ -41,6 +41,7 @@ export function App() {
     onMutate: ({ target, draft }) =>
       target.kind === "existing"
         ? optimisticStartpage(queryClient, (page) => ({
+            ...page,
             groups: page.groups.map((g) => ({
               ...g,
               apps: g.apps.map((a) => (a.id === target.app.id ? { ...a, ...draft } : a)),
@@ -64,6 +65,7 @@ export function App() {
     },
     onMutate: async (app) => {
       const context = await optimisticStartpage(queryClient, (page) => ({
+        ...page,
         groups: page.groups.map((g) => ({ ...g, apps: g.apps.filter((a) => a.id !== app.id) })),
       }));
       const group = context.previous?.groups.find((g) => g.apps.some((a) => a.id === app.id));
@@ -85,6 +87,7 @@ export function App() {
     onMutate: ({ app, groupId, index }) => {
       setUndoable(null);
       return optimisticStartpage(queryClient, (page) => ({
+        ...page,
         groups: page.groups.map((g) => {
           if (g.id !== groupId) return g;
           const apps = [...g.apps];
