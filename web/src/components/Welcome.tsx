@@ -1,4 +1,7 @@
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+
+import { fetchDisplayName, meQueryKey, readCachedName } from "@/lib/session";
 
 const greetingFor = (now: Date) => {
   const hour = now.getHours();
@@ -18,7 +21,17 @@ const formatDate = (now: Date) => {
   return `${weekday}, ${ordinal(now.getDate())} ${month} ${now.getFullYear()}`;
 };
 
-export function Welcome({ editMode, searchEngine }: { editMode: boolean; searchEngine: string }) {
+type Props = { editMode: boolean; searchEngine: string; showName: boolean };
+
+export function Welcome({ editMode, searchEngine, showName }: Props) {
+  const { data: name } = useQuery({
+    queryKey: meQueryKey,
+    queryFn: fetchDisplayName,
+    initialData: readCachedName,
+    initialDataUpdatedAt: 0,
+    retry: false,
+    enabled: showName,
+  });
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 60_000);
@@ -46,7 +59,7 @@ export function Welcome({ editMode, searchEngine }: { editMode: boolean; searchE
         />
       </form>
       <div className="mt-10 text-lg text-[#9aa5c9]">{formatDate(now)}</div>
-      <div className="mt-2 text-5xl font-bold">{greetingFor(now)}</div>
+      <div className="mt-2 text-5xl font-bold">{showName && name ? `${greetingFor(now)}, ${name}` : greetingFor(now)}</div>
     </div>
   );
 }

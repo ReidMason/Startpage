@@ -4,10 +4,10 @@
 
 **Blocked by:** 03
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] The toggle is in the drawer and is off by default
-- [ ] Toggling it updates the greeting immediately as a draft preview
-- [ ] Save persists it; Discard reverts it
-- [ ] The display-name is fetched only when the Setting is on
-- [ ] The greeting never shows a blank or placeholder name while the name loads
+- [x] The toggle is in the drawer and is off by default
+- [x] Toggling it updates the greeting immediately as a draft preview
+- [x] Save persists it; Discard reverts it
+- [x] The display-name is fetched only when the Setting is on
+- [x] The greeting never shows a blank or placeholder name while the name loads
