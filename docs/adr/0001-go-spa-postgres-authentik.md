@@ -1,0 +1,3 @@
+# Go backend with embedded SPA, Postgres only, Authentik for auth
+
+The startpage opens on every new tab, so first paint must not wait on a server round trip, and each household member needs their own Startpage. We chose a Go binary serving an embedded Vite/React SPA (cacheable static shell, config fetched after paint), Postgres as the only database (stateless container, no SQLite/Postgres dual support), and Authentik OIDC for identity (no local passwords). Rejected: Next.js server rendering (slower, JS-only), SQLite (ties the container to a volume), local accounts (we'd own credential handling).
