@@ -2,6 +2,7 @@ import { useDroppable } from "@dnd-kit/core";
 import { rectSortingStrategy, SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Icon } from "@iconify/react";
+import { Icon as InlineSvgIcon } from "@iconify/react/offline";
 
 import type { App, Group } from "@/api";
 import { groupDropId, useJustDragged } from "@/components/ReorderContext";
@@ -10,7 +11,7 @@ import { accent } from "@/lib/utils";
 
 function AppIcon({ app, className }: { app: App; className: string }) {
   if (!app.iconSvg) return <span className={className} />;
-  return <Icon icon={{ body: app.iconSvg, width: 24, height: 24 }} className={className} />;
+  return <InlineSvgIcon icon={{ body: app.iconSvg, width: 24, height: 24 }} className={className} />;
 }
 
 export type GridEdit = { onSelect: (app: App) => void; onAdd: () => void };
@@ -50,7 +51,7 @@ function EditItem({ app, style, edit }: { app: App; style: Group["style"]; edit:
   );
 }
 
-export function Grid({ group, edit }: { group: Group; edit?: GridEdit }) {
+export function Grid({ group, edit, highlightFirst }: { group: Group; edit?: GridEdit; highlightFirst?: boolean }) {
   const { setNodeRef } = useDroppable({ id: groupDropId(group.id), disabled: !edit });
   const add = edit && (
     <button
@@ -61,11 +62,15 @@ export function Grid({ group, edit }: { group: Group; edit?: GridEdit }) {
       <Icon icon="lucide:plus" className="size-8" /> Add app
     </button>
   );
-  const items = group.apps.map((app) =>
+  const items = group.apps.map((app, i) =>
     edit ? (
       <EditItem key={app.id} app={app} style={group.style} edit={edit} />
     ) : (
-      <a key={app.id} href={appHref(app.url)} className={tileClass(group.style)}>
+      <a
+        key={app.id}
+        href={appHref(app.url)}
+        className={`${tileClass(group.style)} ${highlightFirst && i === 0 ? "rounded-lg ring-2 ring-[#c7d2fe] ring-offset-4 ring-offset-[#111827]" : ""}`}
+      >
         <AppTile app={app} style={group.style} />
       </a>
     ),

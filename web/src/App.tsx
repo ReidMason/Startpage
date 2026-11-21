@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   createApp,
@@ -16,11 +16,13 @@ import {
 } from "@/api";
 import { AppModal, type AppDraft } from "@/components/AppModal";
 import { CollapsibleGroup } from "@/components/CollapsibleGroup";
+import { Grid } from "@/components/Grid";
 import { groupSortId, ReorderContext } from "@/components/ReorderContext";
 import { SettingsDrawer } from "@/components/SettingsDrawer";
 import { UnsavedChangesPrompt } from "@/components/UnsavedChangesPrompt";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Welcome } from "@/components/Welcome";
+import { filterApps, isFilterQuery } from "@/lib/filter";
 import { signOut } from "@/lib/session";
 import { changedSettings, defaultSearchEngine, isDirty, isValidSearchEngine } from "@/lib/settings";
 import {
@@ -40,10 +42,27 @@ const blankDraft: AppDraft = { name: "", url: "", iconName: "", iconSvg: "" };
 
 const draftOf = ({ name, url, iconName, iconSvg }: AppModel): AppDraft => ({ name, url, iconName, iconSvg });
 
+function FilterResults({ apps, highlightFirst, onEscape }: { apps: AppModel[]; highlightFirst: boolean; onEscape: () => void }) {
+  if (apps.length === 0) return <p className="text-lg text-[#9aa5c9]">No matching apps</p>;
+  return (
+    <div
+      onKeyDown={(e) => {
+        if (e.key === "Escape") onEscape();
+      }}
+    >
+      <Grid group={{ id: 0, name: "", style: "tiles", collapsed: false, apps }} highlightFirst={highlightFirst} />
+    </div>
+  );
+}
+
 export function App() {
   const queryClient = useQueryClient();
   const refresh = () => queryClient.invalidateQueries({ queryKey: startpageQueryKey });
   const [editMode, setEditMode] = useState(false);
+  const [query, setQuery] = useState("");
+  const filtering = !editMode && isFilterQuery(query);
+  const searchInput = useRef<HTMLInputElement>(null);
+  const [barFocused, setBarFocused] = useState(false);
   const [editing, setEditing] = useState<Editing | null>(null);
   const save = useMutation({
     mutationFn: async ({ target, draft }: { target: Editing; draft: AppDraft }) => {
@@ -162,6 +181,11 @@ export function App() {
     },
   });
   const pageSettings = editMode ? draft : saved;
+  const filterResults = startpage && filtering ? filterApps(startpage.groups.flatMap((g) => g.apps), query) : [];
+  const clearQueryAndFocus = () => {
+    setQuery("");
+    searchInput.current?.focus();
+  };
 
   return (
     <div className="flex min-h-screen bg-[#1f2937] font-sans text-[#c7d2fe]">
@@ -187,8 +211,21 @@ export function App() {
             editMode={editMode}
             searchEngine={pageSettings?.searchEngine ?? defaultSearchEngine}
             showName={pageSettings?.showNameInGreeting ?? false}
+            query={query}
+            onQueryChange={setQuery}
+            onEscape={clearQueryAndFocus}
+            bestMatch={filtering ? filterResults[0] : undefined}
+            inputRef={searchInput}
+            onFocusChange={setBarFocused}
           />
-          {startpage ? (
+          {startpage && filtering && (
+            <FilterResults
+              apps={filterResults}
+              highlightFirst={barFocused}
+              onEscape={clearQueryAndFocus}
+            />
+          )}
+          {startpage && !filtering && (
             <ReorderContext>
               <SortableContext items={startpage.groups.map((g) => groupSortId(g.id))} strategy={verticalListSortingStrategy}>
                 <div className="space-y-10">
@@ -221,14 +258,16 @@ export function App() {
                 </div>
               </SortableContext>
             </ReorderContext>
-          ) : (
-            <Skeleton className="h-24 w-full" />
           )}
+          {!startpage && <Skeleton className="h-24 w-full" />}
         </main>
       </div>
       <button
         onClick={() => {
-          if (!editMode) setEditMode(true);
+          if (!editMode) {
+            setQuery("");
+            setEditMode(true);
+          }
           else if (dirty) setConfirmingDone(true);
           else exitEditMode();
         }}
