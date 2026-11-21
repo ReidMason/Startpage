@@ -54,7 +54,7 @@ paths:
         "204":
           description: Applied
         "400":
-          description: Invalid body
+          description: Invalid body or blank name
         "401":
           description: Missing, expired or revoked Session
         "409":
@@ -77,7 +77,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/App"
         "400":
-          description: Name or URL missing
+          description: Name or URL missing, or URL scheme other than http or https
         "401":
           description: Missing, expired or revoked Session
         "404":
@@ -107,7 +107,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/App"
         "400":
-          description: Name or URL missing
+          description: Name or URL missing, or URL scheme other than http or https
         "401":
           description: Missing, expired or revoked Session
         "404":
@@ -132,7 +132,7 @@ paths:
   /api/apps/{id}/restore:
     post:
       operationId: restoreApp
-      summary: Restore a deleted App to its original Group and position, shifting siblings
+      summary: Restore a deleted App at the closest valid slot to its original position in its Group, renumbering siblings densely
       parameters:
         - name: id
           in: path
@@ -169,7 +169,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Group"
         "400":
-          description: Invalid body
+          description: Invalid body or blank name
         "401":
           description: Missing, expired or revoked Session
   /api/groups/{id}:
@@ -193,7 +193,7 @@ paths:
         "204":
           description: Updated
         "400":
-          description: Invalid id or body
+          description: Invalid id or body, or blank name
         "401":
           description: Missing, expired or revoked Session
         "404":
