@@ -8,6 +8,26 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type App struct {
+	ID        int64
+	GroupID   int64
+	Name      string
+	Url       string
+	IconName  string
+	IconSvg   string
+	Position  int32
+	DeletedAt pgtype.Timestamptz
+}
+
+type Group struct {
+	ID        int64
+	UserID    int64
+	Name      string
+	Position  int32
+	Style     string
+	Collapsed bool
+}
+
 type Session struct {
 	IDHash    []byte
 	UserID    int64

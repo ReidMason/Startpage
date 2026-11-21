@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { GetMeData, GetMeErrors, GetMeResponses, LogoutData, LogoutResponses } from './types.gen';
+import type { CreateAppData, CreateAppErrors, CreateAppResponses, GetMeData, GetMeErrors, GetMeResponses, GetStartpageData, GetStartpageErrors, GetStartpageResponses, LogoutData, LogoutResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -27,3 +27,20 @@ export const getMe = <ThrowOnError extends boolean = false>(options?: Options<Ge
  * End the current Session
  */
 export const logout = <ThrowOnError extends boolean = false>(options?: Options<LogoutData, ThrowOnError>): RequestResult<LogoutResponses, unknown, ThrowOnError> => (options?.client ?? client).post<LogoutResponses, unknown, ThrowOnError>({ url: '/auth/logout', ...options });
+
+/**
+ * The signed-in User's Groups, each with its live Apps, in order
+ */
+export const getStartpage = <ThrowOnError extends boolean = false>(options?: Options<GetStartpageData, ThrowOnError>): RequestResult<GetStartpageResponses, GetStartpageErrors, ThrowOnError> => (options?.client ?? client).get<GetStartpageResponses, GetStartpageErrors, ThrowOnError>({ url: '/api/startpage', ...options });
+
+/**
+ * Add an App to a Group (default the first Group), appended at the end
+ */
+export const createApp = <ThrowOnError extends boolean = false>(options: Options<CreateAppData, ThrowOnError>): RequestResult<CreateAppResponses, CreateAppErrors, ThrowOnError> => (options.client ?? client).post<CreateAppResponses, CreateAppErrors, ThrowOnError>({
+    url: '/api/apps',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});

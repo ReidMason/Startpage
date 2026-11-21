@@ -69,6 +69,7 @@ func New(ctx context.Context, cfg Config) (http.Handler, func(), error) {
 	}
 	mux := http.NewServeMux()
 	a.register(mux)
+	(&startpage{auth: a, pool: pool}).register(mux)
 	mux.Handle("/", staticHandler(cfg.Assets))
 	return mux, pool.Close, nil
 }
