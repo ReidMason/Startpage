@@ -1,7 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type RefObject } from "react";
+
+import type { App } from "@/api";
+import { submitTarget } from "@/lib/filter";
 
 import { fetchDisplayName, meQueryKey, readCachedName } from "@/lib/session";
+import { shouldFocusSearchOnSlash } from "@/lib/shortcut";
 
 const greetingFor = (now: Date) => {
   const hour = now.getHours();
@@ -21,9 +25,19 @@ const formatDate = (now: Date) => {
   return `${weekday}, ${ordinal(now.getDate())} ${month} ${now.getFullYear()}`;
 };
 
-type Props = { editMode: boolean; searchEngine: string; showName: boolean };
+type Props = {
+  editMode: boolean;
+  searchEngine: string;
+  showName: boolean;
+  query: string;
+  onQueryChange: (query: string) => void;
+  onEscape: () => void;
+  bestMatch: App | undefined;
+  inputRef: RefObject<HTMLInputElement | null>;
+  onFocusChange: (focused: boolean) => void;
+};
 
-export function Welcome({ editMode, searchEngine, showName }: Props) {
+export function Welcome({ editMode, searchEngine, showName, query, onQueryChange, onEscape, bestMatch, inputRef, onFocusChange }: Props) {
   const { data: name } = useQuery({
     queryKey: meQueryKey,
     queryFn: fetchDisplayName,
@@ -38,18 +52,38 @@ export function Welcome({ editMode, searchEngine, showName }: Props) {
     return () => clearInterval(t);
   }, []);
 
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (!shouldFocusSearchOnSlash(e, editMode)) return;
+      e.preventDefault();
+      inputRef.current?.focus();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [editMode]);
+
   return (
     <div className="mb-12">
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          const query = new FormData(e.currentTarget).get("query")?.toString().trim();
-          if (query) window.location.assign(searchEngine + encodeURIComponent(query));
-        }}
+        onSubmit={(e) => e.preventDefault()}
       >
         <input
+          ref={inputRef}
           name="query"
           type="text"
+          value={query}
+          onChange={(e) => onQueryChange(e.target.value)}
+          onFocus={() => onFocusChange(true)}
+          onBlur={() => onFocusChange(false)}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") {
+              onEscape();
+            } else if (e.key === "Enter") {
+              e.preventDefault();
+              const target = submitTarget({ query, searchEngine, best: bestMatch, forceSearch: e.shiftKey });
+              if (target) window.location.assign(target);
+            }
+          }}
           autoFocus={!editMode}
           disabled={editMode}
           autoComplete="off"
