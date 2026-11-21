@@ -8,7 +8,8 @@ import { CollapsibleGroup } from "@/components/CollapsibleGroup";
 import { groupSortId, ReorderContext } from "@/components/ReorderContext";
 import { SettingsDrawer } from "@/components/SettingsDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
-import { fetchDisplayName, meQueryKey, readCachedName, signOut } from "@/lib/session";
+import { Welcome } from "@/components/Welcome";
+import { signOut } from "@/lib/session";
 import {
   fetchStartpage,
   optimisticStartpage,
@@ -103,13 +104,6 @@ export function App() {
     },
     onSuccess: refresh,
   });
-  const { data: name } = useQuery({
-    queryKey: meQueryKey,
-    queryFn: fetchDisplayName,
-    initialData: readCachedName,
-    initialDataUpdatedAt: 0,
-    retry: false,
-  });
   const { data: startpage } = useQuery({
     queryKey: startpageQueryKey,
     queryFn: fetchStartpage,
@@ -123,9 +117,7 @@ export function App() {
       {editMode && <SettingsDrawer />}
       <div className="min-w-0 flex-1 p-8">
         <main className="mx-auto max-w-6xl rounded-3xl bg-[#111827] p-16">
-          <div className="mb-12 text-5xl font-bold">
-            {name ? `Hello, ${name}` : <Skeleton className="h-12 w-72" />}
-          </div>
+          <Welcome editMode={editMode} />
           {startpage ? (
             <ReorderContext>
               <SortableContext items={startpage.groups.map((g) => groupSortId(g.id))} strategy={verticalListSortingStrategy}>
