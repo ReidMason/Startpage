@@ -100,8 +100,8 @@ export function AppModal({
         <div className="text-sm">
           Icon
           <div className="mb-2 flex items-center gap-3 text-[#6b7aa6]">
-            {draft.iconSvg ? (
-              <Icon icon={{ body: draft.iconSvg, width: 24, height: 24 }} className={`size-8 ${accent}`} />
+            {draft.iconName ? (
+              <Icon icon={draft.iconName} width="100%" height="100%" className={`size-8 shrink-0 ${accent}`} />
             ) : (
               <span className="size-8" />
             )}
