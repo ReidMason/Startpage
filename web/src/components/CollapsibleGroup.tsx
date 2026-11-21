@@ -1,9 +1,12 @@
 import { Icon } from "@iconify/react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
 import { updateGroup, type Group, type Startpage } from "@/api";
 import { Grid, type GridEdit } from "@/components/Grid";
+import { groupSortId } from "@/components/ReorderContext";
 import { startpageQueryKey, writeCachedStartpage } from "@/lib/startpage";
 
 function useToggleCollapsed() {
@@ -26,7 +29,7 @@ function useToggleCollapsed() {
   });
 }
 
-function GroupEditHeader({ group, first }: { group: Group; first: boolean }) {
+function GroupEditHeader({ group, first, handle }: { group: Group; first: boolean; handle: ReactNode }) {
   const queryClient = useQueryClient();
   const [name, setName] = useState(group.name);
   const update = useMutation({
@@ -38,6 +41,7 @@ function GroupEditHeader({ group, first }: { group: Group; first: boolean }) {
   });
   return (
     <div className="mb-4 flex items-center gap-3 text-sm">
+      {handle}
       <input
         value={name}
         placeholder={first ? "(unlabelled)" : "Group name"}
@@ -70,9 +74,27 @@ export function CollapsibleGroup({
   edit?: GridEdit;
 }) {
   const toggle = useToggleCollapsed();
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: groupSortId(group.id),
+    disabled: !edit,
+  });
+  const handle = (
+    <button
+      type="button"
+      {...attributes}
+      {...listeners}
+      aria-label="Drag group"
+      className="cursor-grab touch-none text-[#6b7aa6] hover:text-white"
+    >
+      <Icon icon="lucide:grip-vertical" />
+    </button>
+  );
   return (
-    <section>
-      {edit && <GroupEditHeader group={group} first={first} />}
+    <section
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }}
+    >
+      {edit && <GroupEditHeader group={group} first={first} handle={handle} />}
       {!edit && labelled && (
         <button
           onClick={() => toggle.mutate({ id: group.id, collapsed: !group.collapsed })}

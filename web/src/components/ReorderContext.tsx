@@ -1,10 +1,12 @@
 import {
+  closestCenter,
   closestCorners,
   DndContext,
   DragOverlay,
   PointerSensor,
   useSensor,
   useSensors,
+  type CollisionDetection,
   type DragEndEvent,
   type DragOverEvent,
   type DragStartEvent,
@@ -18,6 +20,16 @@ import { AppTile } from "@/components/Grid";
 import { startpageQueryKey, writeCachedStartpage } from "@/lib/startpage";
 
 export const groupDropId = (groupId: number) => `group:${groupId}`;
+
+export const groupSortId = (groupId: number) => `groupsort:${groupId}`;
+
+const isGroupSort = (id: string | number) => typeof id === "string" && id.startsWith("groupsort:");
+
+const collision: CollisionDetection = (args) => {
+  const containers = args.droppableContainers;
+  if (isGroupSort(args.active.id)) return closestCenter({ ...args, droppableContainers: containers.filter((c) => isGroupSort(c.id)) });
+  return closestCorners({ ...args, droppableContainers: containers.filter((c) => !isGroupSort(c.id)) });
+};
 
 const DragGuardContext = createContext<() => boolean>(() => false);
 
@@ -61,6 +73,7 @@ export function ReorderContext({ children }: { children: ReactNode }) {
 
   const onStart = (e: DragStartEvent) => {
     dragged.current = true;
+    if (isGroupSort(e.active.id)) return;
     const p = page();
     const group = p?.groups.find((g) => g.apps.some((a) => a.id === e.active.id));
     const app = group?.apps.find((a) => a.id === e.active.id);
@@ -69,7 +82,7 @@ export function ReorderContext({ children }: { children: ReactNode }) {
 
   const onOver = ({ active, over }: DragOverEvent) => {
     const p = page();
-    if (!p || !over) return;
+    if (!p || !over || isGroupSort(active.id)) return;
     const from = findGroupIndex(p, active.id);
     const to = findGroupIndex(p, over.id);
     if (from < 0 || to < 0 || from === to) return;
@@ -96,7 +109,12 @@ export function ReorderContext({ children }: { children: ReactNode }) {
       if (p) void queryClient.invalidateQueries({ queryKey: startpageQueryKey });
       return;
     }
-    const gi = findGroupIndex(p, active.id);
+    if (isGroupSort(active.id)) {
+      const oldI = p.groups.findIndex((g) => groupSortId(g.id) === active.id);
+      const newI = p.groups.findIndex((g) => groupSortId(g.id) === over.id);
+      if (newI >= 0 && oldI !== newI) update((old) => ({ groups: arrayMove(old.groups, oldI, newI) }));
+    }
+    const gi = isGroupSort(active.id) ? -1 : findGroupIndex(p, active.id);
     if (gi >= 0) {
       const apps = p.groups[gi].apps;
       const oldI = apps.findIndex((a) => a.id === active.id);
@@ -109,7 +127,7 @@ export function ReorderContext({ children }: { children: ReactNode }) {
 
   return (
     <DragGuardContext.Provider value={() => dragged.current}>
-      <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={onStart} onDragOver={onOver} onDragEnd={onEnd}>
+      <DndContext sensors={sensors} collisionDetection={collision} onDragStart={onStart} onDragOver={onOver} onDragEnd={onEnd}>
         {children}
         <DragOverlay>{active && <AppTile app={active.app} style={active.style} />}</DragOverlay>
       </DndContext>
