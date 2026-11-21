@@ -4,9 +4,9 @@
 
 **Blocked by:** 03
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Pressing Done with a dirty draft prompts Save, Discard or Keep editing, and each choice behaves accordingly
-- [ ] Pressing Done with a clean draft exits edit mode with no prompt
-- [ ] Closing or reloading the tab with a dirty draft triggers the browser's unload warning
-- [ ] No warning appears when the draft is clean
+- [x] Pressing Done with a dirty draft prompts Save, Discard or Keep editing, and each choice behaves accordingly
+- [x] Pressing Done with a clean draft exits edit mode with no prompt
+- [x] Closing or reloading the tab with a dirty draft triggers the browser's unload warning
+- [x] No warning appears when the draft is clean

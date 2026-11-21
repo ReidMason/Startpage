@@ -18,10 +18,11 @@ import { AppModal, type AppDraft } from "@/components/AppModal";
 import { CollapsibleGroup } from "@/components/CollapsibleGroup";
 import { groupSortId, ReorderContext } from "@/components/ReorderContext";
 import { SettingsDrawer } from "@/components/SettingsDrawer";
+import { UnsavedChangesPrompt } from "@/components/UnsavedChangesPrompt";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Welcome } from "@/components/Welcome";
 import { signOut } from "@/lib/session";
-import { changedSettings, isDirty } from "@/lib/settings";
+import { changedSettings, isDirty, isValidSearchEngine } from "@/lib/settings";
 import {
   fetchStartpage,
   optimisticStartpage,
@@ -131,12 +132,25 @@ export function App() {
   const saved = startpage?.settings;
   const draft = settingsDraft ?? saved;
   const dirty = !!saved && !!draft && isDirty(saved, draft);
+  const [confirmingDone, setConfirmingDone] = useState(false);
+  const exitEditMode = () => {
+    setConfirmingDone(false);
+    setEditMode(false);
+    setEditing(null);
+  };
+  useEffect(() => {
+    if (!dirty) return;
+    const warn = (e: BeforeUnloadEvent) => e.preventDefault();
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [dirty]);
   const saveSettings = useMutation({
-    mutationFn: async ({ changes }: { changes: SettingsUpdate; next: Settings }) => {
+    mutationFn: async ({ changes }: { changes: SettingsUpdate; next: Settings; exit?: boolean }) => {
       const res = await updateSettings({ body: changes });
       if (res.error) throw new Error(`saving settings failed: ${res.response?.status}`);
     },
-    onSuccess: (_data, { next }) => {
+    onSuccess: (_data, { next, exit }) => {
+      if (exit) exitEditMode();
       const page = queryClient.getQueryData<Startpage>(startpageQueryKey);
       if (page) setStartpage(queryClient, { ...page, settings: next });
       setSettingsDraft(null);
@@ -209,13 +223,27 @@ export function App() {
       </div>
       <button
         onClick={() => {
-          setEditMode((m) => !m);
-          setEditing(null);
+          if (!editMode) setEditMode(true);
+          else if (dirty) setConfirmingDone(true);
+          else exitEditMode();
         }}
         className="fixed bottom-6 left-6 rounded-full bg-[#1f2937] px-4 py-2 text-sm text-[#9aa5c9] hover:text-white"
       >
         {editMode ? "Done" : "Edit"}
       </button>
+      {confirmingDone && saved && draft && (
+        <UnsavedChangesPrompt
+          saving={saveSettings.isPending}
+          canSave={isValidSearchEngine(draft.searchEngine)}
+          onSave={() => saveSettings.mutate({ changes: changedSettings(saved, draft), next: draft, exit: true })}
+          onDiscard={() => {
+            saveSettings.reset();
+            setSettingsDraft(null);
+            exitEditMode();
+          }}
+          onKeepEditing={() => setConfirmingDone(false)}
+        />
+      )}
       {editing && (
         <AppModal
           key={editing.kind === "new" ? `new-${editing.groupId}` : editing.app.id}
