@@ -1,6 +1,5 @@
-import { useDroppable } from "@dnd-kit/core";
-import { rectSortingStrategy, SortableContext, useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { useDroppable } from "@dnd-kit/react";
+import { useSortable } from "@dnd-kit/react/sortable";
 import { Icon } from "@iconify/react";
 import { Icon as InlineSvgIcon } from "@iconify/react/offline";
 
@@ -29,30 +28,27 @@ export function AppTile({ app, style }: { app: App; style: Group["style"] }) {
   );
 }
 
-function tileClass(style: Group["style"]) {
+export function tileClass(style: Group["style"]) {
   return style === "compact" ? `text-lg hover:text-white ${accent}` : "flex min-w-0 items-center gap-4 hover:text-white";
 }
 
-function EditItem({ app, style, edit }: { app: App; style: Group["style"]; edit: GridEdit }) {
+function EditItem({ app, index, group, edit }: { app: App; index: number; group: Group; edit: GridEdit }) {
   const justDragged = useJustDragged();
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: app.id });
+  const { ref } = useSortable({ id: app.id, index, group: groupDropId(group.id), type: "app", accept: "app" });
   return (
     <button
       type="button"
-      ref={setNodeRef}
-      {...attributes}
-      {...listeners}
+      ref={ref}
       onClick={() => !justDragged() && edit.onSelect(app)}
-      style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.4 : 1 }}
-      className={`${tileClass(style)} cursor-grab touch-none text-left`}
+      className={`${tileClass(group.style)} cursor-grab touch-none text-left data-[dnd-placeholder]:opacity-0`}
     >
-      <AppTile app={app} style={style} />
+      <AppTile app={app} style={group.style} />
     </button>
   );
 }
 
 export function Grid({ group, edit, highlightFirst }: { group: Group; edit?: GridEdit; highlightFirst?: boolean }) {
-  const { setNodeRef } = useDroppable({ id: groupDropId(group.id), disabled: !edit });
+  const { ref } = useDroppable({ id: groupDropId(group.id), type: "group-drop", accept: "app", disabled: !edit });
   const add = edit && (
     <button
       type="button"
@@ -64,7 +60,7 @@ export function Grid({ group, edit, highlightFirst }: { group: Group; edit?: Gri
   );
   const items = group.apps.map((app, i) =>
     edit ? (
-      <EditItem key={app.id} app={app} style={group.style} edit={edit} />
+      <EditItem key={app.id} app={app} index={i} group={group} edit={edit} />
     ) : (
       <a
         key={app.id}
@@ -76,16 +72,10 @@ export function Grid({ group, edit, highlightFirst }: { group: Group; edit?: Gri
     ),
   );
   const layout = group.style === "compact" ? "flex flex-wrap gap-x-8 gap-y-2" : "grid grid-cols-4 gap-x-8 gap-y-8";
-  const body = (
-    <div ref={setNodeRef} className={`${layout} ${edit ? "min-h-16" : ""}`}>
+  return (
+    <div ref={ref} className={`${layout} ${edit ? "min-h-16" : ""}`}>
       {items}
       {add}
     </div>
-  );
-  if (!edit) return body;
-  return (
-    <SortableContext items={group.apps.map((a) => a.id)} strategy={rectSortingStrategy}>
-      {body}
-    </SortableContext>
   );
 }

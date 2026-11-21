@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useEffect, useRef, useState } from "react";
 
 import {
@@ -17,7 +16,7 @@ import {
 import { AppModal, type AppDraft } from "@/components/AppModal";
 import { CollapsibleGroup } from "@/components/CollapsibleGroup";
 import { Grid } from "@/components/Grid";
-import { groupSortId, ReorderContext } from "@/components/ReorderContext";
+import { ReorderContext } from "@/components/ReorderContext";
 import { SettingsDrawer } from "@/components/SettingsDrawer";
 import { UnsavedChangesPrompt } from "@/components/UnsavedChangesPrompt";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -227,7 +226,6 @@ export function App() {
           )}
           {startpage && !filtering && (
             <ReorderContext>
-              <SortableContext items={startpage.groups.map((g) => groupSortId(g.id))} strategy={verticalListSortingStrategy}>
                 <div className="space-y-10">
                   {startpage.groups.map((group, i) => (
                     <CollapsibleGroup
@@ -235,6 +233,7 @@ export function App() {
                       group={group}
                       labelled={i > 0 && !!group.name}
                       first={i === 0}
+                      index={i}
                       edit={
                         editMode
                           ? {
@@ -256,7 +255,6 @@ export function App() {
                     </button>
                   )}
                 </div>
-              </SortableContext>
             </ReorderContext>
           )}
           {!startpage && <Skeleton className="h-24 w-full" />}

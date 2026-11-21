@@ -1,6 +1,5 @@
 import { Icon } from "@iconify/react";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { useSortable } from "@dnd-kit/react/sortable";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState, type ReactNode } from "react";
 
@@ -63,23 +62,27 @@ export function CollapsibleGroup({
   group,
   labelled,
   first,
+  index,
   edit,
 }: {
   group: Group;
   labelled: boolean;
   first: boolean;
+  index: number;
   edit?: GridEdit;
 }) {
   const toggle = useUpdateGroup();
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const { ref, handleRef } = useSortable({
     id: groupSortId(group.id),
+    index,
+    type: "group",
+    accept: "group",
     disabled: !edit,
   });
   const handle = (
     <button
       type="button"
-      {...attributes}
-      {...listeners}
+      ref={handleRef}
       aria-label="Drag group"
       className="cursor-grab touch-none text-[#6b7aa6] hover:text-white"
     >
@@ -87,10 +90,7 @@ export function CollapsibleGroup({
     </button>
   );
   return (
-    <section
-      ref={setNodeRef}
-      style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }}
-    >
+    <section ref={ref} className="data-[dnd-placeholder]:opacity-0">
       {edit && <GroupEditHeader group={group} first={first} handle={handle} />}
       {!edit && labelled && (
         <button
