@@ -129,6 +129,6 @@ A visual prototype of this design (the inline variant) was built and approved; i
 ## Further Notes
 
 - Open question for the Group-deletion follow-up: the simplest rule is that only empty Groups can be deleted. This was not discussed, so it is left out here.
-- The prototype lives uncommitted in the worktree at `web/src/proto/`, with a `/proto` switch in the SPA entry file. The approved version is `?variant=inline`; the drawer-only version at `/proto` is rejected. The whole prototype should be removed once the real implementation lands.
+- The prototype (`web/src/proto/` and its `/proto` switch in the SPA entry file) has been removed now that the real implementation has landed.
 - The prototype saves edits live with no Save or Cancel; the real modal must use a draft with Save/Cancel as specified above.
 - `GLOSSARY.md` already reflects the App definition change and the new Group term.
