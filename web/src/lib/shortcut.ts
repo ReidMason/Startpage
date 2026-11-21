@@ -6,11 +6,14 @@ type SlashEvent = {
   ctrlKey: boolean;
   metaKey: boolean;
   altKey: boolean;
-  target: { tagName: string; isContentEditable: boolean; closest: (selector: string) => unknown } | null;
+  target: EventTarget | ElementLike | null;
 };
 
+type ElementLike = { tagName: string; isContentEditable: boolean; closest: (selector: string) => unknown };
+
 export function shouldFocusSearchOnSlash(e: SlashEvent, editMode: boolean): boolean {
-  if (editMode || e.key !== "/" || e.ctrlKey || e.metaKey || e.altKey || !e.target) return false;
-  if (textFields.has(e.target.tagName) || e.target.isContentEditable) return false;
-  return !e.target.closest(overlaySelector);
+  const target = e.target as ElementLike | null;
+  if (editMode || e.key !== "/" || e.ctrlKey || e.metaKey || e.altKey || !target) return false;
+  if (textFields.has(target.tagName) || target.isContentEditable) return false;
+  return !target.closest(overlaySelector);
 }

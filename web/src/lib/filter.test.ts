@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { App } from "@/api";
-import { rankApps } from "@/lib/filter";
+import { filterApps, isFilterQuery, rankApps, submitTarget } from "@/lib/filter";
 
 const apps = (...appNames: string[]): App[] =>
   appNames.map((name, i) => ({ id: i + 1, name, url: "https://example.com", iconName: "", iconSvg: "" }) as App);
@@ -57,5 +57,52 @@ describe("rankApps", () => {
   it("ranks apps from different groups together", () => {
     const groups = [apps("Pi-hole", "Grafana"), apps("Plex", "Gitea")];
     expect(rankApps(groups.flat(), "pl").map((a) => a.name)).toEqual(["Plex", "Pi-hole"]);
+  });
+});
+
+const engine = "https://www.google.com/search?q=";
+const plex = { id: 1, name: "Plex", url: "plex.local", iconName: "", iconSvg: "" } as App;
+
+describe("submitTarget", () => {
+  it("opens the best match when filtering", () => {
+    expect(submitTarget({ query: "/pl", searchEngine: engine, best: plex, forceSearch: false })).toBe("https://plex.local");
+  });
+
+  it("does nothing when filtering with no matches", () => {
+    expect(submitTarget({ query: "/zzz", searchEngine: engine, best: undefined, forceSearch: false })).toBeNull();
+  });
+
+  it("sends the whole query, slash included and encoded, on force search", () => {
+    expect(submitTarget({ query: "/a&b", searchEngine: engine, best: plex, forceSearch: true })).toBe(
+      `${engine}%2Fa%26b`,
+    );
+  });
+
+  it("searches normally outside filter mode", () => {
+    expect(submitTarget({ query: "cats", searchEngine: engine, best: undefined, forceSearch: false })).toBe(`${engine}cats`);
+    expect(submitTarget({ query: "/", searchEngine: engine, best: undefined, forceSearch: false })).toBe(`${engine}%2F`);
+  });
+
+  it("searches normally for a slash followed only by whitespace", () => {
+    expect(submitTarget({ query: "/ ", searchEngine: engine, best: undefined, forceSearch: false })).toBe(`${engine}%2F`);
+  });
+
+  it("does nothing for a blank query", () => {
+    expect(submitTarget({ query: "  ", searchEngine: engine, best: undefined, forceSearch: false })).toBeNull();
+  });
+});
+
+describe("isFilterQuery", () => {
+  it("requires a non-blank remainder after the slash", () => {
+    expect(isFilterQuery("/pl")).toBe(true);
+    expect(isFilterQuery("/")).toBe(false);
+    expect(isFilterQuery("/ ")).toBe(false);
+    expect(isFilterQuery("pl")).toBe(false);
+  });
+});
+
+describe("filterApps", () => {
+  it("ranks apps against the text after the slash", () => {
+    expect(filterApps(apps("Plex", "Grafana"), "/gf").map((a) => a.name)).toEqual(["Grafana"]);
   });
 });

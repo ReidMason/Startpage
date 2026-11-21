@@ -31,12 +31,13 @@ type Props = {
   showName: boolean;
   query: string;
   onQueryChange: (query: string) => void;
+  onEscape: () => void;
   bestMatch: App | undefined;
   inputRef: RefObject<HTMLInputElement | null>;
   onFocusChange: (focused: boolean) => void;
 };
 
-export function Welcome({ editMode, searchEngine, showName, query, onQueryChange, bestMatch, inputRef, onFocusChange }: Props) {
+export function Welcome({ editMode, searchEngine, showName, query, onQueryChange, onEscape, bestMatch, inputRef, onFocusChange }: Props) {
   const { data: name } = useQuery({
     queryKey: meQueryKey,
     queryFn: fetchDisplayName,
@@ -53,7 +54,7 @@ export function Welcome({ editMode, searchEngine, showName, query, onQueryChange
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (!shouldFocusSearchOnSlash(e as Parameters<typeof shouldFocusSearchOnSlash>[0], editMode)) return;
+      if (!shouldFocusSearchOnSlash(e, editMode)) return;
       e.preventDefault();
       inputRef.current?.focus();
     };
@@ -76,7 +77,7 @@ export function Welcome({ editMode, searchEngine, showName, query, onQueryChange
           onBlur={() => onFocusChange(false)}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
-              onQueryChange("");
+              onEscape();
             } else if (e.key === "Enter") {
               e.preventDefault();
               const target = submitTarget({ query, searchEngine, best: bestMatch, forceSearch: e.shiftKey });

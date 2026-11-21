@@ -16,7 +16,11 @@ export function rankApps(apps: App[], query: string): App[] {
     .map((r) => r.item);
 }
 
-export const isFilterQuery = (query: string) => query.startsWith("/") && query.length > 1;
+const filterNeedle = (query: string) => query.slice(1);
+
+export const isFilterQuery = (query: string) => query.startsWith("/") && filterNeedle(query).trim() !== "";
+
+export const filterApps = (apps: App[], query: string): App[] => rankApps(apps, filterNeedle(query));
 
 type Submit = { query: string; searchEngine: string; best: App | undefined; forceSearch: boolean };
 

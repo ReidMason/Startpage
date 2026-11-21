@@ -22,7 +22,7 @@ import { SettingsDrawer } from "@/components/SettingsDrawer";
 import { UnsavedChangesPrompt } from "@/components/UnsavedChangesPrompt";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Welcome } from "@/components/Welcome";
-import { isFilterQuery, rankApps } from "@/lib/filter";
+import { filterApps, isFilterQuery } from "@/lib/filter";
 import { signOut } from "@/lib/session";
 import { changedSettings, defaultSearchEngine, isDirty, isValidSearchEngine } from "@/lib/settings";
 import {
@@ -42,7 +42,7 @@ const blankDraft: AppDraft = { name: "", url: "", iconName: "", iconSvg: "" };
 
 const draftOf = ({ name, url, iconName, iconSvg }: AppModel): AppDraft => ({ name, url, iconName, iconSvg });
 
-function FilterResults({ apps, ringFirst, onEscape }: { apps: AppModel[]; ringFirst: boolean; onEscape: () => void }) {
+function FilterResults({ apps, highlightFirst, onEscape }: { apps: AppModel[]; highlightFirst: boolean; onEscape: () => void }) {
   if (apps.length === 0) return <p className="text-lg text-[#9aa5c9]">No matching apps</p>;
   return (
     <div
@@ -50,7 +50,7 @@ function FilterResults({ apps, ringFirst, onEscape }: { apps: AppModel[]; ringFi
         if (e.key === "Escape") onEscape();
       }}
     >
-      <Grid group={{ id: 0, name: "", style: "tiles", collapsed: false, apps }} ringFirst={ringFirst} />
+      <Grid group={{ id: 0, name: "", style: "tiles", collapsed: false, apps }} highlightFirst={highlightFirst} />
     </div>
   );
 }
@@ -181,7 +181,11 @@ export function App() {
     },
   });
   const pageSettings = editMode ? draft : saved;
-  const filterResults = startpage && filtering ? rankApps(startpage.groups.flatMap((g) => g.apps), query.slice(1)) : [];
+  const filterResults = startpage && filtering ? filterApps(startpage.groups.flatMap((g) => g.apps), query) : [];
+  const clearQueryAndFocus = () => {
+    setQuery("");
+    searchInput.current?.focus();
+  };
 
   return (
     <div className="flex min-h-screen bg-[#1f2937] font-sans text-[#c7d2fe]">
@@ -209,20 +213,19 @@ export function App() {
             showName={pageSettings?.showNameInGreeting ?? false}
             query={query}
             onQueryChange={setQuery}
+            onEscape={clearQueryAndFocus}
             bestMatch={filtering ? filterResults[0] : undefined}
             inputRef={searchInput}
             onFocusChange={setBarFocused}
           />
-          {startpage && filtering ? (
+          {startpage && filtering && (
             <FilterResults
               apps={filterResults}
-              ringFirst={barFocused}
-              onEscape={() => {
-                setQuery("");
-                searchInput.current?.focus();
-              }}
+              highlightFirst={barFocused}
+              onEscape={clearQueryAndFocus}
             />
-          ) : startpage ? (
+          )}
+          {startpage && !filtering && (
             <ReorderContext>
               <SortableContext items={startpage.groups.map((g) => groupSortId(g.id))} strategy={verticalListSortingStrategy}>
                 <div className="space-y-10">
@@ -255,9 +258,8 @@ export function App() {
                 </div>
               </SortableContext>
             </ReorderContext>
-          ) : (
-            <Skeleton className="h-24 w-full" />
           )}
+          {!startpage && <Skeleton className="h-24 w-full" />}
         </main>
       </div>
       <button

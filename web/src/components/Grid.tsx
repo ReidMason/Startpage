@@ -50,7 +50,7 @@ function EditItem({ app, style, edit }: { app: App; style: Group["style"]; edit:
   );
 }
 
-export function Grid({ group, edit, ringFirst }: { group: Group; edit?: GridEdit; ringFirst?: boolean }) {
+export function Grid({ group, edit, highlightFirst }: { group: Group; edit?: GridEdit; highlightFirst?: boolean }) {
   const { setNodeRef } = useDroppable({ id: groupDropId(group.id), disabled: !edit });
   const add = edit && (
     <button
@@ -68,7 +68,7 @@ export function Grid({ group, edit, ringFirst }: { group: Group; edit?: GridEdit
       <a
         key={app.id}
         href={appHref(app.url)}
-        className={`${tileClass(group.style)} ${ringFirst && i === 0 ? "rounded-lg ring-2 ring-[#c7d2fe] ring-offset-4 ring-offset-[#111827]" : ""}`}
+        className={`${tileClass(group.style)} ${highlightFirst && i === 0 ? "rounded-lg ring-2 ring-[#c7d2fe] ring-offset-4 ring-offset-[#111827]" : ""}`}
       >
         <AppTile app={app} style={group.style} />
       </a>
