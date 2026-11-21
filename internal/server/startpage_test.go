@@ -392,3 +392,65 @@ func TestUsersCannotDeleteOrRestoreEachOthersApps(t *testing.T) {
 		t.Errorf("bob restored alice's app")
 	}
 }
+
+func TestAppURLsMustBeHTTPOrSchemeless(t *testing.T) {
+	b, _ := signedIn(t)
+	_, plex := b.createApp(plexApp(nil))
+
+	for _, url := range []string{"javascript://%0aalert(1)", "JavaScript://x", "data://text/html,hi", "ftp://files.example.com", "file:///etc/passwd"} {
+		if status, _ := b.createApp(plexApp(map[string]any{"url": url})); status != http.StatusBadRequest {
+			t.Errorf("create %q: status %d, want 400", url, status)
+		}
+		if status, _ := b.updateApp(plex.ID, plexApp(map[string]any{"url": url})); status != http.StatusBadRequest {
+			t.Errorf("update %q: status %d, want 400", url, status)
+		}
+	}
+	for _, url := range []string{"http://plex.local:32400", "HTTPS://plex.example.com/web", "plex.local:32400", "plex.example.com"} {
+		if status, _ := b.createApp(plexApp(map[string]any{"url": url})); status != http.StatusCreated {
+			t.Errorf("create %q: status %d, want 201", url, status)
+		}
+	}
+	if got := b.startpage().Groups[0].Apps[0].URL; got != "plex.example.com" {
+		t.Errorf("rejected update changed url: %q", got)
+	}
+}
+
+func TestRestoreAfterReorderLandsAtClosestSlotWithDenseOrder(t *testing.T) {
+	b, dbURL := signedIn(t)
+	groupID := b.startpage().Groups[0].ID
+	var ids []int64
+	for _, name := range []string{"A", "B", "C", "D"} {
+		_, a := b.createApp(plexApp(map[string]any{"name": name}))
+		ids = append(ids, a.ID)
+	}
+	a, bb, c, d := ids[0], ids[1], ids[2], ids[3]
+	assertDense := func(live int) {
+		t.Helper()
+		distinct := queryInt(t, dbURL, "SELECT count(DISTINCT position) FROM apps WHERE deleted_at IS NULL")
+		maxPos := queryInt(t, dbURL, "SELECT max(position) FROM apps WHERE deleted_at IS NULL")
+		if distinct != live || maxPos != live-1 {
+			t.Errorf("positions not dense: distinct=%d max=%d, want %d live", distinct, maxPos, live)
+		}
+	}
+
+	b.deleteApp(c)
+	b.deleteApp(d)
+	if status := b.reorder(groupArrangement{groupID, []int64{bb, a}}); status != http.StatusNoContent {
+		t.Fatalf("reorder status %d", status)
+	}
+	b.restoreApp(d)
+	if got := appNames(b.startpage().Groups[0].Apps); fmt.Sprint(got) != fmt.Sprint([]string{"B", "A", "D"}) {
+		t.Errorf("stale position beyond the end: apps = %v, want [B A D]", got)
+	}
+	assertDense(3)
+
+	b.deleteApp(a)
+	if status := b.reorder(groupArrangement{groupID, []int64{d, bb}}); status != http.StatusNoContent {
+		t.Fatalf("reorder status %d", status)
+	}
+	b.restoreApp(a)
+	if got := appNames(b.startpage().Groups[0].Apps); fmt.Sprint(got) != fmt.Sprint([]string{"D", "A", "B"}) {
+		t.Errorf("tied position: apps = %v, want [D A B]", got)
+	}
+	assertDense(3)
+}

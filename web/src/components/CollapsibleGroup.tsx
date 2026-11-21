@@ -2,43 +2,39 @@ import { Icon } from "@iconify/react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
-import { updateGroup, type Group, type Startpage } from "@/api";
+import { updateGroup, type Group } from "@/api";
 import { Grid, type GridEdit } from "@/components/Grid";
 import { groupSortId } from "@/components/ReorderContext";
-import { startpageQueryKey, writeCachedStartpage } from "@/lib/startpage";
+import { optimisticStartpage, rollbackStartpage, startpageQueryKey } from "@/lib/startpage";
 
-function useToggleCollapsed() {
+function useUpdateGroup() {
   const queryClient = useQueryClient();
-  const setCollapsed = (id: number, collapsed: boolean) => {
-    queryClient.setQueryData<Startpage>(startpageQueryKey, (old) => {
-      if (!old) return old;
-      const next = { groups: old.groups.map((g) => (g.id === id ? { ...g, collapsed } : g)) };
-      writeCachedStartpage(next);
-      return next;
-    });
-  };
   return useMutation({
-    mutationFn: async ({ id, collapsed }: { id: number; collapsed: boolean }) => {
-      const { error } = await updateGroup({ path: { id }, body: { collapsed } });
+    mutationFn: async ({ id, ...body }: { id: number; name?: string; style?: Group["style"]; collapsed?: boolean }) => {
+      const { error } = await updateGroup({ path: { id }, body });
       if (error) throw new Error("update group failed");
     },
-    onMutate: ({ id, collapsed }) => setCollapsed(id, collapsed),
-    onError: (_err, { id, collapsed }) => setCollapsed(id, !collapsed),
+    onMutate: ({ id, ...fields }) =>
+      optimisticStartpage(queryClient, (page) => ({
+        groups: page.groups.map((g) => (g.id === id ? { ...g, ...fields } : g)),
+      })),
+    onError: (_err, _vars, context) => rollbackStartpage(queryClient, context),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: startpageQueryKey }),
   });
 }
 
 function GroupEditHeader({ group, first, handle }: { group: Group; first: boolean; handle: ReactNode }) {
-  const queryClient = useQueryClient();
   const [name, setName] = useState(group.name);
-  const update = useMutation({
-    mutationFn: async (body: { name?: string; style?: Group["style"] }) => {
-      const { error } = await updateGroup({ path: { id: group.id }, body });
-      if (error) throw new Error("update group failed");
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: startpageQueryKey }),
-  });
+  const update = useUpdateGroup();
+  useEffect(() => setName(group.name), [group.name]);
+  const commitName = () => {
+    const trimmed = name.trim();
+    if (trimmed === group.name) return;
+    if (trimmed === "") setName(group.name);
+    else update.mutate({ id: group.id, name: trimmed });
+  };
   return (
     <div className="mb-4 flex items-center gap-3 text-sm">
       {handle}
@@ -47,13 +43,13 @@ function GroupEditHeader({ group, first, handle }: { group: Group; first: boolea
         placeholder={first ? "(unlabelled)" : "Group name"}
         aria-label="Group name"
         onChange={(e) => setName(e.target.value)}
-        onBlur={() => name.trim() !== group.name && update.mutate({ name })}
+        onBlur={commitName}
         className="w-48 bg-transparent tracking-wide text-[#9aa5c9] uppercase outline-none placeholder:text-[#4b5d8a]"
       />
       <button
         type="button"
         aria-label="Toggle group style"
-        onClick={() => update.mutate({ style: group.style === "tiles" ? "compact" : "tiles" })}
+        onClick={() => update.mutate({ id: group.id, style: group.style === "tiles" ? "compact" : "tiles" })}
         className="text-xs text-[#6b7aa6] hover:text-white"
       >
         {group.style}
@@ -73,7 +69,7 @@ export function CollapsibleGroup({
   first: boolean;
   edit?: GridEdit;
 }) {
-  const toggle = useToggleCollapsed();
+  const toggle = useUpdateGroup();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: groupSortId(group.id),
     disabled: !edit,
@@ -107,7 +103,7 @@ export function CollapsibleGroup({
           />
         </button>
       )}
-      {(edit || !group.collapsed) && <Grid group={group} edit={edit} />}
+      {(edit || !group.collapsed || !labelled) && <Grid group={group} edit={edit} />}
     </section>
   );
 }

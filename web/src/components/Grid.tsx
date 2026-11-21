@@ -6,8 +6,7 @@ import { Icon } from "@iconify/react";
 import type { App, Group } from "@/api";
 import { groupDropId, useJustDragged } from "@/components/ReorderContext";
 import { appHref, displayUrl } from "@/lib/startpage";
-
-const accent = "text-[#b9c9f5]";
+import { accent } from "@/lib/utils";
 
 function AppIcon({ app, className }: { app: App; className: string }) {
   if (!app.iconSvg) return <span className={className} />;
