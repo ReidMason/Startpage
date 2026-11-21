@@ -168,7 +168,11 @@ export function App() {
       )}
       <div className="min-w-0 flex-1 p-8">
         <main className="mx-auto max-w-6xl rounded-3xl bg-[#111827] p-16">
-          <Welcome editMode={editMode} searchEngine={pageSettings?.searchEngine ?? ""} />
+          <Welcome
+            editMode={editMode}
+            searchEngine={pageSettings?.searchEngine ?? ""}
+            showName={pageSettings?.showNameInGreeting ?? false}
+          />
           {startpage ? (
             <ReorderContext>
               <SortableContext items={startpage.groups.map((g) => groupSortId(g.id))} strategy={verticalListSortingStrategy}>
