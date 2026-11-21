@@ -40,6 +40,10 @@ export type Group = {
     apps: Array<App>;
 };
 
+export type GroupUpdate = {
+    collapsed: boolean;
+};
+
 export type Startpage = {
     groups: Array<Group>;
 };
@@ -144,3 +148,36 @@ export type CreateAppResponses = {
 };
 
 export type CreateAppResponse = CreateAppResponses[keyof CreateAppResponses];
+
+export type UpdateGroupData = {
+    body: GroupUpdate;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/groups/{id}';
+};
+
+export type UpdateGroupErrors = {
+    /**
+     * Invalid id or body
+     */
+    400: unknown;
+    /**
+     * Missing, expired or revoked Session
+     */
+    401: unknown;
+    /**
+     * The Group does not exist or belongs to another User
+     */
+    404: unknown;
+};
+
+export type UpdateGroupResponses = {
+    /**
+     * Updated
+     */
+    204: void;
+};
+
+export type UpdateGroupResponse = UpdateGroupResponses[keyof UpdateGroupResponses];
