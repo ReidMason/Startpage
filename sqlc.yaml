@@ -8,3 +8,5 @@ sql:
         package: dbgen
         out: internal/db/dbgen
         sql_package: pgx/v5
+        rename:
+          primary_color: Primary

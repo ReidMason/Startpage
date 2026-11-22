@@ -256,7 +256,7 @@ type ListLiveThemesRow struct {
 	Foreground          string
 	Card                string
 	CardForeground      string
-	PrimaryColor        string
+	Primary             string
 	PrimaryForeground   string
 	Secondary           string
 	SecondaryForeground string
@@ -286,7 +286,7 @@ func (q *Queries) ListLiveThemes(ctx context.Context) ([]ListLiveThemesRow, erro
 			&i.Foreground,
 			&i.Card,
 			&i.CardForeground,
-			&i.PrimaryColor,
+			&i.Primary,
 			&i.PrimaryForeground,
 			&i.Secondary,
 			&i.SecondaryForeground,

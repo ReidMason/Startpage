@@ -98,13 +98,7 @@ func (s *startpage) listThemes(w http.ResponseWriter, r *http.Request, _ int64) 
 	}
 	out := make([]themeResponse, len(rows))
 	for i, t := range rows {
-		out[i] = themeResponse{
-			ID: t.ID, Name: t.Name, Background: t.Background, Foreground: t.Foreground,
-			Card: t.Card, CardForeground: t.CardForeground, Primary: t.PrimaryColor, PrimaryForeground: t.PrimaryForeground,
-			Secondary: t.Secondary, SecondaryForeground: t.SecondaryForeground, Muted: t.Muted, MutedForeground: t.MutedForeground,
-			Accent: t.Accent, AccentForeground: t.AccentForeground, Destructive: t.Destructive,
-			Border: t.Border, Input: t.Input, Ring: t.Ring,
-		}
+		out[i] = themeResponse(t)
 	}
 	writeJSON(w, http.StatusOK, out)
 }

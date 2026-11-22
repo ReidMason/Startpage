@@ -8,25 +8,11 @@ import (
 )
 
 type themeJSON struct {
-	ID                  int64  `json:"id"`
-	Name                string `json:"name"`
-	Background          string `json:"background"`
-	Foreground          string `json:"foreground"`
-	Card                string `json:"card"`
-	CardForeground      string `json:"cardForeground"`
-	Primary             string `json:"primary"`
-	PrimaryForeground   string `json:"primaryForeground"`
-	Secondary           string `json:"secondary"`
-	SecondaryForeground string `json:"secondaryForeground"`
-	Muted               string `json:"muted"`
-	MutedForeground     string `json:"mutedForeground"`
-	Accent              string `json:"accent"`
-	AccentForeground    string `json:"accentForeground"`
-	Destructive         string `json:"destructive"`
-	Border              string `json:"border"`
-	Input               string `json:"input"`
-	Ring                string `json:"ring"`
+	ID   int64  `json:"id"`
+	Name string `json:"name"`
 }
+
+const themeColourCount = 16
 
 func (b *browser) themes() []themeJSON {
 	b.t.Helper()
@@ -93,11 +79,19 @@ func TestThemesListsSeededPresetsWithAllColours(t *testing.T) {
 	if themes[0].ID != 1 || themes[1].ID != 2 {
 		t.Errorf("light and dark ids = %d and %d, want 1 and 2", themes[0].ID, themes[1].ID)
 	}
-	for _, th := range themes {
-		v := reflect.ValueOf(th)
-		for i := 2; i < v.NumField(); i++ {
-			if v.Field(i).String() == "" {
-				t.Errorf("%s: %s is empty", th.Name, v.Type().Field(i).Name)
+
+	_, data := b.do(http.MethodGet, "/api/themes", nil)
+	var raw []map[string]any
+	if err := json.Unmarshal(data, &raw); err != nil {
+		t.Fatal(err)
+	}
+	for _, th := range raw {
+		if got, want := len(th), themeColourCount+2; got != want {
+			t.Errorf("%v: %d fields, want %d", th["name"], got, want)
+		}
+		for k, v := range th {
+			if s, ok := v.(string); ok && s == "" {
+				t.Errorf("%v: %s is empty", th["name"], k)
 			}
 		}
 	}
