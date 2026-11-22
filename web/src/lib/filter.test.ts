@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { App } from "@/api";
-import { filterApps, isFilterQuery, rankApps, submitTarget } from "@/lib/filter";
+import { filterApps, isFilterQuery, rankApps, submitTarget, urlTarget } from "@/lib/filter";
 
 const apps = (...appNames: string[]): App[] =>
   appNames.map((name, i) => ({ id: i + 1, name, url: "https://example.com", iconName: "", iconSvg: "" }) as App);
@@ -104,5 +104,48 @@ describe("isFilterQuery", () => {
 describe("filterApps", () => {
   it("ranks apps against the text after the slash", () => {
     expect(filterApps(apps("Plex", "Grafana"), "/gf").map((a) => a.name)).toEqual(["Grafana"]);
+  });
+});
+
+const go = (query: string, forceSearch = false) =>
+  submitTarget({ query, searchEngine: engine, best: plex, forceSearch });
+
+describe("direct navigation", () => {
+  it.each([
+    ["https://example.com/a?b=c", "https://example.com/a?b=c"],
+    ["http://example.com", "http://example.com"],
+    ["HTTP://x", "HTTP://x"],
+    ["example.com", "https://example.com"],
+    ["sub.example.co.uk:8080/path?q=1", "https://sub.example.co.uk:8080/path?q=1"],
+    ["localhost", "http://localhost"],
+    ["localhost:3000/app", "http://localhost:3000/app"],
+    ["192.168.1.10", "https://192.168.1.10"],
+    ["192.168.1.10:8080/x", "https://192.168.1.10:8080/x"],
+    ["  example.com  ", "https://example.com"],
+  ])("navigates to %s", (query, expected) => {
+    expect(go(query)).toBe(expected);
+  });
+
+  it.each(["javascript:alert(1)", "data:text/html,hi", "file:///etc/passwd", "cats", "hello world", "example.com is down", "e.g", "1.2.3", "999.1.1"])(
+    "searches for %s",
+    (query) => {
+      expect(go(query)).toBe(engine + encodeURIComponent(query.trim()));
+    },
+  );
+
+  it("filter mode wins over a URL", () => {
+    expect(go("/example.com")).toBe("https://plex.local");
+  });
+
+  it("force search wins over a URL", () => {
+    expect(go("example.com", true)).toBe(`${engine}example.com`);
+  });
+});
+
+describe("urlTarget", () => {
+  it("is null for non-URLs and filter queries", () => {
+    expect(urlTarget("cats")).toBeNull();
+    expect(urlTarget("/example.com")).toBeNull();
+    expect(urlTarget("")).toBeNull();
   });
 });
