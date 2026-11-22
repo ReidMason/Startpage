@@ -42,7 +42,7 @@ const blankDraft: AppDraft = { name: "", url: "", iconName: "", iconSvg: "" };
 const draftOf = ({ name, url, iconName, iconSvg }: AppModel): AppDraft => ({ name, url, iconName, iconSvg });
 
 function FilterResults({ apps, highlightFirst, onEscape }: { apps: AppModel[]; highlightFirst: boolean; onEscape: () => void }) {
-  if (apps.length === 0) return <p className="text-lg text-[#9aa5c9]">No matching apps</p>;
+  if (apps.length === 0) return <p className="text-lg text-muted-foreground">No matching apps</p>;
   return (
     <div
       onKeyDown={(e) => {
@@ -187,7 +187,7 @@ export function App() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#1f2937] font-sans text-[#c7d2fe]">
+    <div className="flex min-h-screen bg-secondary font-sans text-foreground">
       {editMode && (
         <SettingsDrawer
           draft={draft}
@@ -205,7 +205,7 @@ export function App() {
         />
       )}
       <div className="min-w-0 flex-1 px-8 py-[5%]">
-        <main className="mx-auto flex max-w-screen-2xl flex-col gap-8 rounded-2xl bg-[#111827] p-8 sm:p-16">
+        <main className="mx-auto flex max-w-screen-2xl flex-col gap-8 rounded-2xl bg-card p-8 sm:p-16">
           <Welcome
             editMode={editMode}
             searchEngine={pageSettings?.searchEngine ?? defaultSearchEngine}
@@ -250,7 +250,7 @@ export function App() {
                       type="button"
                       onClick={() => addGroup.mutate()}
                       disabled={addGroup.isPending}
-                      className="text-sm text-[#6b7aa6] hover:text-white"
+                      className="text-sm text-muted-foreground hover:text-foreground"
                     >
                       + Add group
                     </button>
@@ -270,7 +270,7 @@ export function App() {
           else if (dirty) setConfirmingDone(true);
           else exitEditMode();
         }}
-        className="fixed bottom-6 left-6 rounded-full bg-[#1f2937] px-4 py-2 text-sm text-[#9aa5c9] hover:text-white"
+        className="fixed bottom-6 left-6 rounded-full bg-secondary px-4 py-2 text-sm text-muted-foreground hover:text-foreground"
       >
         {editMode ? "Done" : "Edit"}
       </button>
@@ -302,17 +302,17 @@ export function App() {
       {undoable && (
         <div
           role="status"
-          className="fixed bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-4 rounded-full bg-[#1f2937] px-5 py-2 text-sm"
+          className="fixed bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-4 rounded-full bg-secondary px-5 py-2 text-sm"
         >
           Deleted {undoable.app.name}
-          <button onClick={() => undo.mutate(undoable)} disabled={undo.isPending} className="font-semibold text-white">
+          <button onClick={() => undo.mutate(undoable)} disabled={undo.isPending} className="font-semibold text-foreground">
             Undo
           </button>
         </div>
       )}
       <button
         onClick={() => void signOut()}
-        className="fixed right-6 bottom-6 rounded-full bg-[#1f2937] px-4 py-2 text-sm text-[#9aa5c9] hover:text-white"
+        className="fixed right-6 bottom-6 rounded-full bg-secondary px-4 py-2 text-sm text-muted-foreground hover:text-foreground"
       >
         Sign out
       </button>
