@@ -5,6 +5,7 @@ import {
   createApp,
   createGroup,
   deleteApp,
+  listThemes,
   restoreApp,
   updateApp,
   updateSettings,
@@ -23,6 +24,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Welcome } from "@/components/Welcome";
 import { filterApps, isFilterQuery } from "@/lib/filter";
 import { signOut } from "@/lib/session";
+import { applyTheme, resolveTheme, usePrefersDark } from "@/lib/theme";
 import { changedSettings, defaultSearchEngine, defaultSearchPlaceholder, isDirty, isValidSearchEngine } from "@/lib/settings";
 import {
   fetchStartpage,
@@ -146,6 +148,21 @@ export function App() {
     initialDataUpdatedAt: 0,
     retry: false,
   });
+  const { data: themes } = useQuery({
+    queryKey: ["themes"],
+    queryFn: async () => {
+      const { data } = await listThemes();
+      return data ?? [];
+    },
+    staleTime: Infinity,
+  });
+  const prefersDark = usePrefersDark();
+  const savedThemeId = (startpage?.settings.themeId ?? null) as number | null;
+  const appliedVars = useRef<string[]>([]);
+  useEffect(() => {
+    if (!themes || !startpage) return;
+    appliedVars.current = applyTheme(document.documentElement, resolveTheme(themes, savedThemeId, prefersDark), appliedVars.current);
+  }, [themes, startpage, savedThemeId, prefersDark]);
   const [settingsDraft, setSettingsDraft] = useState<Settings | null>(null);
   const saved = startpage?.settings;
   const draft = settingsDraft ?? saved;
