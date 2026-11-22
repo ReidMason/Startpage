@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { Theme } from "@/api";
-import { pickableThemes, themeLabel, themeVariables, resolveTheme } from "@/lib/theme";
+import { themeLabel, themeVariables, resolveTheme } from "@/lib/theme";
 
 const theme = (id: number, background = "#fff"): Theme => ({
   id,
@@ -51,12 +51,6 @@ describe("themeLabel", () => {
   it("turns a slug into a readable label", () => {
     expect(themeLabel("catppuccin-mocha")).toBe("Catppuccin Mocha");
     expect(themeLabel("tokyo-night")).toBe("Tokyo Night");
-  });
-});
-
-describe("pickableThemes", () => {
-  it("leaves out the light and dark rows that System uses", () => {
-    expect(pickableThemes([theme(1), theme(2), theme(7)]).map((t) => t.id)).toEqual([7]);
   });
 });
 

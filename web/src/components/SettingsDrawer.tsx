@@ -1,5 +1,5 @@
 import type { Settings, Theme } from "@/api";
-import { pickableThemes, themeLabel } from "@/lib/theme";
+import { themeLabel } from "@/lib/theme";
 import { defaultSearchPlaceholder, isValidSearchEngine, maxSearchPlaceholderLength, searchEnginePresets } from "@/lib/settings";
 
 type Props = {
@@ -75,7 +75,7 @@ export function SettingsDrawer({ draft, themes, dirty, saving, error, onChange, 
               className="rounded-lg bg-secondary px-3 py-2 text-sm font-normal outline-none focus:ring-1 focus:ring-ring"
             >
               <option value="">System</option>
-              {pickableThemes(themes).map((t) => (
+              {themes.map((t) => (
                 <option key={t.id} value={t.id}>
                   {themeLabel(t.name)}
                 </option>

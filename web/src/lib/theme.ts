@@ -12,8 +12,6 @@ export const themeLabel = (name: string) =>
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 
-export const pickableThemes = (themes: Theme[]) => themes.filter((t) => t.id !== LIGHT_THEME_ID && t.id !== DARK_THEME_ID);
-
 export function resolveTheme(themes: Theme[], themeId: number | null, prefersDark: boolean): Theme | undefined {
   const chosen = themeId === null ? undefined : themes.find((t) => t.id === themeId);
   return chosen ?? themes.find((t) => t.id === (prefersDark ? DARK_THEME_ID : LIGHT_THEME_ID));
