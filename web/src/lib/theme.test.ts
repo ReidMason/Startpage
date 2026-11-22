@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { Theme } from "@/api";
-import { themeVariables, resolveTheme } from "@/lib/theme";
+import { themeLabel, themeVariables, resolveTheme } from "@/lib/theme";
 
 const theme = (id: number, background = "#fff"): Theme => ({
   id,
@@ -44,6 +44,13 @@ describe("resolveTheme", () => {
   it("returns nothing when the light or dark row is missing", () => {
     expect(resolveTheme([theme(2)], null, false)).toBeUndefined();
     expect(resolveTheme([], null, true)).toBeUndefined();
+  });
+});
+
+describe("themeLabel", () => {
+  it("turns a slug into a readable label", () => {
+    expect(themeLabel("catppuccin-mocha")).toBe("Catppuccin Mocha");
+    expect(themeLabel("tokyo-night")).toBe("Tokyo Night");
   });
 });
 

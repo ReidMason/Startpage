@@ -6,6 +6,12 @@ import type { Theme } from "@/api";
 const LIGHT_THEME_ID = 1;
 const DARK_THEME_ID = 2;
 
+export const themeLabel = (name: string) =>
+  name
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
 export function resolveTheme(themes: Theme[], themeId: number | null, prefersDark: boolean): Theme | undefined {
   const chosen = themeId === null ? undefined : themes.find((t) => t.id === themeId);
   return chosen ?? themes.find((t) => t.id === (prefersDark ? DARK_THEME_ID : LIGHT_THEME_ID));
