@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { Theme } from "@/api";
-import { themeLabel, themeVariables, resolveTheme } from "@/lib/theme";
+import { cacheTheme, themeCacheKey, themeLabel, themeVariables, resolveTheme } from "@/lib/theme";
 
 const theme = (id: number, background = "#fff"): Theme => ({
   id,
@@ -62,5 +62,32 @@ describe("themeVariables", () => {
     expect(vars["--muted-foreground"]).toBe("#888");
     expect(vars["--ring"]).toBe("#eee");
     expect(Object.keys(vars)).toHaveLength(16);
+  });
+});
+
+describe("cacheTheme", () => {
+  const fakeStorage = () => {
+    const items = new Map<string, string>();
+    return { items, setItem: (k: string, v: string) => void items.set(k, v), removeItem: (k: string) => void items.delete(k) };
+  };
+
+  it("stores the resolved CSS variables as JSON", () => {
+    const storage = fakeStorage();
+    cacheTheme(storage, theme(1, "red"));
+    const cached = JSON.parse(storage.items.get(themeCacheKey)!);
+    expect(cached["--background"]).toBe("red");
+    expect(Object.keys(cached)).toHaveLength(16);
+  });
+
+  it("clears the cache when nothing resolves", () => {
+    const storage = fakeStorage();
+    cacheTheme(storage, theme(1));
+    cacheTheme(storage, undefined);
+    expect(storage.items.has(themeCacheKey)).toBe(false);
+  });
+
+  it("ignores storage failures", () => {
+    const broken = { setItem: () => { throw new Error("full"); }, removeItem: () => {} };
+    expect(() => cacheTheme(broken, theme(1))).not.toThrow();
   });
 });

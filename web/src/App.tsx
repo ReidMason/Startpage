@@ -24,7 +24,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Welcome } from "@/components/Welcome";
 import { filterApps, isFilterQuery } from "@/lib/filter";
 import { signOut } from "@/lib/session";
-import { applyTheme, resolveTheme, usePrefersDark } from "@/lib/theme";
+import { applyTheme, cacheTheme, resolveTheme, usePrefersDark } from "@/lib/theme";
 import { changedSettings, defaultSearchEngine, defaultSearchPlaceholder, isDirty, isValidSearchEngine } from "@/lib/settings";
 import {
   fetchStartpage,
@@ -166,6 +166,11 @@ export function App() {
     if (!themes || !startpage) return;
     appliedVars.current = applyTheme(document.documentElement, resolveTheme(themes, shownThemeId, prefersDark), appliedVars.current);
   }, [themes, startpage, shownThemeId, prefersDark]);
+  const savedThemeId = (saved?.themeId ?? null) as number | null;
+  useEffect(() => {
+    if (!themes || !startpage) return;
+    cacheTheme(localStorage, resolveTheme(themes, savedThemeId, prefersDark));
+  }, [themes, startpage, savedThemeId, prefersDark]);
   const dirty = !!saved && !!draft && isDirty(saved, draft);
   const [confirmingDone, setConfirmingDone] = useState(false);
   const discardDraft = () => {
