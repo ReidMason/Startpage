@@ -1,8 +1,10 @@
-import type { Settings } from "@/api";
+import type { Settings, Theme } from "@/api";
+import { pickableThemes, themeLabel } from "@/lib/theme";
 import { defaultSearchPlaceholder, isValidSearchEngine, maxSearchPlaceholderLength, searchEnginePresets } from "@/lib/settings";
 
 type Props = {
   draft: Settings | undefined;
+  themes: Theme[];
   dirty: boolean;
   saving: boolean;
   error: boolean;
@@ -11,7 +13,7 @@ type Props = {
   onDiscard: () => void;
 };
 
-export function SettingsDrawer({ draft, dirty, saving, error, onChange, onSave, onDiscard }: Props) {
+export function SettingsDrawer({ draft, themes, dirty, saving, error, onChange, onSave, onDiscard }: Props) {
   const valid = !draft || isValidSearchEngine(draft.searchEngine);
 
   return (
@@ -63,6 +65,23 @@ export function SettingsDrawer({ draft, dirty, saving, error, onChange, onSave, 
               className="w-full rounded-lg bg-secondary px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-ring"
             />
           </section>
+        )}
+        {draft && (
+          <label className="flex items-center justify-between gap-4 text-sm font-semibold">
+            Theme
+            <select
+              value={draft.themeId == null ? "" : String(draft.themeId)}
+              onChange={(e) => onChange({ ...draft, themeId: e.target.value === "" ? null : Number(e.target.value) })}
+              className="rounded-lg bg-secondary px-3 py-2 text-sm font-normal outline-none focus:ring-1 focus:ring-ring"
+            >
+              <option value="">System</option>
+              {pickableThemes(themes).map((t) => (
+                <option key={t.id} value={t.id}>
+                  {themeLabel(t.name)}
+                </option>
+              ))}
+            </select>
+          </label>
         )}
         {draft && (
           <label className="flex items-center justify-between gap-4 text-sm font-semibold">

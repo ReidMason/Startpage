@@ -157,15 +157,15 @@ export function App() {
     staleTime: Infinity,
   });
   const prefersDark = usePrefersDark();
-  const savedThemeId = (startpage?.settings.themeId ?? null) as number | null;
-  const appliedVars = useRef<string[]>([]);
-  useEffect(() => {
-    if (!themes || !startpage) return;
-    appliedVars.current = applyTheme(document.documentElement, resolveTheme(themes, savedThemeId, prefersDark), appliedVars.current);
-  }, [themes, startpage, savedThemeId, prefersDark]);
   const [settingsDraft, setSettingsDraft] = useState<Settings | null>(null);
   const saved = startpage?.settings;
   const draft = settingsDraft ?? saved;
+  const shownThemeId = ((editMode ? draft : saved)?.themeId ?? null) as number | null;
+  const appliedVars = useRef<string[]>([]);
+  useEffect(() => {
+    if (!themes || !startpage) return;
+    appliedVars.current = applyTheme(document.documentElement, resolveTheme(themes, shownThemeId, prefersDark), appliedVars.current);
+  }, [themes, startpage, shownThemeId, prefersDark]);
   const dirty = !!saved && !!draft && isDirty(saved, draft);
   const [confirmingDone, setConfirmingDone] = useState(false);
   const discardDraft = () => {
@@ -208,6 +208,7 @@ export function App() {
       {editMode && (
         <SettingsDrawer
           draft={draft}
+          themes={themes ?? []}
           dirty={dirty}
           saving={saveSettings.isPending}
           error={saveSettings.isError}
