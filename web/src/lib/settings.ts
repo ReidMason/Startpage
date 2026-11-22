@@ -10,6 +10,9 @@ export const searchEnginePresets = [
 
 export const defaultSearchEngine = searchEnginePresets[1].url;
 
+export const defaultSearchPlaceholder = "Search...";
+export const maxSearchPlaceholderLength = 40;
+
 export function isValidSearchEngine(address: string): boolean {
   try {
     const { protocol, host } = new URL(address.trim());
@@ -22,6 +25,7 @@ export function isValidSearchEngine(address: string): boolean {
 export function changedSettings(saved: Settings, draft: Settings): SettingsUpdate {
   const changes: SettingsUpdate = {};
   if (draft.searchEngine !== saved.searchEngine) changes.searchEngine = draft.searchEngine;
+  if (draft.searchPlaceholder !== saved.searchPlaceholder) changes.searchPlaceholder = draft.searchPlaceholder;
   if (draft.showNameInGreeting !== saved.showNameInGreeting) changes.showNameInGreeting = draft.showNameInGreeting;
   return changes;
 }

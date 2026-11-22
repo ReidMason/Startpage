@@ -9,7 +9,7 @@ A person who signs in through Authentik and owns exactly one Startpage.
 _Avoid_: Account, member, profile
 
 **Startpage**:
-A User's personal page: their Apps, search, greeting, weather and appearance settings. Fully independent from every other User's.
+A User's personal page: their Apps, search (Search engine and Search placeholder), greeting, weather and appearance settings. Fully independent from every other User's.
 _Avoid_: Dashboard, homepage, config
 
 **App**:
@@ -31,6 +31,10 @@ _Avoid_: Option, preference, config
 **Search engine**:
 The web search a Startpage's search bar sends queries to, chosen by the User from presets or entered as a custom address.
 _Avoid_: Provider, search URL
+
+**Search placeholder**:
+The hint text shown in the empty search bar, set per User. Falls back to "Search..." when left empty.
+_Avoid_: Hint, label
 
 **Filter mode**:
 What the search bar does when its query starts with `/`: the Startpage narrows to Apps matching the rest of the query instead of going to the Search engine.

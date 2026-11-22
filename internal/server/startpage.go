@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -41,6 +42,7 @@ type groupResponse struct {
 type settingsResponse struct {
 	SearchEngine       string `json:"searchEngine"`
 	ShowNameInGreeting bool   `json:"showNameInGreeting"`
+	SearchPlaceholder  string `json:"searchPlaceholder"`
 }
 
 func (s *startpage) register(mux *http.ServeMux) {
@@ -59,11 +61,12 @@ func (s *startpage) updateSettings(w http.ResponseWriter, r *http.Request, userI
 	var in struct {
 		SearchEngine       *string `json:"searchEngine"`
 		ShowNameInGreeting *bool   `json:"showNameInGreeting"`
+		SearchPlaceholder  *string `json:"searchPlaceholder"`
 	}
 	if !decodeJSON(w, r, &in) {
 		return
 	}
-	if in.SearchEngine == nil && in.ShowNameInGreeting == nil {
+	if in.SearchEngine == nil && in.ShowNameInGreeting == nil && in.SearchPlaceholder == nil {
 		http.Error(w, "at least one setting is required", http.StatusBadRequest)
 		return
 	}
@@ -76,6 +79,17 @@ func (s *startpage) updateSettings(w http.ResponseWriter, r *http.Request, userI
 		}
 		params.SearchEngine = pgtype.Text{String: address, Valid: true}
 	}
+	if in.SearchPlaceholder != nil {
+		placeholder := strings.TrimSpace(*in.SearchPlaceholder)
+		if utf8.RuneCountInString(placeholder) > maxSearchPlaceholderLength {
+			http.Error(w, "searchPlaceholder must be at most 40 characters", http.StatusBadRequest)
+			return
+		}
+		if placeholder == "" {
+			placeholder = defaultSearchPlaceholder
+		}
+		params.SearchPlaceholder = pgtype.Text{String: placeholder, Valid: true}
+	}
 	if in.ShowNameInGreeting != nil {
 		params.ShowNameInGreeting = pgtype.Bool{Bool: *in.ShowNameInGreeting, Valid: true}
 	}
@@ -85,6 +99,11 @@ func (s *startpage) updateSettings(w http.ResponseWriter, r *http.Request, userI
 	}
 	w.WriteHeader(http.StatusNoContent)
 }
+
+const (
+	defaultSearchPlaceholder   = "Search..."
+	maxSearchPlaceholderLength = 40
+)
 
 func validSearchEngine(address string) bool {
 	u, err := url.Parse(address)
@@ -139,6 +158,7 @@ func (s *startpage) get(w http.ResponseWriter, r *http.Request, userID int64) {
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"groups": out, "settings": settingsResponse{
 		SearchEngine: settings.SearchEngine, ShowNameInGreeting: settings.ShowNameInGreeting,
+		SearchPlaceholder: settings.SearchPlaceholder,
 	}})
 }
 

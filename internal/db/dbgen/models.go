@@ -41,6 +41,7 @@ type Setting struct {
 	UserID             int64
 	SearchEngine       string
 	ShowNameInGreeting bool
+	SearchPlaceholder  string
 }
 
 type User struct {

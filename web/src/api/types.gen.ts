@@ -63,6 +63,10 @@ export type Settings = {
      */
     searchEngine: string;
     showNameInGreeting: boolean;
+    /**
+     * Hint text in the empty search bar; defaults to "Search..."
+     */
+    searchPlaceholder: string;
 };
 
 export type SettingsUpdate = {
@@ -71,6 +75,10 @@ export type SettingsUpdate = {
      */
     searchEngine?: string;
     showNameInGreeting?: boolean;
+    /**
+     * Trimmed; an empty value resets to "Search..."
+     */
+    searchPlaceholder?: string;
 };
 
 export type Startpage = {

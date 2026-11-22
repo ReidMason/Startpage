@@ -299,13 +299,16 @@ components:
           type: boolean
     Settings:
       type: object
-      required: [searchEngine, showNameInGreeting]
+      required: [searchEngine, showNameInGreeting, searchPlaceholder]
       properties:
         searchEngine:
           type: string
           description: Address the query is appended to; defaults to Google
         showNameInGreeting:
           type: boolean
+        searchPlaceholder:
+          type: string
+          description: Hint text in the empty search bar; defaults to "Search..."
     SettingsUpdate:
       type: object
       minProperties: 1
@@ -315,6 +318,10 @@ components:
           description: Must be an http or https URL
         showNameInGreeting:
           type: boolean
+        searchPlaceholder:
+          type: string
+          maxLength: 40
+          description: Trimmed; an empty value resets to "Search..."
     Startpage:
       type: object
       required: [groups, settings]

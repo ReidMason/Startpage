@@ -31,6 +31,7 @@ type groupJSON struct {
 type settingsJSON struct {
 	SearchEngine       string `json:"searchEngine"`
 	ShowNameInGreeting bool   `json:"showNameInGreeting"`
+	SearchPlaceholder  string `json:"searchPlaceholder"`
 }
 
 type startpageJSON struct {
