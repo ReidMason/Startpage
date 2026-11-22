@@ -5,3 +5,7 @@ web/dist/*
 !web/dist/.gitkeep
 /startpage
 .env
+.next/
+node_modules/
+data/
+next-env.d.ts
