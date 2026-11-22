@@ -3,6 +3,11 @@ name: publish
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "docs/**"
+      - ".scratch/**"
+      - ".claude/**"
+      - "**.md"
     tags: ["v[0-9]+.[0-9]+.[0-9]+*"]
 
 env:
