@@ -36,6 +36,19 @@ export function applyTheme(root: HTMLElement, theme: Theme | undefined, previous
   return Object.keys(vars);
 }
 
+export const themeCacheKey = "startpage-theme";
+
+type CacheStorage = Pick<Storage, "setItem" | "removeItem">;
+
+export function cacheTheme(storage: CacheStorage, theme: Theme | undefined) {
+  try {
+    if (theme) storage.setItem(themeCacheKey, JSON.stringify(themeVariables(theme)));
+    else storage.removeItem(themeCacheKey);
+  } catch {
+    // storage unavailable: next load falls back to the :root defaults
+  }
+}
+
 const darkQuery = "(prefers-color-scheme: dark)";
 
 export function usePrefersDark(): boolean {
