@@ -6,7 +6,7 @@
     <title>Startpage</title>
     <script>
       try {
-        var vars = JSON.parse(localStorage.getItem("startpage-theme") || "null");
+        var vars = JSON.parse(localStorage.getItem("%THEME_CACHE_KEY%") || "null");
         if (vars) for (var name in vars) document.documentElement.style.setProperty(name, vars[name]);
       } catch (e) {}
     </script>

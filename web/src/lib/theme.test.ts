@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { Theme } from "@/api";
-import { cacheTheme, themeCacheKey, themeLabel, themeVariables, resolveTheme } from "@/lib/theme";
+import { applyTheme, cacheTheme, themeCacheKey, themeLabel, themeVariables, resolveTheme } from "@/lib/theme";
 
 const theme = (id: number, background = "#fff"): Theme => ({
   id,
@@ -89,5 +89,30 @@ describe("cacheTheme", () => {
   it("ignores storage failures", () => {
     const broken = { setItem: () => { throw new Error("full"); }, removeItem: () => {} };
     expect(() => cacheTheme(broken, theme(1))).not.toThrow();
+  });
+});
+
+describe("applyTheme", () => {
+  const fakeRoot = (initial: Record<string, string> = {}) => {
+    const props = new Map(Object.entries(initial));
+    const style = {
+      get length() { return props.size; },
+      item: (i: number) => [...props.keys()][i] ?? "",
+      setProperty: (k: string, v: string) => void props.set(k, v),
+      removeProperty: (k: string) => void props.delete(k),
+    };
+    return { props, root: { style } as unknown as HTMLElement };
+  };
+
+  it("sets the Theme variables", () => {
+    const { props, root } = fakeRoot();
+    applyTheme(root, theme(1, "red"));
+    expect(props.get("--background")).toBe("red");
+  });
+
+  it("clears variables set before first paint when nothing resolves", () => {
+    const { props, root } = fakeRoot({ "--background": "red", "--ring": "blue", "color": "green" });
+    applyTheme(root, undefined);
+    expect([...props.keys()]).toEqual(["color"]);
   });
 });

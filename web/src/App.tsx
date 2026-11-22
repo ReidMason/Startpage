@@ -161,10 +161,9 @@ export function App() {
   const saved = startpage?.settings;
   const draft = settingsDraft ?? saved;
   const shownThemeId = ((editMode ? draft : saved)?.themeId ?? null) as number | null;
-  const appliedVars = useRef<string[]>([]);
   useEffect(() => {
     if (!themes || !startpage) return;
-    appliedVars.current = applyTheme(document.documentElement, resolveTheme(themes, shownThemeId, prefersDark), appliedVars.current);
+    applyTheme(document.documentElement, resolveTheme(themes, shownThemeId, prefersDark));
   }, [themes, startpage, shownThemeId, prefersDark]);
   const savedThemeId = (saved?.themeId ?? null) as number | null;
   useEffect(() => {
