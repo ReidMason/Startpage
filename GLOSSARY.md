@@ -43,3 +43,7 @@ _Avoid_: Ghost, overlay, clone
 **Drop**:
 Releasing a drag preview. It settles from the cursor into its new position, with no detour via the old position.
 _Avoid_: Release, snap
+
+**Direct navigation**:
+What the search bar does on Enter when its query is a URL: the browser goes straight to it instead of the Search engine.
+_Avoid_: Redirect, URL mode

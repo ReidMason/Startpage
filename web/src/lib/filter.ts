@@ -22,10 +22,30 @@ export const isFilterQuery = (query: string) => query.startsWith("/") && filterN
 
 export const filterApps = (apps: App[], query: string): App[] => rankApps(apps, filterNeedle(query));
 
+const rest = String.raw`(?::\d{1,5})?(?:[/?#]\S*)?$`;
+const octet = String.raw`(?:25[0-5]|2[0-4]\d|1?\d?\d)`;
+const explicitUrl = /^https?:\/\/\S+$/i;
+const hostWithTld = new RegExp(String.raw`^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}${rest}`, "i");
+const localhost = new RegExp(String.raw`^localhost${rest}`, "i");
+const ipv4 = new RegExp(String.raw`^(?:${octet}\.){3}${octet}${rest}`);
+
+export function urlTarget(query: string): string | null {
+  const trimmed = query.trim();
+  if (!trimmed || trimmed.startsWith("/") || /\s/.test(trimmed)) return null;
+  if (explicitUrl.test(trimmed)) return trimmed;
+  if (localhost.test(trimmed)) return `http://${trimmed}`;
+  if (hostWithTld.test(trimmed) || ipv4.test(trimmed)) return `https://${trimmed}`;
+  return null;
+}
+
 type Submit = { query: string; searchEngine: string; best: App | undefined; forceSearch: boolean };
 
 export function submitTarget({ query, searchEngine, best, forceSearch }: Submit): string | null {
   if (!forceSearch && isFilterQuery(query)) return best ? appHref(best.url) : null;
+  if (!forceSearch) {
+    const url = urlTarget(query);
+    if (url) return url;
+  }
   const trimmed = query.trim();
   return trimmed ? searchEngine + encodeURIComponent(trimmed) : null;
 }
