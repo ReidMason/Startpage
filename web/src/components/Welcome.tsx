@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState, type RefObject } from "react";
 
 import type { App } from "@/api";
-import { submitTarget } from "@/lib/filter";
+import { submitTarget, urlTarget } from "@/lib/filter";
 
 import { fetchDisplayName, meQueryKey, readCachedName } from "@/lib/session";
 import { shouldFocusSearchOnSlash } from "@/lib/shortcut";
@@ -68,6 +68,8 @@ export function Welcome({ editMode, searchEngine, showName, query, onQueryChange
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [editMode]);
 
+  const isLink = urlTarget(query) !== null;
+
   return (
     <div className="flex flex-col gap-8">
       <form
@@ -95,7 +97,7 @@ export function Welcome({ editMode, searchEngine, showName, query, onQueryChange
           autoComplete="off"
           placeholder="Search..."
           aria-label="Search"
-          className="w-full border-0 border-b-2 border-[#c7d2fe]/40 bg-transparent pt-2 pb-4 text-3xl text-[#c7d2fe] outline-none placeholder:text-[#c7d2fe]/80 focus:border-[#c7d2fe]/60 disabled:opacity-40"
+          className={`w-full border-0 border-b-2 border-[#c7d2fe]/40 bg-transparent pt-2 pb-4 text-3xl outline-none ${isLink ? "text-sky-400 underline" : "text-[#c7d2fe]"} placeholder:text-[#c7d2fe]/80 focus:border-[#c7d2fe]/60 disabled:opacity-40`}
         />
       </form>
       <div>
