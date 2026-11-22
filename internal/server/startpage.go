@@ -43,6 +43,38 @@ type settingsResponse struct {
 	SearchEngine       string `json:"searchEngine"`
 	ShowNameInGreeting bool   `json:"showNameInGreeting"`
 	SearchPlaceholder  string `json:"searchPlaceholder"`
+	ThemeID            *int64 `json:"themeId"`
+}
+
+type themeResponse struct {
+	ID                  int64  `json:"id"`
+	Name                string `json:"name"`
+	Background          string `json:"background"`
+	Foreground          string `json:"foreground"`
+	Card                string `json:"card"`
+	CardForeground      string `json:"cardForeground"`
+	Primary             string `json:"primary"`
+	PrimaryForeground   string `json:"primaryForeground"`
+	Secondary           string `json:"secondary"`
+	SecondaryForeground string `json:"secondaryForeground"`
+	Muted               string `json:"muted"`
+	MutedForeground     string `json:"mutedForeground"`
+	Accent              string `json:"accent"`
+	AccentForeground    string `json:"accentForeground"`
+	Destructive         string `json:"destructive"`
+	Border              string `json:"border"`
+	Input               string `json:"input"`
+	Ring                string `json:"ring"`
+}
+
+type optionalID struct {
+	Set   bool
+	Value *int64
+}
+
+func (o *optionalID) UnmarshalJSON(data []byte) error {
+	o.Set = true
+	return json.Unmarshal(data, &o.Value)
 }
 
 func (s *startpage) register(mux *http.ServeMux) {
@@ -55,18 +87,39 @@ func (s *startpage) register(mux *http.ServeMux) {
 	mux.HandleFunc("POST /api/groups", s.authed(s.createGroup))
 	mux.HandleFunc("PATCH /api/groups/{id}", s.authed(s.updateGroup))
 	mux.HandleFunc("PATCH /api/settings", s.authed(s.updateSettings))
+	mux.HandleFunc("GET /api/themes", s.authed(s.listThemes))
+}
+
+func (s *startpage) listThemes(w http.ResponseWriter, r *http.Request, _ int64) {
+	rows, err := s.auth.queries.ListLiveThemes(r.Context())
+	if err != nil {
+		s.auth.internalError(w, err)
+		return
+	}
+	out := make([]themeResponse, len(rows))
+	for i, t := range rows {
+		out[i] = themeResponse{
+			ID: t.ID, Name: t.Name, Background: t.Background, Foreground: t.Foreground,
+			Card: t.Card, CardForeground: t.CardForeground, Primary: t.PrimaryColor, PrimaryForeground: t.PrimaryForeground,
+			Secondary: t.Secondary, SecondaryForeground: t.SecondaryForeground, Muted: t.Muted, MutedForeground: t.MutedForeground,
+			Accent: t.Accent, AccentForeground: t.AccentForeground, Destructive: t.Destructive,
+			Border: t.Border, Input: t.Input, Ring: t.Ring,
+		}
+	}
+	writeJSON(w, http.StatusOK, out)
 }
 
 func (s *startpage) updateSettings(w http.ResponseWriter, r *http.Request, userID int64) {
 	var in struct {
-		SearchEngine       *string `json:"searchEngine"`
-		ShowNameInGreeting *bool   `json:"showNameInGreeting"`
-		SearchPlaceholder  *string `json:"searchPlaceholder"`
+		SearchEngine       *string    `json:"searchEngine"`
+		ShowNameInGreeting *bool      `json:"showNameInGreeting"`
+		SearchPlaceholder  *string    `json:"searchPlaceholder"`
+		ThemeID            optionalID `json:"themeId"`
 	}
 	if !decodeJSON(w, r, &in) {
 		return
 	}
-	if in.SearchEngine == nil && in.ShowNameInGreeting == nil && in.SearchPlaceholder == nil {
+	if in.SearchEngine == nil && in.ShowNameInGreeting == nil && in.SearchPlaceholder == nil && !in.ThemeID.Set {
 		http.Error(w, "at least one setting is required", http.StatusBadRequest)
 		return
 	}
@@ -90,6 +143,21 @@ func (s *startpage) updateSettings(w http.ResponseWriter, r *http.Request, userI
 		}
 		params.SearchPlaceholder = pgtype.Text{String: placeholder, Valid: true}
 	}
+	if in.ThemeID.Set {
+		params.SetThemeID = true
+		if in.ThemeID.Value != nil {
+			live, err := s.auth.queries.ThemeIsLive(r.Context(), *in.ThemeID.Value)
+			if err != nil {
+				s.auth.internalError(w, err)
+				return
+			}
+			if !live {
+				http.Error(w, "themeId must be an existing theme", http.StatusBadRequest)
+				return
+			}
+			params.ThemeID = pgtype.Int8{Int64: *in.ThemeID.Value, Valid: true}
+		}
+	}
 	if in.ShowNameInGreeting != nil {
 		params.ShowNameInGreeting = pgtype.Bool{Bool: *in.ShowNameInGreeting, Valid: true}
 	}
@@ -104,6 +172,13 @@ const (
 	defaultSearchPlaceholder   = "Search..."
 	maxSearchPlaceholderLength = 40
 )
+
+func themeID(id pgtype.Int8) *int64 {
+	if !id.Valid {
+		return nil
+	}
+	return &id.Int64
+}
 
 func validSearchEngine(address string) bool {
 	u, err := url.Parse(address)
@@ -158,7 +233,7 @@ func (s *startpage) get(w http.ResponseWriter, r *http.Request, userID int64) {
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"groups": out, "settings": settingsResponse{
 		SearchEngine: settings.SearchEngine, ShowNameInGreeting: settings.ShowNameInGreeting,
-		SearchPlaceholder: settings.SearchPlaceholder,
+		SearchPlaceholder: settings.SearchPlaceholder, ThemeID: themeID(settings.ThemeID),
 	}})
 }
 

@@ -73,14 +73,28 @@ WHERE id = @id AND user_id = @user_id;
 -- name: GetSettings :one
 SELECT COALESCE(s.search_engine, d.search_engine)::text AS search_engine,
        COALESCE(s.show_name_in_greeting, d.show_name_in_greeting)::boolean AS show_name_in_greeting,
-       COALESCE(s.search_placeholder, d.search_placeholder)::text AS search_placeholder
+       COALESCE(s.search_placeholder, d.search_placeholder)::text AS search_placeholder,
+       t.id AS theme_id
 FROM (SELECT 'https://www.google.com/search?q=' AS search_engine, false AS show_name_in_greeting, 'Search...' AS search_placeholder) d
-LEFT JOIN settings s ON s.user_id = @user_id;
+LEFT JOIN settings s ON s.user_id = @user_id
+LEFT JOIN themes t ON t.id = s.theme_id AND t.deleted_at IS NULL;
 
 -- name: UpdateSettings :exec
-INSERT INTO settings (user_id, search_engine, show_name_in_greeting, search_placeholder)
-VALUES (@user_id, COALESCE(sqlc.narg('search_engine')::text, 'https://www.google.com/search?q='), COALESCE(sqlc.narg('show_name_in_greeting')::boolean, false), COALESCE(sqlc.narg('search_placeholder')::text, 'Search...'))
+INSERT INTO settings (user_id, search_engine, show_name_in_greeting, search_placeholder, theme_id)
+VALUES (@user_id, COALESCE(sqlc.narg('search_engine')::text, 'https://www.google.com/search?q='), COALESCE(sqlc.narg('show_name_in_greeting')::boolean, false), COALESCE(sqlc.narg('search_placeholder')::text, 'Search...'), sqlc.narg('theme_id')::bigint)
 ON CONFLICT (user_id) DO UPDATE SET
     search_engine = COALESCE(sqlc.narg('search_engine')::text, settings.search_engine),
     show_name_in_greeting = COALESCE(sqlc.narg('show_name_in_greeting')::boolean, settings.show_name_in_greeting),
-    search_placeholder = COALESCE(sqlc.narg('search_placeholder')::text, settings.search_placeholder);
+    search_placeholder = COALESCE(sqlc.narg('search_placeholder')::text, settings.search_placeholder),
+    theme_id = CASE WHEN @set_theme_id::boolean THEN sqlc.narg('theme_id')::bigint ELSE settings.theme_id END;
+
+-- name: ThemeIsLive :one
+SELECT EXISTS (SELECT 1 FROM themes WHERE id = $1 AND deleted_at IS NULL);
+
+-- name: ListLiveThemes :many
+SELECT id, name, background, foreground, card, card_foreground, primary_color, primary_foreground,
+       secondary, secondary_foreground, muted, muted_foreground, accent, accent_foreground,
+       destructive, border, input, ring
+FROM themes
+WHERE deleted_at IS NULL
+ORDER BY id;
