@@ -52,7 +52,7 @@ type Theme struct {
 	Foreground          string
 	Card                string
 	CardForeground      string
-	Primary             string
+	PrimaryColor        string
 	PrimaryForeground   string
 	Secondary           string
 	SecondaryForeground string
