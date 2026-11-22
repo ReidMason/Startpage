@@ -1,10 +1,17 @@
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { fileURLToPath } from "node:url";
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
+
+import { themeCacheKey } from "./src/lib/themeCacheKey";
+
+const themeCacheKeyHtml: Plugin = {
+  name: "theme-cache-key-html",
+  transformIndexHtml: (html) => html.replaceAll("%THEME_CACHE_KEY%", themeCacheKey),
+};
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), themeCacheKeyHtml],
   resolve: { alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) } },
   server: {
     proxy: {

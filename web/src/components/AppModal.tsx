@@ -71,7 +71,7 @@ export function AppModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-scrim"
       onMouseDown={(e) => e.target === e.currentTarget && onCancel()}
     >
       <form

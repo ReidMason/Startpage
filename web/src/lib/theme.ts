@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 
 import type { Theme } from "@/api";
+import { themeCacheKey } from "@/lib/themeCacheKey";
+
+export { themeCacheKey };
 
 // Seeded rows; the database ids are the only link to the System light/dark Themes
 const LIGHT_THEME_ID = 1;
@@ -28,15 +31,17 @@ export function themeVariables(theme: Theme): Record<string, string> {
   return vars;
 }
 
-export function applyTheme(root: HTMLElement, theme: Theme | undefined, previous: string[] = []): string[] {
-  for (const name of previous) root.style.removeProperty(name);
-  if (!theme) return [];
-  const vars = themeVariables(theme);
-  for (const [name, value] of Object.entries(vars)) root.style.setProperty(name, value);
-  return Object.keys(vars);
+export function applyTheme(root: HTMLElement, theme: Theme | undefined) {
+  const style = root.style;
+  const applied: string[] = [];
+  for (let i = 0; i < style.length; i++) {
+    const name = style.item(i);
+    if (name.startsWith("--")) applied.push(name);
+  }
+  for (const name of applied) style.removeProperty(name);
+  if (!theme) return;
+  for (const [name, value] of Object.entries(themeVariables(theme))) style.setProperty(name, value);
 }
-
-export const themeCacheKey = "startpage-theme";
 
 type CacheStorage = Pick<Storage, "setItem" | "removeItem">;
 

@@ -9,7 +9,7 @@ type Props = {
 
 export function UnsavedChangesPrompt({ saving, canSave, error, onSave, onDiscard, onKeepEditing }: Props) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-scrim">
       <div role="alertdialog" aria-label="Unsaved changes" className="w-96 space-y-4 rounded-2xl bg-card p-6">
         <h2 className="text-lg font-semibold">Unsaved changes</h2>
         <p className="text-sm text-muted-foreground">You have unsaved settings changes.</p>
