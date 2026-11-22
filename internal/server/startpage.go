@@ -167,7 +167,7 @@ const (
 	maxSearchPlaceholderLength = 40
 )
 
-func themeID(id pgtype.Int8) *int64 {
+func nullableID(id pgtype.Int8) *int64 {
 	if !id.Valid {
 		return nil
 	}
@@ -227,7 +227,7 @@ func (s *startpage) get(w http.ResponseWriter, r *http.Request, userID int64) {
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"groups": out, "settings": settingsResponse{
 		SearchEngine: settings.SearchEngine, ShowNameInGreeting: settings.ShowNameInGreeting,
-		SearchPlaceholder: settings.SearchPlaceholder, ThemeID: themeID(settings.ThemeID),
+		SearchPlaceholder: settings.SearchPlaceholder, ThemeID: nullableID(settings.ThemeID),
 	}})
 }
 
