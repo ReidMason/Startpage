@@ -1,5 +1,5 @@
 import type { Settings } from "@/api";
-import { isValidSearchEngine, searchEnginePresets } from "@/lib/settings";
+import { defaultSearchPlaceholder, isValidSearchEngine, maxSearchPlaceholderLength, searchEnginePresets } from "@/lib/settings";
 
 type Props = {
   draft: Settings | undefined;
@@ -49,6 +49,19 @@ export function SettingsDrawer({ draft, dirty, saving, error, onChange, onSave, 
               className="w-full rounded-lg bg-[#1f2937] px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#c7d2fe]"
             />
             {!valid && <p className="text-sm text-red-400">Enter a valid http or https address.</p>}
+            <label htmlFor="search-placeholder" className="block pt-2 text-sm font-semibold">
+              Search placeholder
+            </label>
+            <input
+              id="search-placeholder"
+              type="text"
+              value={draft.searchPlaceholder}
+              placeholder={defaultSearchPlaceholder}
+              maxLength={maxSearchPlaceholderLength}
+              onChange={(e) => onChange({ ...draft, searchPlaceholder: e.target.value })}
+              autoComplete="off"
+              className="w-full rounded-lg bg-[#1f2937] px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#c7d2fe]"
+            />
           </section>
         )}
         {draft && (

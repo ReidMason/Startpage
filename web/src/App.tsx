@@ -23,7 +23,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Welcome } from "@/components/Welcome";
 import { filterApps, isFilterQuery } from "@/lib/filter";
 import { signOut } from "@/lib/session";
-import { changedSettings, defaultSearchEngine, isDirty, isValidSearchEngine } from "@/lib/settings";
+import { changedSettings, defaultSearchEngine, defaultSearchPlaceholder, isDirty, isValidSearchEngine } from "@/lib/settings";
 import {
   fetchStartpage,
   optimisticStartpage,
@@ -209,6 +209,7 @@ export function App() {
           <Welcome
             editMode={editMode}
             searchEngine={pageSettings?.searchEngine ?? defaultSearchEngine}
+            searchPlaceholder={pageSettings?.searchPlaceholder ?? defaultSearchPlaceholder}
             showName={pageSettings?.showNameInGreeting ?? false}
             query={query}
             onQueryChange={setQuery}

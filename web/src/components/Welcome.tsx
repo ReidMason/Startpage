@@ -3,6 +3,7 @@ import { useEffect, useState, type RefObject } from "react";
 
 import type { App } from "@/api";
 import { submitTarget, urlTarget } from "@/lib/filter";
+import { defaultSearchPlaceholder } from "@/lib/settings";
 
 import { fetchDisplayName, meQueryKey, readCachedName } from "@/lib/session";
 import { shouldFocusSearchOnSlash } from "@/lib/shortcut";
@@ -34,6 +35,7 @@ const formatDate = (now: Date) => {
 type Props = {
   editMode: boolean;
   searchEngine: string;
+  searchPlaceholder: string;
   showName: boolean;
   query: string;
   onQueryChange: (query: string) => void;
@@ -43,7 +45,7 @@ type Props = {
   onFocusChange: (focused: boolean) => void;
 };
 
-export function Welcome({ editMode, searchEngine, showName, query, onQueryChange, onEscape, bestMatch, inputRef, onFocusChange }: Props) {
+export function Welcome({ editMode, searchEngine, searchPlaceholder, showName, query, onQueryChange, onEscape, bestMatch, inputRef, onFocusChange }: Props) {
   const { data: name } = useQuery({
     queryKey: meQueryKey,
     queryFn: fetchDisplayName,
@@ -95,7 +97,7 @@ export function Welcome({ editMode, searchEngine, showName, query, onQueryChange
           autoFocus={!editMode}
           disabled={editMode}
           autoComplete="off"
-          placeholder="Search..."
+          placeholder={searchPlaceholder || defaultSearchPlaceholder}
           aria-label="Search"
           className={`w-full border-0 border-b-2 border-[#c7d2fe]/40 bg-transparent pt-2 pb-4 text-3xl outline-none ${isLink ? "text-sky-400 underline" : "text-[#c7d2fe]"} placeholder:text-[#c7d2fe]/80 focus:border-[#c7d2fe]/60 disabled:opacity-40`}
         />

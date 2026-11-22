@@ -130,20 +130,22 @@ func (q *Queries) FirstGroupID(ctx context.Context, userID int64) (int64, error)
 
 const getSettings = `-- name: GetSettings :one
 SELECT COALESCE(s.search_engine, d.search_engine)::text AS search_engine,
-       COALESCE(s.show_name_in_greeting, d.show_name_in_greeting)::boolean AS show_name_in_greeting
-FROM (SELECT 'https://www.google.com/search?q=' AS search_engine, false AS show_name_in_greeting) d
+       COALESCE(s.show_name_in_greeting, d.show_name_in_greeting)::boolean AS show_name_in_greeting,
+       COALESCE(s.search_placeholder, d.search_placeholder)::text AS search_placeholder
+FROM (SELECT 'https://www.google.com/search?q=' AS search_engine, false AS show_name_in_greeting, 'Search...' AS search_placeholder) d
 LEFT JOIN settings s ON s.user_id = $1
 `
 
 type GetSettingsRow struct {
 	SearchEngine       string
 	ShowNameInGreeting bool
+	SearchPlaceholder  string
 }
 
 func (q *Queries) GetSettings(ctx context.Context, userID int64) (GetSettingsRow, error) {
 	row := q.db.QueryRow(ctx, getSettings, userID)
 	var i GetSettingsRow
-	err := row.Scan(&i.SearchEngine, &i.ShowNameInGreeting)
+	err := row.Scan(&i.SearchEngine, &i.ShowNameInGreeting, &i.SearchPlaceholder)
 	return i, err
 }
 
@@ -364,20 +366,27 @@ func (q *Queries) UpdateGroup(ctx context.Context, arg UpdateGroupParams) (int64
 }
 
 const updateSettings = `-- name: UpdateSettings :exec
-INSERT INTO settings (user_id, search_engine, show_name_in_greeting)
-VALUES ($1, COALESCE($2::text, 'https://www.google.com/search?q='), COALESCE($3::boolean, false))
+INSERT INTO settings (user_id, search_engine, show_name_in_greeting, search_placeholder)
+VALUES ($1, COALESCE($2::text, 'https://www.google.com/search?q='), COALESCE($3::boolean, false), COALESCE($4::text, 'Search...'))
 ON CONFLICT (user_id) DO UPDATE SET
     search_engine = COALESCE($2::text, settings.search_engine),
-    show_name_in_greeting = COALESCE($3::boolean, settings.show_name_in_greeting)
+    show_name_in_greeting = COALESCE($3::boolean, settings.show_name_in_greeting),
+    search_placeholder = COALESCE($4::text, settings.search_placeholder)
 `
 
 type UpdateSettingsParams struct {
 	UserID             int64
 	SearchEngine       pgtype.Text
 	ShowNameInGreeting pgtype.Bool
+	SearchPlaceholder  pgtype.Text
 }
 
 func (q *Queries) UpdateSettings(ctx context.Context, arg UpdateSettingsParams) error {
-	_, err := q.db.Exec(ctx, updateSettings, arg.UserID, arg.SearchEngine, arg.ShowNameInGreeting)
+	_, err := q.db.Exec(ctx, updateSettings,
+		arg.UserID,
+		arg.SearchEngine,
+		arg.ShowNameInGreeting,
+		arg.SearchPlaceholder,
+	)
 	return err
 }
