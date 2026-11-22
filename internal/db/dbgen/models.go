@@ -42,6 +42,29 @@ type Setting struct {
 	SearchEngine       string
 	ShowNameInGreeting bool
 	SearchPlaceholder  string
+	ThemeID            pgtype.Int8
+}
+
+type Theme struct {
+	ID                  int64
+	Name                string
+	Background          string
+	Foreground          string
+	Card                string
+	CardForeground      string
+	PrimaryColor        string
+	PrimaryForeground   string
+	Secondary           string
+	SecondaryForeground string
+	Muted               string
+	MutedForeground     string
+	Accent              string
+	AccentForeground    string
+	Destructive         string
+	Border              string
+	Input               string
+	Ring                string
+	DeletedAt           pgtype.Timestamptz
 }
 
 type User struct {

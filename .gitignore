@@ -5,6 +5,7 @@ web/dist/*
 !web/dist/.gitkeep
 /startpage
 .env
+web/tsconfig.tsbuildinfo
 .next/
 node_modules/
 data/

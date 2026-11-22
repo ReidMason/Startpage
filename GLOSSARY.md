@@ -9,7 +9,7 @@ A person who signs in through Authentik and owns exactly one Startpage.
 _Avoid_: Account, member, profile
 
 **Startpage**:
-A User's personal page: their Apps, search (Search engine and Search placeholder), greeting, weather and appearance settings. Fully independent from every other User's.
+A User's personal page: their Apps, search (Search engine and Search placeholder), greeting, weather and Theme. Fully independent from every other User's.
 _Avoid_: Dashboard, homepage, config
 
 **App**:
@@ -19,6 +19,10 @@ _Avoid_: Bookmark, shortcut, link, disabled
 **Group**:
 A named, ordered, collapsible set of Apps on a Startpage, shown as big tiles or compact rows. The first Group is unlabelled.
 _Avoid_: Section, folder, category
+
+**Theme**:
+A named colour scheme a User picks for their Startpage from a shared set of presets. With no Theme chosen the Startpage is on System, which follows the browser's light or dark preference.
+_Avoid_: Skin, palette
 
 **Session**:
 A signed-in browser's long-lived, revocable authorisation to act as a User.

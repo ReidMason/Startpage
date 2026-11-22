@@ -6,7 +6,7 @@ import { accent } from "@/lib/utils";
 
 export type AppDraft = { name: string; url: string; iconName: string; iconSvg: string };
 
-const field = "w-full rounded bg-[#111827] px-3 py-2 outline-none focus:ring-1 focus:ring-[#4b5d8a]";
+const field = "w-full rounded bg-muted px-3 py-2 outline-none focus:ring-1 focus:ring-ring";
 
 export function AppModal({
   initial,
@@ -71,7 +71,7 @@ export function AppModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-scrim"
       onMouseDown={(e) => e.target === e.currentTarget && onCancel()}
     >
       <form
@@ -81,7 +81,7 @@ export function AppModal({
           e.preventDefault();
           if (valid && !saving) onSave(draft);
         }}
-        className="flex max-h-[90vh] w-[28rem] flex-col gap-4 overflow-y-auto rounded-2xl bg-[#1f2937] p-6 text-[#c7d2fe]"
+        className="flex max-h-[90vh] w-[28rem] flex-col gap-4 overflow-y-auto rounded-2xl bg-secondary p-6 text-foreground"
       >
         <h2 className="text-xl font-semibold">{title}</h2>
         <label className="text-sm">
@@ -99,7 +99,7 @@ export function AppModal({
         </label>
         <div className="text-sm">
           Icon
-          <div className="mb-2 flex items-center gap-3 text-[#6b7aa6]">
+          <div className="mb-2 flex items-center gap-3 text-muted-foreground">
             {draft.iconName ? (
               <Icon icon={draft.iconName} width="100%" height="100%" className={`size-8 shrink-0 ${accent}`} />
             ) : (
@@ -113,7 +113,7 @@ export function AppModal({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          {searchFailed && <p className="mt-2 text-red-400">Icon search unavailable offline.</p>}
+          {searchFailed && <p className="mt-2 text-destructive">Icon search unavailable offline.</p>}
           <div className="mt-2 grid grid-cols-6 gap-1">
             {results.map((name) => (
               <button
@@ -121,7 +121,7 @@ export function AppModal({
                 key={name}
                 title={name}
                 onClick={() => void pickIcon(name)}
-                className="flex aspect-square items-center justify-center rounded hover:bg-[#111827]"
+                className="flex aspect-square items-center justify-center rounded hover:bg-muted"
               >
                 <Icon icon={name} className={`size-6 ${accent}`} />
               </button>
@@ -129,23 +129,23 @@ export function AppModal({
           </div>
         </div>
         {error && (
-          <p role="alert" className="text-sm text-red-400">
+          <p role="alert" className="text-sm text-destructive">
             {error}
           </p>
         )}
         <div className="flex justify-end gap-2">
           {onDelete && (
-            <button type="button" onClick={onDelete} className="mr-auto rounded px-4 py-2 text-sm text-red-400 hover:text-red-300">
+            <button type="button" onClick={onDelete} className="mr-auto rounded px-4 py-2 text-sm text-destructive hover:text-destructive/80">
               Delete
             </button>
           )}
-          <button type="button" onClick={onCancel} className="rounded px-4 py-2 text-sm text-[#9aa5c9] hover:text-white">
+          <button type="button" onClick={onCancel} className="rounded px-4 py-2 text-sm text-muted-foreground hover:text-foreground">
             Cancel
           </button>
           <button
             type="submit"
             disabled={!valid || saving}
-            className="rounded bg-[#4b5d8a] px-4 py-2 text-sm text-white disabled:opacity-50"
+            className="rounded bg-primary px-4 py-2 text-sm text-primary-foreground disabled:opacity-50"
           >
             Save
           </button>

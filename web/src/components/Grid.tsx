@@ -23,14 +23,14 @@ export function AppTile({ app, style }: { app: App; style: Group["style"] }) {
       <AppIcon app={app} className={`size-9 shrink-0 ${accent}`} />
       <span className="min-w-0">
         <span className={`block truncate ${accent}`}>{app.name}</span>
-        <span className="block truncate text-xs text-[#9aa5c9]">{displayUrl(app.url)}</span>
+        <span className="block truncate text-xs text-muted-foreground">{displayUrl(app.url)}</span>
       </span>
     </>
   );
 }
 
 export function tileClass(style: Group["style"]) {
-  return style === "compact" ? `text-lg hover:text-white ${accent}` : "flex min-w-0 items-center gap-2 rounded-lg p-2 transition duration-200 hover:scale-105 hover:bg-[#b9c9f5]/30 hover:shadow-lg";
+  return style === "compact" ? `text-lg hover:text-foreground ${accent}` : "flex min-w-0 items-center gap-2 rounded-lg p-2 transition duration-200 hover:scale-105 hover:bg-accent hover:shadow-lg";
 }
 
 function EditItem({ app, index, group, edit }: { app: App; index: number; group: Group; edit: GridEdit }) {
@@ -54,7 +54,7 @@ export function Grid({ group, edit, highlightFirst }: { group: Group; edit?: Gri
     <button
       type="button"
       onClick={edit.onAdd}
-      className="flex items-center gap-3 text-[#6b7aa6] hover:text-white"
+      className="flex items-center gap-3 text-muted-foreground hover:text-foreground"
     >
       <Icon icon="lucide:plus" className="size-8" /> Add app
     </button>
@@ -66,7 +66,7 @@ export function Grid({ group, edit, highlightFirst }: { group: Group; edit?: Gri
       <a
         key={app.id}
         href={appHref(app.url)}
-        className={`${tileClass(group.style)} ${highlightFirst && i === 0 ? "rounded-lg ring-2 ring-[#c7d2fe] ring-offset-4 ring-offset-[#111827]" : ""}`}
+        className={`${tileClass(group.style)} ${highlightFirst && i === 0 ? "rounded-lg ring-2 ring-ring ring-offset-4 ring-offset-card" : ""}`}
       >
         <AppTile app={app} style={group.style} />
       </a>

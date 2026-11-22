@@ -27,6 +27,7 @@ export function changedSettings(saved: Settings, draft: Settings): SettingsUpdat
   if (draft.searchEngine !== saved.searchEngine) changes.searchEngine = draft.searchEngine;
   if (draft.searchPlaceholder !== saved.searchPlaceholder) changes.searchPlaceholder = draft.searchPlaceholder;
   if (draft.showNameInGreeting !== saved.showNameInGreeting) changes.showNameInGreeting = draft.showNameInGreeting;
+  if (draft.themeId !== saved.themeId) changes.themeId = draft.themeId;
   return changes;
 }
 

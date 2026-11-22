@@ -67,6 +67,10 @@ export type Settings = {
      * Hint text in the empty search bar; defaults to "Search..."
      */
     searchPlaceholder: string;
+    /**
+     * The chosen Theme; null means System. Also null while the chosen Theme is removed.
+     */
+    themeId: unknown;
 };
 
 export type SettingsUpdate = {
@@ -79,6 +83,82 @@ export type SettingsUpdate = {
      * Trimmed; an empty value resets to "Search..."
      */
     searchPlaceholder?: string;
+    /**
+     * Must be an existing Theme; null returns to System
+     */
+    themeId?: unknown;
+};
+
+export type Theme = {
+    id: number;
+    /**
+     * Unique slug, e.g. catppuccin-mocha
+     */
+    name: string;
+    /**
+     * CSS colour
+     */
+    background: string;
+    /**
+     * CSS colour
+     */
+    foreground: string;
+    /**
+     * CSS colour
+     */
+    card: string;
+    /**
+     * CSS colour
+     */
+    cardForeground: string;
+    /**
+     * CSS colour
+     */
+    primary: string;
+    /**
+     * CSS colour
+     */
+    primaryForeground: string;
+    /**
+     * CSS colour
+     */
+    secondary: string;
+    /**
+     * CSS colour
+     */
+    secondaryForeground: string;
+    /**
+     * CSS colour
+     */
+    muted: string;
+    /**
+     * CSS colour
+     */
+    mutedForeground: string;
+    /**
+     * CSS colour
+     */
+    accent: string;
+    /**
+     * CSS colour
+     */
+    accentForeground: string;
+    /**
+     * CSS colour
+     */
+    destructive: string;
+    /**
+     * CSS colour
+     */
+    border: string;
+    /**
+     * CSS colour
+     */
+    input: string;
+    /**
+     * CSS colour
+     */
+    ring: string;
 };
 
 export type Startpage = {
@@ -388,7 +468,7 @@ export type UpdateSettingsData = {
 
 export type UpdateSettingsErrors = {
     /**
-     * Invalid body, or Search engine address that is not an http or https URL
+     * Invalid body, Search engine address that is not an http or https URL, or unknown or removed themeId
      */
     400: unknown;
     /**
@@ -405,3 +485,26 @@ export type UpdateSettingsResponses = {
 };
 
 export type UpdateSettingsResponse = UpdateSettingsResponses[keyof UpdateSettingsResponses];
+
+export type ListThemesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/themes';
+};
+
+export type ListThemesErrors = {
+    /**
+     * Missing, expired or revoked Session
+     */
+    401: unknown;
+};
+
+export type ListThemesResponses = {
+    /**
+     * Themes in id order
+     */
+    200: Array<Theme>;
+};
+
+export type ListThemesResponse = ListThemesResponses[keyof ListThemesResponses];

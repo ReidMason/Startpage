@@ -99,7 +99,7 @@ export function Welcome({ editMode, searchEngine, searchPlaceholder, showName, q
           autoComplete="off"
           placeholder={searchPlaceholder || defaultSearchPlaceholder}
           aria-label="Search"
-          className={`w-full border-0 border-b-2 border-[#c7d2fe]/40 bg-transparent pt-2 pb-4 text-3xl outline-none ${isLink ? "text-sky-400 underline" : "text-[#c7d2fe]"} placeholder:text-[#c7d2fe]/80 focus:border-[#c7d2fe]/60 disabled:opacity-40`}
+          className={`w-full border-0 border-b-2 border-foreground/40 bg-transparent pt-2 pb-4 text-3xl outline-none ${isLink ? "text-primary underline" : "text-foreground"} placeholder:text-muted-foreground focus:border-foreground/60 disabled:opacity-40`}
         />
       </form>
       <div>
