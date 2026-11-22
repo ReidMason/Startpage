@@ -6,3 +6,7 @@ web/dist/*
 /startpage
 .env
 web/tsconfig.tsbuildinfo
+.next/
+node_modules/
+data/
+next-env.d.ts
