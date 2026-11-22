@@ -44,13 +44,13 @@ function GroupEditHeader({ group, first, handle }: { group: Group; first: boolea
         aria-label="Group name"
         onChange={(e) => setName(e.target.value)}
         onBlur={commitName}
-        className="w-48 bg-transparent tracking-wide text-[#9aa5c9] uppercase outline-none placeholder:text-[#4b5d8a]"
+        className="w-48 bg-transparent tracking-wide text-muted-foreground uppercase outline-none placeholder:text-muted-foreground/60"
       />
       <button
         type="button"
         aria-label="Toggle group style"
         onClick={() => update.mutate({ id: group.id, style: group.style === "tiles" ? "compact" : "tiles" })}
-        className="text-xs text-[#6b7aa6] hover:text-white"
+        className="text-xs text-muted-foreground hover:text-foreground"
       >
         {group.style}
       </button>
@@ -84,7 +84,7 @@ export function CollapsibleGroup({
       type="button"
       ref={handleRef}
       aria-label="Drag group"
-      className="cursor-grab touch-none text-[#6b7aa6] hover:text-white"
+      className="cursor-grab touch-none text-muted-foreground hover:text-foreground"
     >
       <Icon icon="lucide:grip-vertical" />
     </button>
@@ -95,7 +95,7 @@ export function CollapsibleGroup({
       {!edit && labelled && (
         <button
           onClick={() => toggle.mutate({ id: group.id, collapsed: !group.collapsed })}
-          className="group/label mb-4 flex items-center gap-1.5 text-sm tracking-wide text-[#6b7aa6] uppercase"
+          className="group/label mb-4 flex items-center gap-1.5 text-sm tracking-wide text-muted-foreground uppercase"
         >
           {group.name}
           <Icon
