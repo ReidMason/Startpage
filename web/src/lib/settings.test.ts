@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { changedSettings } from "./settings";
 
-const saved = { searchEngine: "https://duckduckgo.com/?q=", showNameInGreeting: false, searchPlaceholder: "Search..." };
+const saved = { searchEngine: "https://duckduckgo.com/?q=", showNameInGreeting: false, searchPlaceholder: "Search...", themeId: null };
 
 describe("changedSettings", () => {
   it("is empty when nothing changed", () => {

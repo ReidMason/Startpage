@@ -131,21 +131,29 @@ func (q *Queries) FirstGroupID(ctx context.Context, userID int64) (int64, error)
 const getSettings = `-- name: GetSettings :one
 SELECT COALESCE(s.search_engine, d.search_engine)::text AS search_engine,
        COALESCE(s.show_name_in_greeting, d.show_name_in_greeting)::boolean AS show_name_in_greeting,
-       COALESCE(s.search_placeholder, d.search_placeholder)::text AS search_placeholder
+       COALESCE(s.search_placeholder, d.search_placeholder)::text AS search_placeholder,
+       t.id AS theme_id
 FROM (SELECT 'https://www.google.com/search?q=' AS search_engine, false AS show_name_in_greeting, 'Search...' AS search_placeholder) d
 LEFT JOIN settings s ON s.user_id = $1
+LEFT JOIN themes t ON t.id = s.theme_id AND t.deleted_at IS NULL
 `
 
 type GetSettingsRow struct {
 	SearchEngine       string
 	ShowNameInGreeting bool
 	SearchPlaceholder  string
+	ThemeID            pgtype.Int8
 }
 
 func (q *Queries) GetSettings(ctx context.Context, userID int64) (GetSettingsRow, error) {
 	row := q.db.QueryRow(ctx, getSettings, userID)
 	var i GetSettingsRow
-	err := row.Scan(&i.SearchEngine, &i.ShowNameInGreeting, &i.SearchPlaceholder)
+	err := row.Scan(
+		&i.SearchEngine,
+		&i.ShowNameInGreeting,
+		&i.SearchPlaceholder,
+		&i.ThemeID,
+	)
 	return i, err
 }
 
@@ -232,6 +240,75 @@ func (q *Queries) ListLiveApps(ctx context.Context, userID int64) ([]ListLiveApp
 	return items, nil
 }
 
+const listLiveThemes = `-- name: ListLiveThemes :many
+SELECT id, name, background, foreground, card, card_foreground, primary_color, primary_foreground,
+       secondary, secondary_foreground, muted, muted_foreground, accent, accent_foreground,
+       destructive, border, input, ring
+FROM themes
+WHERE deleted_at IS NULL
+ORDER BY id
+`
+
+type ListLiveThemesRow struct {
+	ID                  int64
+	Name                string
+	Background          string
+	Foreground          string
+	Card                string
+	CardForeground      string
+	PrimaryColor        string
+	PrimaryForeground   string
+	Secondary           string
+	SecondaryForeground string
+	Muted               string
+	MutedForeground     string
+	Accent              string
+	AccentForeground    string
+	Destructive         string
+	Border              string
+	Input               string
+	Ring                string
+}
+
+func (q *Queries) ListLiveThemes(ctx context.Context) ([]ListLiveThemesRow, error) {
+	rows, err := q.db.Query(ctx, listLiveThemes)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListLiveThemesRow
+	for rows.Next() {
+		var i ListLiveThemesRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Background,
+			&i.Foreground,
+			&i.Card,
+			&i.CardForeground,
+			&i.PrimaryColor,
+			&i.PrimaryForeground,
+			&i.Secondary,
+			&i.SecondaryForeground,
+			&i.Muted,
+			&i.MutedForeground,
+			&i.Accent,
+			&i.AccentForeground,
+			&i.Destructive,
+			&i.Border,
+			&i.Input,
+			&i.Ring,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const lockUser = `-- name: LockUser :exec
 SELECT id FROM users WHERE id = $1 FOR UPDATE
 `
@@ -289,6 +366,17 @@ func (q *Queries) RestoreApp(ctx context.Context, arg RestoreAppParams) (Restore
 		&i.IconSvg,
 	)
 	return i, err
+}
+
+const themeIsLive = `-- name: ThemeIsLive :one
+SELECT EXISTS (SELECT 1 FROM themes WHERE id = $1 AND deleted_at IS NULL)
+`
+
+func (q *Queries) ThemeIsLive(ctx context.Context, id int64) (bool, error) {
+	row := q.db.QueryRow(ctx, themeIsLive, id)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
 }
 
 const updateApp = `-- name: UpdateApp :one
@@ -366,12 +454,13 @@ func (q *Queries) UpdateGroup(ctx context.Context, arg UpdateGroupParams) (int64
 }
 
 const updateSettings = `-- name: UpdateSettings :exec
-INSERT INTO settings (user_id, search_engine, show_name_in_greeting, search_placeholder)
-VALUES ($1, COALESCE($2::text, 'https://www.google.com/search?q='), COALESCE($3::boolean, false), COALESCE($4::text, 'Search...'))
+INSERT INTO settings (user_id, search_engine, show_name_in_greeting, search_placeholder, theme_id)
+VALUES ($1, COALESCE($2::text, 'https://www.google.com/search?q='), COALESCE($3::boolean, false), COALESCE($4::text, 'Search...'), $5::bigint)
 ON CONFLICT (user_id) DO UPDATE SET
     search_engine = COALESCE($2::text, settings.search_engine),
     show_name_in_greeting = COALESCE($3::boolean, settings.show_name_in_greeting),
-    search_placeholder = COALESCE($4::text, settings.search_placeholder)
+    search_placeholder = COALESCE($4::text, settings.search_placeholder),
+    theme_id = CASE WHEN $6::boolean THEN $5::bigint ELSE settings.theme_id END
 `
 
 type UpdateSettingsParams struct {
@@ -379,6 +468,8 @@ type UpdateSettingsParams struct {
 	SearchEngine       pgtype.Text
 	ShowNameInGreeting pgtype.Bool
 	SearchPlaceholder  pgtype.Text
+	ThemeID            pgtype.Int8
+	SetThemeID         bool
 }
 
 func (q *Queries) UpdateSettings(ctx context.Context, arg UpdateSettingsParams) error {
@@ -387,6 +478,8 @@ func (q *Queries) UpdateSettings(ctx context.Context, arg UpdateSettingsParams) 
 		arg.SearchEngine,
 		arg.ShowNameInGreeting,
 		arg.SearchPlaceholder,
+		arg.ThemeID,
+		arg.SetThemeID,
 	)
 	return err
 }

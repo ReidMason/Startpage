@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ArrangeStartpageData, ArrangeStartpageErrors, ArrangeStartpageResponses, CreateAppData, CreateAppErrors, CreateAppResponses, CreateGroupData, CreateGroupErrors, CreateGroupResponses, DeleteAppData, DeleteAppErrors, DeleteAppResponses, GetMeData, GetMeErrors, GetMeResponses, GetStartpageData, GetStartpageErrors, GetStartpageResponses, LogoutData, LogoutResponses, RestoreAppData, RestoreAppErrors, RestoreAppResponses, UpdateAppData, UpdateAppErrors, UpdateAppResponses, UpdateGroupData, UpdateGroupErrors, UpdateGroupResponses, UpdateSettingsData, UpdateSettingsErrors, UpdateSettingsResponses } from './types.gen';
+import type { ArrangeStartpageData, ArrangeStartpageErrors, ArrangeStartpageResponses, CreateAppData, CreateAppErrors, CreateAppResponses, CreateGroupData, CreateGroupErrors, CreateGroupResponses, DeleteAppData, DeleteAppErrors, DeleteAppResponses, GetMeData, GetMeErrors, GetMeResponses, GetStartpageData, GetStartpageErrors, GetStartpageResponses, ListThemesData, ListThemesErrors, ListThemesResponses, LogoutData, LogoutResponses, RestoreAppData, RestoreAppErrors, RestoreAppResponses, UpdateAppData, UpdateAppErrors, UpdateAppResponses, UpdateGroupData, UpdateGroupErrors, UpdateGroupResponses, UpdateSettingsData, UpdateSettingsErrors, UpdateSettingsResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -114,3 +114,8 @@ export const updateSettings = <ThrowOnError extends boolean = false>(options: Op
         ...options.headers
     }
 });
+
+/**
+ * List the shared Themes that have not been removed
+ */
+export const listThemes = <ThrowOnError extends boolean = false>(options?: Options<ListThemesData, ThrowOnError>): RequestResult<ListThemesResponses, ListThemesErrors, ThrowOnError> => (options?.client ?? client).get<ListThemesResponses, ListThemesErrors, ThrowOnError>({ url: '/api/themes', ...options });
