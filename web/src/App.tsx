@@ -24,7 +24,7 @@ import { Welcome } from "@/components/Welcome";
 import { filterApps, isFilterQuery } from "@/lib/filter";
 import { signOut } from "@/lib/session";
 import { applyTheme, cacheTheme, resolveTheme, usePrefersDark } from "@/lib/theme";
-import { changedSettings, defaultSearchEngine, defaultSearchPlaceholder, isDirty, isValidSearchEngine } from "@/lib/settings";
+import { changedSettings, defaultSearchEngine, defaultSearchPlaceholder, isDirty } from "@/lib/settings";
 import {
   fetchStartpage,
   optimisticStartpage,

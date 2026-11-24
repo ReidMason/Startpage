@@ -34,6 +34,11 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
           pnpm build
+      - run: pnpm lint
+        working-directory: web
+      - uses: editorconfig-checker/action-editorconfig-checker@v2
+      - run: editorconfig-checker
+      - uses: golangci/golangci-lint-action@v9
       - run: go vet ./...
       - run: go test ./...
 
