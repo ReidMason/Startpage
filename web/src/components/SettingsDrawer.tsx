@@ -15,6 +15,7 @@ type Props = {
 };
 
 export function SettingsDrawer({ draft, themes, dirty, saving, error, onChange, onSave, onDiscard, onClose }: Props) {
+  const secondary = dirty ? { label: "Discard", onClick: onDiscard } : { label: "Close", onClick: onClose };
   const valid = !draft || isValidSearchEngine(draft.searchEngine);
 
   return (
@@ -110,11 +111,11 @@ export function SettingsDrawer({ draft, themes, dirty, saving, error, onChange, 
           </button>
           <button
             type="button"
-            onClick={dirty ? onDiscard : onClose}
+            onClick={secondary.onClick}
             disabled={saving}
             className="flex-1 rounded-full bg-secondary px-4 py-2 text-sm text-muted-foreground hover:text-foreground"
           >
-            {dirty ? "Discard" : "Close"}
+            {secondary.label}
           </button>
         </div>
       </div>

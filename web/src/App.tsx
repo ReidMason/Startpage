@@ -175,6 +175,7 @@ export function App() {
     setSettingsDraft(null);
   };
   const exitEditMode = () => {
+    saveSettings.reset();
     setEditMode(false);
     setEditing(null);
   };
