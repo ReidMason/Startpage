@@ -16,7 +16,7 @@ export function readCachedStartpage(): Startpage | undefined {
   }
 }
 
-export function writeCachedStartpage(startpage: Startpage) {
+function writeCachedStartpage(startpage: Startpage) {
   try {
     localStorage.setItem(CACHE_KEY, JSON.stringify(startpage));
   } catch {

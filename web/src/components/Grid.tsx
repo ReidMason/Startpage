@@ -16,7 +16,7 @@ function AppIcon({ app, className }: { app: App; className: string }) {
 
 export type GridEdit = { onSelect: (app: App) => void; onAdd: () => void };
 
-export function AppTile({ app, style }: { app: App; style: Group["style"] }) {
+function AppTile({ app, style }: { app: App; style: Group["style"] }) {
   if (style === "compact") return <>{app.name}</>;
   return (
     <>
@@ -29,7 +29,7 @@ export function AppTile({ app, style }: { app: App; style: Group["style"] }) {
   );
 }
 
-export function tileClass(style: Group["style"]) {
+function tileClass(style: Group["style"]) {
   return style === "compact" ? `text-lg hover:text-foreground ${accent}` : "flex min-w-0 items-center gap-2 rounded-lg p-2 transition duration-200 hover:scale-105 hover:bg-accent hover:shadow-lg";
 }
 
