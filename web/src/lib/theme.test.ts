@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import type { Theme } from "@/api";
-import { applyTheme, cacheTheme, themeCacheKey, themeLabel, themeVariables, resolveTheme } from "@/lib/theme";
+import { themeCacheKey } from "@/lib/themeCacheKey";
+import { applyTheme, cacheTheme, themeLabel, themeVariables, resolveTheme } from "@/lib/theme";
 
 const theme = (id: number, background = "#fff"): Theme => ({
   id,

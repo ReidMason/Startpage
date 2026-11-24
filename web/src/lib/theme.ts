@@ -3,9 +3,6 @@ import { useEffect, useState } from "react";
 import type { Theme } from "@/api";
 import { themeCacheKey } from "@/lib/themeCacheKey";
 
-export { themeCacheKey };
-
-// Seeded rows; the database ids are the only link to the System light/dark Themes
 const LIGHT_THEME_ID = 1;
 const DARK_THEME_ID = 2;
 

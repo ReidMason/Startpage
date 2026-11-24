@@ -2,10 +2,7 @@
 .scratch
 web/node_modules
 web/dist
-.next
 node_modules
-data
-next-env.d.ts
 docs
 .claude
 .github
