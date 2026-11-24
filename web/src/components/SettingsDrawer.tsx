@@ -11,9 +11,11 @@ type Props = {
   onChange: (draft: Settings) => void;
   onSave: () => void;
   onDiscard: () => void;
+  onClose: () => void;
 };
 
-export function SettingsDrawer({ draft, themes, dirty, saving, error, onChange, onSave, onDiscard }: Props) {
+export function SettingsDrawer({ draft, themes, dirty, saving, error, onChange, onSave, onDiscard, onClose }: Props) {
+  const secondary = dirty ? { label: "Discard", onClick: onDiscard } : { label: "Close", onClick: onClose };
   const valid = !draft || isValidSearchEngine(draft.searchEngine);
 
   return (
@@ -96,29 +98,27 @@ export function SettingsDrawer({ draft, themes, dirty, saving, error, onChange, 
           </label>
         )}
       </div>
-      {dirty && (
-        <div className="sticky bottom-0 space-y-2 bg-background p-4">
-          {error && <p className="text-sm text-destructive">Could not save. Try again.</p>}
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={onSave}
-              disabled={!valid || saving}
-              className="flex-1 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-40"
-            >
-              Save
-            </button>
-            <button
-              type="button"
-              onClick={onDiscard}
-              disabled={saving}
-              className="flex-1 rounded-full bg-secondary px-4 py-2 text-sm text-muted-foreground hover:text-foreground"
-            >
-              Discard
-            </button>
-          </div>
+      <div className="sticky bottom-0 space-y-2 bg-background p-4">
+        {error && <p className="text-sm text-destructive">Could not save. Try again.</p>}
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={onSave}
+            disabled={!dirty || !valid || saving}
+            className="flex-1 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-40"
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            onClick={secondary.onClick}
+            disabled={saving}
+            className="flex-1 rounded-full bg-secondary px-4 py-2 text-sm text-muted-foreground hover:text-foreground"
+          >
+            {secondary.label}
+          </button>
         </div>
-      )}
+      </div>
     </aside>
   );
 }

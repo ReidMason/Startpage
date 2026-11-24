@@ -19,7 +19,6 @@ import { CollapsibleGroup } from "@/components/CollapsibleGroup";
 import { Grid } from "@/components/Grid";
 import { ReorderContext } from "@/components/ReorderContext";
 import { SettingsDrawer } from "@/components/SettingsDrawer";
-import { UnsavedChangesPrompt } from "@/components/UnsavedChangesPrompt";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Welcome } from "@/components/Welcome";
 import { filterApps, isFilterQuery } from "@/lib/filter";
@@ -171,13 +170,12 @@ export function App() {
     cacheTheme(localStorage, resolveTheme(themes, savedThemeId, prefersDark));
   }, [themes, startpage, savedThemeId, prefersDark]);
   const dirty = !!saved && !!draft && isDirty(saved, draft);
-  const [confirmingDone, setConfirmingDone] = useState(false);
   const discardDraft = () => {
     saveSettings.reset();
     setSettingsDraft(null);
   };
   const exitEditMode = () => {
-    setConfirmingDone(false);
+    saveSettings.reset();
     setEditMode(false);
     setEditing(null);
   };
@@ -188,12 +186,11 @@ export function App() {
     return () => window.removeEventListener("beforeunload", warn);
   }, [dirty]);
   const saveSettings = useMutation({
-    mutationFn: async ({ changes }: { changes: SettingsUpdate; next: Settings; exit?: boolean }) => {
+    mutationFn: async ({ changes }: { changes: SettingsUpdate; next: Settings }) => {
       const res = await updateSettings({ body: changes });
       if (res.error) throw new Error(`saving settings failed: ${res.response?.status}`);
     },
-    onSuccess: (_data, { next, exit }) => {
-      if (exit) exitEditMode();
+    onSuccess: (_data, { next }) => {
       const page = queryClient.getQueryData<Startpage>(startpageQueryKey);
       if (page) setStartpage(queryClient, { ...page, settings: next });
       setSettingsDraft(null);
@@ -224,6 +221,7 @@ export function App() {
             if (saved && draft) saveSettings.mutate({ changes: changedSettings(saved, draft), next: draft });
           }}
           onDiscard={discardDraft}
+          onClose={exitEditMode}
         />
       )}
       <div className="min-w-0 flex-1 px-8 py-[5%]">
@@ -283,31 +281,16 @@ export function App() {
           {!startpage && <Skeleton className="h-24 w-full" />}
         </main>
       </div>
-      <button
-        onClick={() => {
-          if (!editMode) {
+      {!editMode && (
+        <button
+          onClick={() => {
             setQuery("");
             setEditMode(true);
-          }
-          else if (dirty) setConfirmingDone(true);
-          else exitEditMode();
-        }}
-        className="fixed bottom-6 left-6 rounded-full bg-secondary px-4 py-2 text-sm text-muted-foreground hover:text-foreground"
-      >
-        {editMode ? "Done" : "Edit"}
-      </button>
-      {confirmingDone && saved && draft && (
-        <UnsavedChangesPrompt
-          saving={saveSettings.isPending}
-          canSave={isValidSearchEngine(draft.searchEngine)}
-          onSave={() => saveSettings.mutate({ changes: changedSettings(saved, draft), next: draft, exit: true })}
-          error={saveSettings.isError}
-          onDiscard={() => {
-            discardDraft();
-            exitEditMode();
           }}
-          onKeepEditing={() => setConfirmingDone(false)}
-        />
+          className="fixed bottom-6 left-6 rounded-full bg-secondary px-4 py-2 text-sm text-muted-foreground hover:text-foreground"
+        >
+          Edit
+        </button>
       )}
       {editing && (
         <AppModal
