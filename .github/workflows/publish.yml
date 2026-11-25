@@ -9,6 +9,13 @@ on:
       - ".claude/**"
       - "**.md"
     tags: ["v[0-9]+.[0-9]+.[0-9]+*"]
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - "docs/**"
+      - ".scratch/**"
+      - ".claude/**"
+      - "**.md"
 
 env:
   IMAGE: ghcr.io/reidmason/startpage
@@ -44,6 +51,7 @@ jobs:
 
   build-and-push:
     needs: gate
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: read
